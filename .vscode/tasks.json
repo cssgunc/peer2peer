@@ -1,0 +1,13 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    // Next dev processes can outlive the debug session inside dev containers and
+    // grab port 3000, so the next launch silently moves to another port.
+    {
+      "label": "Purge Next Dev",
+      "type": "shell",
+      "command": "pkill -f 'next dev' 2>/dev/null || true",
+      "presentation": { "reveal": "silent", "close": true }
+    }
+  ]
+}

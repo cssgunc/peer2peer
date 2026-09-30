@@ -1,0 +1,49 @@
+# Fixed project name so volume names are stable across rebuilds.
+name: peer2peer
+
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ..:/workspace:cached
+      # AI assistant state (chats, auth, settings) survives container rebuilds.
+      - claude-config:/home/vscode/.claude
+      - codex-config:/home/vscode/.codex
+      - gh-config:/home/vscode/.config/gh
+      - shell-history:/commandhistory
+    environment:
+      # Keeps ~/.claude.json inside the persisted volume as well.
+      CLAUDE_CONFIG_DIR: /home/vscode/.claude
+      CODEX_HOME: /home/vscode/.codex
+      # The uv cache and the bind-mounted venv are on different filesystems.
+      UV_LINK_MODE: copy
+      NEXT_TELEMETRY_DISABLED: "1"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: postgres:18
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: peer2peer
+    volumes:
+      # Postgres 18+ images keep data under /var/lib/postgresql/<major>/, so mount the parent.
+      - postgres-data:/var/lib/postgresql
+      - ./db-init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d peer2peer"]
+      interval: 2s
+      timeout: 5s
+      retries: 30
+
+volumes:
+  postgres-data:
+  claude-config:
+  codex-config:
+  gh-config:
+  shell-history:

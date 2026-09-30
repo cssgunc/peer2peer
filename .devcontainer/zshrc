@@ -1,0 +1,33 @@
+# History lives on a named volume so it survives container rebuilds.
+export HISTFILE=/commandhistory/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt SHARE_HISTORY HIST_IGNORE_DUPS HIST_IGNORE_SPACE HIST_REDUCE_BLANKS
+
+setopt AUTO_CD INTERACTIVE_COMMENTS
+bindkey -e
+
+autoload -Uz compinit && compinit -d "$HOME/.cache/zcompdump"
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
+zstyle ':completion:*' menu select
+
+export PATH="$HOME/.local/bin:/workspace/backend/.venv/bin:/workspace/frontend/node_modules/.bin:$PATH"
+export EDITOR="code --wait"
+
+source /usr/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+command -v fzf >/dev/null && source <(fzf --zsh)
+command -v gh >/dev/null && eval "$(gh completion -s zsh)"
+command -v uv >/dev/null && eval "$(uv generate-shell-completion zsh)"
+
+alias ll='ls -lah --color=auto'
+alias ls='ls --color=auto'
+alias gs='git status'
+alias gd='git diff'
+alias gl='git log --oneline --graph --decorate -20'
+alias be='cd /workspace/backend'
+alias fe='cd /workspace/frontend'
+alias db='psql "$(grep ^DATABASE_URL /workspace/backend/.env | cut -d= -f2- | sed s/+psycopg//)"'
+
+eval "$(starship init zsh)"

@@ -1,0 +1,26 @@
+add_newline = false
+format = "$time$directory$git_branch$git_status$python$nodejs$cmd_duration$line_break$character"
+
+[time]
+disabled = false
+format = "[$time]($style) "
+time_format = "%H:%M"
+style = "dimmed white"
+
+[directory]
+truncation_length = 3
+truncate_to_repo = true
+
+[git_branch]
+format = "[$symbol$branch]($style) "
+
+[python]
+format = "[py $version]($style) "
+detect_folders = ["backend"]
+
+[nodejs]
+format = "[node $version]($style) "
+detect_folders = ["frontend"]
+
+[cmd_duration]
+min_time = 2000

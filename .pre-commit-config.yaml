@@ -1,0 +1,49 @@
+# Hooks run only on staged files, so commits stay fast. CI runs the same hooks
+# with --all-files; tests, type checks, and builds run in CI (or `make check`).
+default_install_hook_types: [pre-commit]
+default_stages: [pre-commit]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-json
+        # JSONC files (comments allowed)
+        exclude: ^(\.devcontainer/devcontainer\.json|\.vscode/.*\.json|frontend/tsconfig\.json)$
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: detect-private-key
+
+  # Local hooks use the versions pinned in backend/uv.lock and frontend/package-lock.json,
+  # so the editor, pre-commit, and CI never disagree.
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check (backend)
+        entry: uv run --project backend ruff check --fix --force-exclude
+        language: system
+        types_or: [python, pyi]
+        files: ^backend/
+      - id: ruff-format
+        name: ruff format (backend)
+        entry: uv run --project backend ruff format --force-exclude
+        language: system
+        types_or: [python, pyi]
+        files: ^backend/
+      - id: prettier
+        name: prettier (frontend)
+        entry: bash -c 'cd frontend && npx --no-install prettier --write --ignore-unknown "${@#frontend/}"' --
+        language: system
+        types: [text]
+        files: ^frontend/
+        exclude: ^frontend/package-lock\.json$
+      - id: eslint
+        name: eslint (frontend)
+        entry: bash -c 'cd frontend && npx --no-install eslint --fix --max-warnings=0 --no-warn-ignored "${@#frontend/}"' --
+        language: system
+        files: ^frontend/.*\.(js|jsx|mjs|cjs|ts|tsx|mts|cts)$

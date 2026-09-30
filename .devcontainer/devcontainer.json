@@ -1,0 +1,90 @@
+{
+  "name": "Peer2Peer",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "vscode",
+  "forwardPorts": [3000, 8000, "db:5432"],
+  "portsAttributes": {
+    "3000": { "label": "Frontend" },
+    "8000": { "label": "Backend" },
+    "db:5432": { "label": "Postgres", "onAutoForward": "silent" }
+  },
+  "postCreateCommand": ".devcontainer/post_create.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Frontend
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "vitest.explorer",
+        "yoavbls.pretty-ts-errors",
+
+        // Backend
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "ms-python.debugpy",
+        "charliermarsh.ruff",
+
+        // Database
+        "ms-ossdata.vscode-pgsql",
+
+        // API testing
+        "humao.rest-client",
+
+        // AI assistants
+        "anthropic.claude-code",
+        "openai.chatgpt",
+        "github.copilot-chat",
+
+        // Git & GitHub
+        "github.vscode-pull-request-github",
+        "github.vscode-github-actions",
+        "eamodio.gitlens",
+
+        // Developer experience
+        "usernamehw.errorlens",
+        "editorconfig.editorconfig",
+        "tamasfe.even-better-toml",
+        "redhat.vscode-yaml",
+        "ms-azuretools.vscode-containers",
+        "gruntfuggly.todo-tree"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "zsh",
+        "terminal.integrated.profiles.linux": {
+          "zsh": { "path": "/usr/bin/zsh" }
+        },
+        "files.eol": "\n",
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true,
+        "files.trimTrailingWhitespace": true,
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll": "explicit",
+          "source.organizeImports": "explicit"
+        },
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "prettier.prettierPath": "frontend/node_modules/prettier",
+        "eslint.workingDirectories": ["frontend"],
+        "typescript.tsdk": "frontend/node_modules/typescript/lib",
+        "typescript.enablePromptUseWorkspaceTsdk": true,
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "javascript.updateImportsOnFileMove.enabled": "always",
+        "tailwindCSS.experimental.configFile": "frontend/src/app/globals.css",
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.tabSize": 4
+        },
+        "python.defaultInterpreterPath": "/workspace/backend/.venv/bin/python",
+        "python.analysis.extraPaths": ["backend"],
+        "python.testing.pytestEnabled": true,
+        "python.testing.unittestEnabled": false,
+        "python.testing.cwd": "${workspaceFolder}/backend",
+        "python.testing.pytestArgs": ["tests"],
+        "ruff.nativeServer": "on"
+      }
+    }
+  }
+}
