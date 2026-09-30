@@ -1,6 +1,7 @@
 ---
 name: Feature / task
 about: A piece of work to build or change
+projects: ["cssgunc/21"]
 ---
 
 ### Motivation
