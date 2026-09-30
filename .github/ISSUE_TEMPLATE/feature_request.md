@@ -3,15 +3,15 @@ name: Feature / task
 about: A piece of work to build or change
 ---
 
-## Summary
+### Motivation
 
-What should be built or changed, and why.
+Why this work is needed. Describe the current behavior or gap, where it lives (file paths and line numbers help), and how it differs from what's expected or from similar parts of the app.
 
-## Acceptance Criteria
+### Deliverables
 
-- [ ]
-- [ ]
+- [ ] Concrete change to make (reference files/components where possible)
+- [ ] How the change will be verified
 
-## Notes
+### Important Notes
 
-Designs, related issues, or anything else useful (optional).
+Scope boundaries, pre-existing conditions, related issues, or anything else a contributor should know (optional).
