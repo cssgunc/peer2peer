@@ -15,7 +15,7 @@ CS+SG project for [Peer2Peer](https://www.instagram.com/uncpeer2peer/), UNC's an
 | --------------- | --------------- |
 | Caleb Han       | Tech Lead       |
 | Mason Mines     | Project Manager |
-| Yewon Song      | Fullstack Developer |
+| Yewon Song      | Developer |
 
 ## Getting Started
 
