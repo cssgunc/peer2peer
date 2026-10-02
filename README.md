@@ -2,20 +2,21 @@
 
 CS+SG project for [Peer2Peer](https://www.instagram.com/uncpeer2peer/), UNC's anonymous student peer-support line: a public website plus a responder portal.
 
-| Layer    | Stack                                                                 |
-| -------- | --------------------------------------------------------------------- |
-| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Vitest              |
-| Backend  | Python 3.14, FastAPI, SQLAlchemy 2.1, Alembic, uv                     |
-| Database | PostgreSQL 18                                                         |
-| Dev env  | VS Code Dev Container (Docker)                                        |
+| Layer    | Stack                                                    |
+| -------- | -------------------------------------------------------- |
+| Frontend | Next.js 16, React 19, TypeScript, Tailwind CSS 4, Vitest |
+| Backend  | Python 3.14, FastAPI, SQLAlchemy 2.1, Alembic, uv        |
+| Database | PostgreSQL 18                                            |
+| Dev env  | VS Code Dev Container (Docker)                           |
 
 ## Contributors
 
-| Name            | Role            |
-| --------------- | --------------- |
-| Caleb Han       | Tech Lead       |
-| Mason Mines     | Project Manager |
-| Yewon Song      | Developer |
+| Name        | Role            |
+| ----------- | --------------- |
+| Caleb Han   | Tech Lead       |
+| Mason Mines | Project Manager |
+| Yewon Song  | Developer       |
+| Siyu Liu    | Developer       |
 
 ## Getting Started
 
@@ -45,13 +46,13 @@ Run `make help` for every command.
 
 These live in Docker volumes, so they survive **Rebuild Container**:
 
-| Volume                    | What it keeps                                   |
-| ------------------------- | ----------------------------------------------- |
-| `peer2peer_claude-config` | Claude Code login, settings, and chat history   |
-| `peer2peer_codex-config`  | Codex login, config, and chat history           |
-| `peer2peer_gh-config`     | `gh auth login` credentials                     |
-| `peer2peer_shell-history` | zsh history                                     |
-| `peer2peer_postgres-data` | Dev database                                    |
+| Volume                    | What it keeps                                 |
+| ------------------------- | --------------------------------------------- |
+| `peer2peer_claude-config` | Claude Code login, settings, and chat history |
+| `peer2peer_codex-config`  | Codex login, config, and chat history         |
+| `peer2peer_gh-config`     | `gh auth login` credentials                   |
+| `peer2peer_shell-history` | zsh history                                   |
+| `peer2peer_postgres-data` | Dev database                                  |
 
 To wipe the database, stop the container and run `docker volume rm peer2peer_postgres-data`.
 
