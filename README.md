@@ -17,6 +17,7 @@ CS+SG project for [Peer2Peer](https://www.instagram.com/uncpeer2peer/), UNC's an
 | Mason Mines | Project Manager |
 | Yewon Song  | Developer       |
 | Siyu Liu    | Developer       |
+| Sechan Park | Developer       |
 
 ## Getting Started
 
