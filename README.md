@@ -19,6 +19,7 @@ CS+SG project for [Peer2Peer](https://www.instagram.com/uncpeer2peer/), UNC's an
 | Siyu Liu      | Developer       |
 | Sechan Park   | Developer       |
 | Matthew Chung | Developer       |
+| Maxwell Hu    | Developer       |
 
 ## Getting Started
 
