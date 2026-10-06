@@ -11,15 +11,16 @@ CS+SG project for [Peer2Peer](https://www.instagram.com/uncpeer2peer/), UNC's an
 
 ## Contributors
 
-| Name        | Role            |
-| ----------- | --------------- |
-| Caleb Han   | Tech Lead       |
-| Mason Mines | Project Manager |
-| Yewon Song  | Developer       |
-| Siyu Liu    | Developer       |
-| Sechan Park | Developer       |
-| Emily Jon   | Developer       |
-
+| Name          | Role            |
+| ------------- | --------------- |
+| Caleb Han     | Tech Lead       |
+| Mason Mines   | Project Manager |
+| Yewon Song    | Developer       |
+| Siyu Liu      | Developer       |
+| Sechan Park   | Developer       |
+| Matthew Chung | Developer       |
+| Maxwell Hu    | Developer       |
+| Emily Jon     | Developer       |
 
 ## Getting Started
 
