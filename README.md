@@ -18,6 +18,8 @@ CS+SG project for [Peer2Peer](https://www.instagram.com/uncpeer2peer/), UNC's an
 | Yewon Song  | Developer       |
 | Siyu Liu    | Developer       |
 | Sechan Park | Developer       |
+| Emily Jon   | Developer       |
+
 
 ## Getting Started
 
