@@ -22,6 +22,7 @@ CS+SG project for [Peer2Peer](https://www.instagram.com/uncpeer2peer/), UNC's an
 | Maxwell Hu    | Developer       |
 | Emily Jon     | Developer       |
 | Xander Pak    | Developer       |
+| Tony Wang     | Developer       |
 
 ## Getting Started
 
