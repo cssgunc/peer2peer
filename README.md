@@ -21,6 +21,8 @@ CS+SG project for [Peer2Peer](https://www.instagram.com/uncpeer2peer/), UNC's an
 | Matthew Chung | Developer       |
 | Maxwell Hu    | Developer       |
 | Brian Ryu     | Developer       |
+| Emily Jon     | Developer       |
+| Tony Wang     | Developer       |
 
 ## Getting Started
 
