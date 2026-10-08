@@ -37,8 +37,13 @@ git push   # the first push creates the branch on GitHub automatically
 
 1. Make sure all your commits are pushed to your branch.
 2. Go to the [Pull Requests tab](https://github.com/cssgunc/peer2peer/pulls) and click **New pull request**. Pick your branch.
-3. Fill out the PR template: why you made the change, what changed, and `Closes #12` so the issue closes automatically when the PR merges.
-4. Request a review from Caleb (`calebyhan`). This isn't strictly required, but it gets you a faster review.
+3. Set the **PR title** by copying the issue's title exactly.
+4. Fill out the PR template (it pre-fills the description):
+   - **Motivation:** copy it from the issue's description, replacing the placeholder text at the top.
+   - **Changes:** a bullet list of what you added, changed, or removed, and why. Don't just restate the issue; summarize what you actually did and note anything that differs from the plan.
+   - **`Closes #12`:** use your issue's number so it closes automatically when the PR merges.
+5. Add anything a reviewer needs to know: screenshots for UI changes, how to test it, or follow-up work you left out on purpose.
+6. Request a review from Caleb (`calebyhan`). This isn't strictly required, but it gets you a faster review.
 
 CI runs automatically on every PR (lint, type checks, tests, and the frontend build). A PR needs a green CI run before it can merge. If a check fails, click **Details** on it to see the logs.
 

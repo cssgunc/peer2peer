@@ -25,7 +25,7 @@ CS+SG project for [Peer2Peer](https://www.instagram.com/uncpeer2peer/), UNC's an
 | Xander Pak    | Developer       |
 | Tony Wang     | Developer       |
 | Chris Kim     | Developer       |
-| Alex Kim     | Developer       |
+| Alex Kim      | Developer       |
 
 ## Getting Started
 
