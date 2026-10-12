@@ -1,6 +1,3 @@
-/* QUESTIONS */
-// am I supposed to make an ApiError class???
-
 export async function apiFetch<T>(
   path: string,
   init?: RequestInit,
