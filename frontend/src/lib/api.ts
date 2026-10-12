@@ -15,13 +15,13 @@ export async function apiFetch<T>(
 
   const response = await fetch(url, init);
 
-  if (response.status == 204) {
+  if (response.status === 204) {
     return undefined as T;
   }
 
   if (!response.ok) {
     // default fallback values for code/detail
-    let code = "code_erorr";
+    let code = "unknown_erorr";
     let detail = response.statusText || "Request failed";
 
     try {
