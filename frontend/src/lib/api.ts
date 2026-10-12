@@ -21,7 +21,7 @@ export async function apiFetch<T>(
 
   if (!response.ok) {
     // default fallback values for code/detail
-    let code = "unknown_erorr";
+    let code = "unknown_error";
     let detail = response.statusText || "Request failed";
 
     try {
@@ -32,7 +32,7 @@ export async function apiFetch<T>(
     throw new ApiError(response.status, code, detail);
   }
 
-  return result as T;
+  return (await response.json()) as T;
 }
 
 export class ApiError extends Error {
