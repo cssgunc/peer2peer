@@ -114,6 +114,8 @@ jobs:
   frontend:
     name: Frontend
     runs-on: ubuntu-latest
+    env:
+      BACKEND_URL: http://localhost:8000
     defaults:
       run:
         working-directory: frontend

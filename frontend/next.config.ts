@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const backendUrl = process.env.BACKEND_URL ?? "http://localhost:8000";
+
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
@@ -7,11 +9,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: `${process.env.BACKEND_URL}/api/:path*`,
+        destination: `${backendUrl.replace(/\/$/, "")}/api/:path*`,
       },
       {
         source: "/ws/:path*",
-        destination: `${process.env.BACKEND_URL}/ws/:path*`,
+        destination: `${backendUrl.replace(/\/$/, "")}/ws/:path*`,
       },
     ];
   },
