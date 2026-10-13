@@ -2,9 +2,15 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
+from app.errors import register_exception_handlers
+from app.logging import RequestLoggingMiddleware, configure_logging
 from app.routers import health
 
+configure_logging()
+
 app = FastAPI(title="Peer2Peer API")
+
+register_exception_handlers(app)
 
 app.add_middleware(
     CORSMiddleware,
@@ -14,4 +20,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(health.router)
+app.add_middleware(RequestLoggingMiddleware)
+
+app.include_router(health.router, prefix="/api")
