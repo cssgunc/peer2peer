@@ -9,7 +9,7 @@ install: ## Install backend and frontend dependencies
 	cd frontend && npm ci
 
 dev-backend: ## Run the API on :8000 with reload
-	cd backend && uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+	cd backend && uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000 --no-access-log
 
 dev-frontend: ## Run the Next.js dev server on :3000
 	cd frontend && npm run dev
