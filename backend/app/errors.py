@@ -4,6 +4,7 @@ from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from starlette.responses import Response
 
 logger = logging.getLogger("app.errors")
 
@@ -34,26 +35,32 @@ def _error_response(
     )
 
 
-async def app_error_handler(request: Request, exc: AppError) -> JSONResponse:
+async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
+    logger.error("Unhandled exception", exc_info=exc)
+    return _error_response(500, "internal_error", "Internal server error")
+
+
+async def app_error_handler(request: Request, exc: Exception) -> Response:
+    if not isinstance(exc, AppError):
+        return await unhandled_exception_handler(request, exc)
     return _error_response(exc.status_code, exc.code, exc.detail)
 
 
-async def http_exception_handler(request: Request, exc: StarletteHTTPException) -> JSONResponse:
+async def http_exception_handler(request: Request, exc: Exception) -> Response:
+    if not isinstance(exc, StarletteHTTPException):
+        return await unhandled_exception_handler(request, exc)
     code = DEFAULT_CODES.get(exc.status_code, "http_error")
     detail = exc.detail if isinstance(exc.detail, str) else str(exc.detail)
     return _error_response(exc.status_code, code, detail, headers=getattr(exc, "headers", None))
 
 
-async def validation_error_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
+async def validation_error_handler(request: Request, exc: Exception) -> Response:
+    if not isinstance(exc, RequestValidationError):
+        return await unhandled_exception_handler(request, exc)
     first = exc.errors()[0]
     loc = first["loc"]
     field = ".".join(str(p) for p in loc[1:]) or str(loc[0])
     return _error_response(422, "validation_error", f"{field}: {first['msg']}")
-
-
-async def unhandled_exception_handler(request: Request, exc: Exception) -> JSONResponse:
-    logger.error("Unhandled exception", exc_info=exc)
-    return _error_response(500, "internal_error", "Internal server error")
 
 
 def register_exception_handlers(app: FastAPI) -> None:
