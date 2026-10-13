@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session, sessionmaker
 from app.config import get_settings
 from app.database import Base, get_db
 from app.main import app
+from app.security.rate_limit import reset_rate_limits
 
 test_engine = create_engine(get_settings().test_database_url)
 TestSessionLocal = sessionmaker(bind=test_engine, autoflush=False, expire_on_commit=False)
@@ -18,6 +19,12 @@ def _schema() -> Iterator[None]:
     Base.metadata.create_all(test_engine)
     yield
     Base.metadata.drop_all(test_engine)
+
+
+@pytest.fixture(autouse=True)
+def _rate_limits() -> None:
+    # The limiter is process-wide, so clear it to keep one test's hits from blocking another.
+    reset_rate_limits()
 
 
 @pytest.fixture

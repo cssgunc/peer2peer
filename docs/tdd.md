@@ -189,7 +189,7 @@ The repo scaffold already pins the core stack. Additions are listed with their p
 - ORM / migrations: SQLAlchemy 2.1, Alembic
 - Password hashing: Argon2id via `pwdlib[argon2]`
 - Field encryption: `cryptography` (AES-GCM) for message bodies and escalation data
-- Rate limiting: `??` `slowapi` or a small Postgres-backed limiter
+- Rate limiting: small in-process limiter (`app/security/rate_limit.py`), no library. IPs stay in memory only; fine with a single instance (see 4.2)
 - Scheduled jobs (retention purge, auto-close): `??` DigitalOcean scheduled job component vs. an in-process scheduler (APScheduler)
 - SMS (only if chosen): `twilio` SDK
 - Testing: pytest (+ httpx client, WebSocket test client)
