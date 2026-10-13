@@ -4,6 +4,7 @@ version = "0.1.0"
 requires-python = ">=3.14"
 dependencies = [
   "alembic>=1.20",
+  "cryptography>=50.0.2",
   "fastapi>=0.142",
   "psycopg[binary]>=3.3",
   "pydantic-settings>=2.15",
