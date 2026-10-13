@@ -37,13 +37,11 @@ export default function Page() {
 */
 
 import { cacheLife, cacheTag } from "next/cache";
+import { apiFetch } from "./api";
 
 export async function getPublicData<T>(path: string, tag: string) {
   "use cache";
   cacheTag(tag);
   cacheLife("hours");
-
-  const result = await fetch(path);
-  const data = await result.json();
-  return data as T;
+  return apiFetch<T>(path);
 }
