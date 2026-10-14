@@ -2,6 +2,7 @@ from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config, pool
 
+import app.models  # noqa: F401 -- register all models for autogenerate
 from alembic import context
 from app.config import get_settings
 from app.database import Base
