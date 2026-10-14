@@ -1,6 +1,7 @@
 import base64
 import binascii
 from functools import lru_cache
+from typing import Literal
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -11,6 +12,8 @@ KEY_BYTES = 32
 class Settings(BaseSettings):
     # hide_input_in_errors keeps encryption keys out of validation error messages.
     model_config = SettingsConfigDict(env_file=".env", extra="ignore", hide_input_in_errors=True)
+
+    environment: Literal["development", "test", "production"] = "development"
 
     database_url: str = "postgresql+psycopg://postgres:postgres@db:5432/peer2peer"
     test_database_url: str = "postgresql+psycopg://postgres:postgres@db:5432/peer2peer_test"

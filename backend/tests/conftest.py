@@ -2,9 +2,10 @@ from collections.abc import Iterator
 
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
+from app import models  # noqa: F401 -- register tables before creating the test schema
 from app.config import get_settings
 from app.database import Base, get_db
 from app.main import app
@@ -16,6 +17,8 @@ TestSessionLocal = sessionmaker(bind=test_engine, autoflush=False, expire_on_com
 
 @pytest.fixture(scope="session", autouse=True)
 def _schema() -> Iterator[None]:
+    with test_engine.begin() as connection:
+        connection.execute(text("CREATE EXTENSION IF NOT EXISTS citext"))
     Base.metadata.create_all(test_engine)
     yield
     Base.metadata.drop_all(test_engine)
