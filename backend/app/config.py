@@ -15,6 +15,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://postgres:postgres@db:5432/peer2peer"
     test_database_url: str = "postgresql+psycopg://postgres:postgres@db:5432/peer2peer_test"
     cors_origins: list[str] = ["http://localhost:3000"]
+    line_timezone: str = "America/New_York"
 
     # Key version -> base64-encoded 32-byte AES key (TDD 4.6.7). The highest version encrypts.
     message_keys: dict[int, str]
