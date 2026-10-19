@@ -61,4 +61,4 @@ CI runs automatically on every PR (lint, type checks, tests, and the frontend bu
 
 - **Keep PRs focused.** One issue per PR. A small PR gets reviewed faster and is easier to fix if something breaks.
 - **Keep your branch current.** If `main` moves ahead while you're working, merge it into your branch (`git pull origin main`) and resolve any conflicts before you ask for a review.
-- **Never commit secrets.** `.env` files are gitignored. When you add a new setting, add a placeholder to the matching `.env.example` instead.
+- **Never commit secrets.** `.env` files are gitignored and only hold personal overrides. When you add a new setting, give it a dev default in code (`backend/app/config.py`, or a module like `frontend/src/lib/backend-url.ts`). If it can't have a safe default, such as an encryption key, add a dev-only value to `app.environment` in `.devcontainer/docker-compose.yml` and to the CI env in `.github/workflows/ci.yml`. List every setting in the matching `.env.example`.

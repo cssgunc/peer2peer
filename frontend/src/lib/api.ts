@@ -1,3 +1,5 @@
+import { BACKEND_URL } from "./backend-url";
+
 export async function apiFetch<T>(
   path: string,
   init?: RequestInit,
@@ -5,7 +7,7 @@ export async function apiFetch<T>(
   let url, result;
   // Checks if in browser or server
   if (typeof window === "undefined") {
-    url = `${process.env.BACKEND_URL}${path}`;
+    url = `${BACKEND_URL}${path}`;
   } else {
     url = path;
   }

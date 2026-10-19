@@ -32,7 +32,6 @@ CS+SG project for [Peer2Peer](https://www.instagram.com/uncpeer2peer/), UNC's an
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and the VS Code [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
 2. Clone the repo and open it in VS Code.
 3. Run **Dev Containers: Reopen in Container** from the command palette. The first build takes a few minutes. `post_create.sh` then:
-   - creates `backend/.env` and `frontend/.env.local` from their `.env.example` files
    - installs dependencies (`uv sync`, `npm ci`)
    - runs database migrations
    - installs the pre-commit hooks

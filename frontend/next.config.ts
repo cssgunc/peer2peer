@@ -1,6 +1,5 @@
 import type { NextConfig } from "next";
-
-const backendUrl = process.env.BACKEND_URL ?? "http://localhost:8000";
+import { BACKEND_URL } from "./src/lib/backend-url";
 
 const nextConfig: NextConfig = {
   /* config options here */
@@ -9,11 +8,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: `${backendUrl.replace(/\/$/, "")}/api/:path*`,
+        destination: `${BACKEND_URL}/api/:path*`,
       },
       {
         source: "/ws/:path*",
-        destination: `${backendUrl.replace(/\/$/, "")}/ws/:path*`,
+        destination: `${BACKEND_URL}/ws/:path*`,
       },
     ];
   },
