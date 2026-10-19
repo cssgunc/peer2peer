@@ -32,6 +32,7 @@ Single tests: `cd backend && uv run pytest tests/test_health.py::test_name`, `cd
 ## Conventions
 
 - Backend: routers in `app/routers/`, models in `app/models/` (inherit `app.database.Base`), Pydantic schemas in `app/schemas/`. DB sessions come from `Depends(get_db)`. Every model change needs an Alembic migration; CI runs `alembic check`.
+- Backend transactions: services only `flush()`; the outermost layer (route handler or dependency) calls `commit()`, so one request's writes commit together. `get_db` never commits, so anything left uncommitted is rolled back when the request ends.
 - Backend tests run against the `peer2peer_test` database; each test is wrapped in a rolled-back transaction (`tests/conftest.py`).
 - Frontend: pages in `src/app/`, shared components in `src/components/`, import alias `@/` → `src/`. Tests are colocated as `*.test.tsx`.
 - Formatting is enforced by Ruff (Python) and Prettier (frontend); don't hand-format.
