@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 
-import type { ChatState } from "./chatReducer";
+import type { ChatPhase, ChatState } from "./chatReducer";
 import Composer from "./Composer";
 import EndConversationDialog from "./EndConversationDialog";
 import MessageList from "./MessageList";
@@ -19,6 +19,11 @@ export type ChatWindowProps = {
   onStartOver: () => void;
 };
 
+const PLACEHOLDERS: Partial<Record<ChatPhase, string>> = {
+  connecting: "Waiting for a peer responder…",
+  ended: "This conversation has ended",
+};
+
 export default function ChatWindow({
   state,
   notice,
@@ -28,7 +33,7 @@ export default function ChatWindow({
   onEnd,
   onStartOver,
 }: ChatWindowProps) {
-  const { phase, messages } = state;
+  const { phase, messages, error } = state;
 
   return (
     <section
@@ -52,8 +57,17 @@ export default function ChatWindow({
             </p>
           )}
           <MessageList messages={messages} onRetry={onRetry} />
+          {error && (
+            <p role="alert" className="px-3 pt-2 text-sm text-destructive">
+              {error}
+            </p>
+          )}
           {phase === "ended" && <EndedNotice onStartOver={onStartOver} />}
-          <Composer onSend={onSend} disabled={phase !== "active"} />
+          <Composer
+            onSend={onSend}
+            disabled={phase !== "active"}
+            placeholder={PLACEHOLDERS[phase]}
+          />
         </>
       )}
     </section>
@@ -65,8 +79,9 @@ function EndedNotice({ onStartOver }: { onStartOver: () => void }) {
     <div className="flex flex-col items-center gap-3 border-t border-border bg-muted p-4 text-center">
       <p className="font-medium">This conversation has ended.</p>
       <p className="text-sm">
-        If you are in danger, call <a href="tel:911">911</a>. For a crisis, call
-        or text <a href="tel:988">988</a>, the Suicide &amp; Crisis Lifeline.
+        If you are in danger, call <a href="tel:911">911</a>. For a crisis,
+        reach the Suicide &amp; Crisis Lifeline: <a href="tel:988">Call 988</a>{" "}
+        or <a href="sms:988">Text 988</a>.
       </p>
       <Button onClick={onStartOver}>Start a new conversation</Button>
     </div>

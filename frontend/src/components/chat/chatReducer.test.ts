@@ -122,7 +122,7 @@ describe("chatReducer", () => {
       tempId: "temp-1",
     });
     expect(state.messages[0].status).toBe("failed");
-    expect(state.error).toBe("Not sent. Tap to retry.");
+    expect(state.error).toBe("A message didn't send.");
   });
 
   it("puts a retried message back to pending", () => {
@@ -138,18 +138,61 @@ describe("chatReducer", () => {
     expect(state.error).toBeNull();
   });
 
-  it("ends the conversation and keeps the messages", () => {
+  it("keeps the error while another message is still failed", () => {
+    const first = chatReducer(sent(), {
+      type: "messageFailed",
+      tempId: "temp-1",
+    });
+    const second = chatReducer(
+      chatReducer(first, {
+        type: "messageSent",
+        tempId: "temp-2",
+        body: "again",
+        createdAt: at,
+      }),
+      { type: "messageFailed", tempId: "temp-2" },
+    );
+    const state = chatReducer(second, {
+      type: "messageRetried",
+      tempId: "temp-1",
+    });
+    expect(state.error).toBe("A message didn't send.");
+  });
+
+  it("clears the transcript when the texter ends the conversation", () => {
     const withMessage = chatReducer(active, {
       type: "messageReceived",
       message: responder,
     });
-    const state = chatReducer(withMessage, { type: "conversationClosed" });
+    const state = chatReducer(withMessage, {
+      type: "conversationClosed",
+      by: "texter",
+    });
     expect(state.phase).toBe("ended");
-    expect(state.messages).toEqual([responder]);
+    expect(state.messages).toEqual([]);
   });
 
+  it.each(["responder", "inactivity", "system"] as const)(
+    "keeps the transcript when closed by %s",
+    (by) => {
+      const withMessage = chatReducer(active, {
+        type: "messageReceived",
+        message: responder,
+      });
+      const state = chatReducer(withMessage, {
+        type: "conversationClosed",
+        by,
+      });
+      expect(state.phase).toBe("ended");
+      expect(state.messages).toEqual([responder]);
+    },
+  );
+
   it("resets to the initial state", () => {
-    const ended = chatReducer(sent(), { type: "conversationClosed" });
+    const ended = chatReducer(sent(), {
+      type: "conversationClosed",
+      by: "responder",
+    });
     expect(chatReducer(ended, { type: "reset" })).toEqual(initialChatState);
   });
 });

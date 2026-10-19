@@ -13,9 +13,11 @@ const COUNTER_THRESHOLD = 1_800;
 export default function Composer({
   onSend,
   disabled = false,
+  placeholder = "Message",
 }: {
   onSend: (body: string) => void;
   disabled?: boolean;
+  placeholder?: string;
 }) {
   const [body, setBody] = useState("");
   const canSend = !disabled && body.trim().length > 0;
@@ -56,7 +58,7 @@ export default function Composer({
           disabled={disabled}
           rows={1}
           className="max-h-40"
-          placeholder={disabled ? "This conversation has ended" : "Message"}
+          placeholder={placeholder}
           aria-describedby={
             body.length >= COUNTER_THRESHOLD ? "chat-composer-count" : undefined
           }

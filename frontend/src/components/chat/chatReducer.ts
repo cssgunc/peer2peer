@@ -14,6 +14,9 @@ export type ChatMessage = ChatMessageDTO & { status?: "pending" | "failed" };
 
 export type ChatPhase = "notice" | "connecting" | "active" | "ended";
 
+/** Matches the backend's `ClosedBy`. */
+export type ClosedBy = "texter" | "responder" | "inactivity" | "system";
+
 export type ChatState = {
   phase: ChatPhase;
   messages: ChatMessage[];
@@ -28,7 +31,7 @@ export type ChatAction =
   | { type: "messageConfirmed"; tempId: string; message: ChatMessageDTO }
   | { type: "messageFailed"; tempId: string }
   | { type: "messageRetried"; tempId: string }
-  | { type: "conversationClosed" }
+  | { type: "conversationClosed"; by: ClosedBy }
   | { type: "reset" };
 
 export const MAX_MESSAGE_LENGTH = 2_000;
@@ -89,17 +92,26 @@ export function chatReducer(state: ChatState, action: ChatAction): ChatState {
     case "messageFailed":
       return {
         ...state,
-        error: "Not sent. Tap to retry.",
+        error: "A message didn't send.",
         messages: setStatus(state.messages, action.tempId, "failed"),
       };
-    case "messageRetried":
+    case "messageRetried": {
+      const messages = setStatus(state.messages, action.tempId, "pending");
       return {
         ...state,
-        error: null,
-        messages: setStatus(state.messages, action.tempId, "pending"),
+        messages,
+        error: messages.some((m) => m.status === "failed") ? state.error : null,
       };
+    }
     case "conversationClosed":
-      return { ...state, phase: "ended" };
+      // When the student ends it, clear the transcript so it isn't left on a
+      // shared device (TDD 4.6.2). Otherwise keep it until they start over.
+      return {
+        ...state,
+        phase: "ended",
+        error: null,
+        messages: action.by === "texter" ? [] : state.messages,
+      };
     case "reset":
       return initialChatState;
   }

@@ -89,7 +89,7 @@ export default function FakeChat() {
         // Retries always succeed here so the happy path is reachable.
         deliver(tempId, failed.body, true);
       }}
-      onEnd={() => dispatch({ type: "conversationClosed" })}
+      onEnd={() => dispatch({ type: "conversationClosed", by: "texter" })}
       onStartOver={() => dispatch({ type: "reset" })}
     />
   );
