@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:3000"]
     line_timezone: str = "America/New_York"
 
+    # Staff sessions (TDD 4.6.1). The devcontainer turns off Secure so cookies work over local http.
+    session_idle_minutes: int = 30
+    session_max_hours: int = 12
+    session_cookie_secure: bool = True
+
     # Key version -> base64-encoded 32-byte AES key (TDD 4.6.7). The highest version encrypts.
     message_keys: dict[int, str]
     escalation_keys: dict[int, str]
