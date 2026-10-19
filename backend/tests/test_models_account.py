@@ -2,11 +2,11 @@ import hashlib
 from datetime import UTC, datetime, timedelta
 
 import pytest
-from sqlalchemy import text
+from sqlalchemy import func, select, text
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
-from app import seed
+from app import database, seed
 from app.cli import main
 from app.config import get_settings
 from app.models import Account, AccountRole, AuthSession
@@ -83,10 +83,24 @@ def test_token_hash_is_unique(db: Session) -> None:
         db.flush()
 
 
-def test_seed_dev_runs_twice(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_seed_dev_runs_twice(db: Session, monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(get_settings(), "environment", "development")
+    # Run seeds against the test transaction so nothing reaches the dev database.
+    monkeypatch.setattr(
+        database,
+        "SessionLocal",
+        sessionmaker(bind=db.get_bind(), join_transaction_mode="create_savepoint"),
+    )
+
+    def seed_account(session: Session) -> None:
+        if session.scalar(select(Account).where(Account.email == "seed@unc.edu")) is None:
+            session.add(make_account("seed@unc.edu"))
+
+    monkeypatch.setattr(seed, "registry", [seed_account])
     main(["seed-dev"])
     main(["seed-dev"])
+
+    assert db.scalar(select(func.count()).select_from(Account)) == 1
 
 
 @pytest.mark.parametrize("environment", ["test", "production"])
