@@ -16,7 +16,10 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Peer2Peer",
+  title: {
+    default: "Peer2Peer",
+    template: "%s | Peer2Peer",
+  },
   description: "Anonymous peer support for UNC students.",
 };
 
