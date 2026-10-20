@@ -11,6 +11,7 @@ from app.models.messaging import (
     MessageSender,
     Texter,
 )
+from app.models.site_setting import SiteSetting
 
 __all__ = [
     "Account",
@@ -23,5 +24,6 @@ __all__ = [
     "DeliveryStatus",
     "Message",
     "MessageSender",
+    "SiteSetting",
     "Texter",
 ]
