@@ -33,10 +33,11 @@ class Shift(UUIDPrimaryKeyMixin, Base):
     started_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     last_heartbeat_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     ended_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    ended_reason: Mapped[ShiftEndReason] = mapped_column(
+    ended_reason: Mapped[ShiftEndReason | None] = mapped_column(
         Enum(
             ShiftEndReason,
             name="shift_end_reason",
             values_callable=lambda members: [member.value for member in members],
-        )
+        ),
+        nullable=True,
     )
