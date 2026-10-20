@@ -2,6 +2,7 @@
 
 from app.models.account import Account, AccountRole, AuthSession
 from app.models.content_block import ContentBlock
+from app.models.feedback import FeedbackSubmission
 from app.models.messaging import (
     Channel,
     ClosedBy,
@@ -24,6 +25,7 @@ __all__ = [
     "Conversation",
     "ConversationStatus",
     "DeliveryStatus",
+    "FeedbackSubmission",
     "Message",
     "MessageSender",
     "Shift",
