@@ -11,6 +11,7 @@ from app.models.messaging import (
     MessageSender,
     Texter,
 )
+from app.models.shift import Shift, ShiftEndReason
 
 __all__ = [
     "Account",
@@ -23,5 +24,7 @@ __all__ = [
     "DeliveryStatus",
     "Message",
     "MessageSender",
+    "Shift",
+    "ShiftEndReason",
     "Texter",
 ]
