@@ -2,6 +2,7 @@
 
 from app.models.account import Account, AccountRole, AuthSession
 from app.models.audit import AuditLog
+from app.models.content_block import ContentBlock
 from app.models.messaging import (
     Channel,
     ClosedBy,
@@ -12,6 +13,7 @@ from app.models.messaging import (
     MessageSender,
     Texter,
 )
+from app.models.shift import Shift, ShiftEndReason
 
 __all__ = [
     "Account",
@@ -20,10 +22,13 @@ __all__ = [
     "AuditLog",
     "Channel",
     "ClosedBy",
+    "ContentBlock",
     "Conversation",
     "ConversationStatus",
     "DeliveryStatus",
     "Message",
     "MessageSender",
+    "Shift",
+    "ShiftEndReason",
     "Texter",
 ]
