@@ -1,6 +1,7 @@
 """Import every model here so metadata includes all tables."""
 
 from app.models.account import Account, AccountRole, AuthSession
+from app.models.content_block import ContentBlock
 from app.models.messaging import (
     Channel,
     ClosedBy,
@@ -19,6 +20,7 @@ __all__ = [
     "AuthSession",
     "Channel",
     "ClosedBy",
+    "ContentBlock",
     "Conversation",
     "ConversationStatus",
     "DeliveryStatus",
