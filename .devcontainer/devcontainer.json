@@ -4,6 +4,8 @@
   "service": "app",
   "workspaceFolder": "/workspace",
   "remoteUser": "vscode",
+  // Runs on the host before every start or rebuild; layer caching keeps it fast. See docker-compose.yml.
+  "initializeCommand": "docker build -t peer2peer-devcontainer -f .devcontainer/Dockerfile .",
   "forwardPorts": [3000, 8000, "db:5432"],
   "portsAttributes": {
     "3000": { "label": "Frontend" },
