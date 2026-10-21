@@ -14,6 +14,7 @@ from app.models.messaging import (
     MessageSender,
     Texter,
 )
+from app.models.resource import Resource, ResourceTag, ResourceTagLink
 from app.models.shift import Shift, ShiftEndReason
 
 __all__ = [
@@ -30,6 +31,9 @@ __all__ = [
     "FeedbackSubmission",
     "Message",
     "MessageSender",
+    "Resource",
+    "ResourceTag",
+    "ResourceTagLink",
     "Shift",
     "ShiftEndReason",
     "Texter",
