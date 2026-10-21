@@ -1,8 +1,8 @@
 """add resources and tags
 
-Revision ID: 6190faa126d5
-Revises: e38cc746003a
-Create Date: 2026-10-21 13:11:28.451720
+Revision ID: cefeb0403238
+Revises: a33f7a001c32
+Create Date: 2026-10-21 18:26:54.136923
 
 """
 
@@ -16,8 +16,8 @@ from alembic import op
 STARTING_TAGS = ["Crisis/Urgent", "Ongoing Care", "Peer & Community", "Training"]
 
 # revision identifiers, used by Alembic.
-revision: str = "6190faa126d5"
-down_revision: str | Sequence[str] | None = "e38cc746003a"
+revision: str = "cefeb0403238"
+down_revision: str | Sequence[str] | None = "a33f7a001c32"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
