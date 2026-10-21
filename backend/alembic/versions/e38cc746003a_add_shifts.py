@@ -1,8 +1,8 @@
 """add shifts
 
-Revision ID: efd4271e1e9a
-Revises: fe7f9cc864a9
-Create Date: 2026-10-20 01:43:48.566080
+Revision ID: e38cc746003a
+Revises: 95402a984251
+Create Date: 2026-10-20 20:17:00.666080
 
 """
 
@@ -13,8 +13,8 @@ import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "efd4271e1e9a"
-down_revision: str | Sequence[str] | None = "fe7f9cc864a9"
+revision: str = "e38cc746003a"
+down_revision: str | Sequence[str] | None = "95402a984251"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
@@ -38,7 +38,7 @@ def upgrade() -> None:
                 "deactivated",
                 name="shift_end_reason",
             ),
-            nullable=False,
+            nullable=True,
         ),
         sa.Column("id", sa.Uuid(), nullable=False),
         sa.ForeignKeyConstraint(
@@ -67,3 +67,4 @@ def downgrade() -> None:
     )
     op.drop_table("shifts")
     # ### end Alembic commands ###
+    sa.Enum(name="shift_end_reason").drop(op.get_bind())
