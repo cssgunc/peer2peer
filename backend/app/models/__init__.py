@@ -3,6 +3,7 @@
 from app.models.account import Account, AccountRole, AuthSession
 from app.models.audit import AuditLog
 from app.models.content_block import ContentBlock
+from app.models.faq import Faq
 from app.models.feedback import FeedbackSubmission
 from app.models.messaging import (
     Channel,
@@ -15,8 +16,11 @@ from app.models.messaging import (
     Texter,
 )
 from app.models.shift import Shift, ShiftEndReason
+from app.models.statistic import Statistic
 
 __all__ = [
+    "Faq",
+    "Statistic",
     "Account",
     "AccountRole",
     "AuthSession",
