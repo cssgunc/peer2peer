@@ -1,8 +1,8 @@
 """add site_settings
 
 Revision ID: d9d57470c1f1
-Revises: fe7f9cc864a9
-...
+Revises: a33f7a001c32
+Create Date: 2026-10-22
 """
 
 from collections.abc import Sequence
@@ -14,7 +14,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "d9d57470c1f1"
-down_revision: str | Sequence[str] | None = "fe7f9cc864a9"
+down_revision: str | Sequence[str] | None = "a33f7a001c32"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
