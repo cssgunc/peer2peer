@@ -5,6 +5,9 @@ import PublicLayout from "./layout";
 import Home from "./page";
 
 vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
+vi.mock("@/components/content/ContactDetails", () => ({
+  default: () => <p>Contact details from settings</p>,
+}));
 
 afterEach(cleanup);
 
@@ -29,7 +32,7 @@ describe("Public layout", () => {
     expect(screen.getByRole("banner")).toBeInTheDocument();
   });
 
-  it("includes the contact links in the footer", () => {
+  it("includes shared contact details in the footer", () => {
     render(
       <PublicLayout>
         <h1>FAQ</h1>
@@ -38,10 +41,7 @@ describe("Public layout", () => {
     const footer = within(screen.getByRole("contentinfo"));
 
     expect(
-      footer.getByRole("link", { name: "peer2peernc@unc.edu" }),
-    ).toHaveAttribute("href", "mailto:peer2peernc@unc.edu");
-    expect(
-      footer.getByRole("link", { name: "Instagram (@uncpeer2peer)" }),
-    ).toHaveAttribute("href", "https://www.instagram.com/uncpeer2peer/");
+      footer.getByText("Contact details from settings"),
+    ).toBeInTheDocument();
   });
 });
