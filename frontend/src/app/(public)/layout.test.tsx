@@ -1,5 +1,5 @@
 import { cleanup, render, screen, within } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import PublicLayout from "./layout";
 import Home from "./page";
@@ -8,8 +8,25 @@ vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
 vi.mock("@/components/content/ContactDetails", () => ({
   default: () => <p>Contact details from settings</p>,
 }));
+vi.mock("@/components/layout/CrisisResources", async (importOriginal) => {
+  const actual =
+    await importOriginal<
+      typeof import("@/components/layout/CrisisResources")
+    >();
+  return { ...actual, default: actual.CrisisResourcesFallback };
+});
 
-afterEach(cleanup);
+beforeEach(() => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(() => new Promise<Response>(() => {})),
+  );
+});
+
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 describe("Public layout", () => {
   it("puts the skip link first and points it at the single main landmark", () => {
@@ -29,7 +46,12 @@ describe("Public layout", () => {
     expect(within(main).getByRole("heading", { level: 1 })).toHaveTextContent(
       "Peer2Peer",
     );
-    expect(screen.getByRole("banner")).toBeInTheDocument();
+    const header = screen.getByRole("banner");
+    const status = screen.getByRole("status");
+    expect(
+      status.compareDocumentPosition(header) & Node.DOCUMENT_POSITION_FOLLOWING,
+    ).toBeTruthy();
+    expect(status).toHaveTextContent("988");
   });
 
   it("includes shared contact details in the footer", () => {
