@@ -26,7 +26,6 @@ app.include_router(health.router, prefix="/api")
 app.include_router(settings.router, prefix="/api")
 
 app.include_router(content.router, prefix="/api")
-
 app.include_router(hours.router, prefix="/api")
 app.include_router(feedback.router, prefix="/api")
 app.include_router(resources.router, prefix="/api")

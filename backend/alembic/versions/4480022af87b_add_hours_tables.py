@@ -1,7 +1,7 @@
 """add hours tables
 
 Revision ID: 4480022af87b
-Revises: e38cc746003a
+Revises: cefeb0403238
 Create Date: 2026-10-21 16:13:02.513763
 
 """
@@ -14,7 +14,7 @@ from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = "4480022af87b"
-down_revision: str | Sequence[str] | None = "e38cc746003a"
+down_revision: str | Sequence[str] | None = "cefeb0403238"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 

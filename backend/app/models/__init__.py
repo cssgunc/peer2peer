@@ -30,9 +30,8 @@ __all__ = [
     "Conversation",
     "ConversationStatus",
     "DeliveryStatus",
-    "HoursException",
-    "WeeklyHours",
     "FeedbackSubmission",
+    "HoursException",
     "Message",
     "MessageSender",
     "Resource",
@@ -42,4 +41,5 @@ __all__ = [
     "Shift",
     "ShiftEndReason",
     "Texter",
+    "WeeklyHours",
 ]
