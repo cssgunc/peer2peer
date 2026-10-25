@@ -58,6 +58,7 @@
         "terminal.integrated.profiles.linux": {
           "zsh": { "path": "/usr/bin/zsh" }
         },
+        "todo-tree.ripgrep.ripgrep": "/usr/bin/rg",
         "files.eol": "\n",
         "files.insertFinalNewline": true,
         "files.trimFinalNewlines": true,
