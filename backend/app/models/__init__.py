@@ -15,6 +15,7 @@ from app.models.messaging import (
     Texter,
 )
 from app.models.shift import Shift, ShiftEndReason
+from app.models.site_setting import SiteSetting
 
 __all__ = [
     "Account",
@@ -30,6 +31,7 @@ __all__ = [
     "FeedbackSubmission",
     "Message",
     "MessageSender",
+    "SiteSetting",
     "Shift",
     "ShiftEndReason",
     "Texter",
