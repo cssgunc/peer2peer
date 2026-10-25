@@ -4,6 +4,7 @@ from app.models.account import Account, AccountRole, AuthSession
 from app.models.audit import AuditLog
 from app.models.content_block import ContentBlock
 from app.models.feedback import FeedbackSubmission
+from app.models.hours import HoursException, WeeklyHours
 from app.models.messaging import (
     Channel,
     ClosedBy,
@@ -30,6 +31,7 @@ __all__ = [
     "ConversationStatus",
     "DeliveryStatus",
     "FeedbackSubmission",
+    "HoursException",
     "Message",
     "MessageSender",
     "Resource",
@@ -39,4 +41,5 @@ __all__ = [
     "Shift",
     "ShiftEndReason",
     "Texter",
+    "WeeklyHours",
 ]

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.errors import register_exception_handlers
 from app.logging import RequestLoggingMiddleware, configure_logging
-from app.routers import content, feedback, health, resources, settings
+from app.routers import content, feedback, health, hours, resources, settings
 
 configure_logging()
 
@@ -26,5 +26,6 @@ app.include_router(health.router, prefix="/api")
 app.include_router(settings.router, prefix="/api")
 
 app.include_router(content.router, prefix="/api")
+app.include_router(hours.router, prefix="/api")
 app.include_router(feedback.router, prefix="/api")
 app.include_router(resources.router, prefix="/api")
