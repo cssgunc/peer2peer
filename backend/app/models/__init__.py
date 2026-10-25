@@ -14,6 +14,7 @@ from app.models.messaging import (
     MessageSender,
     Texter,
 )
+from app.models.resource import Resource, ResourceTag, ResourceTagLink
 from app.models.shift import Shift, ShiftEndReason
 from app.models.site_setting import SiteSetting
 
@@ -31,6 +32,9 @@ __all__ = [
     "FeedbackSubmission",
     "Message",
     "MessageSender",
+    "Resource",
+    "ResourceTag",
+    "ResourceTagLink",
     "SiteSetting",
     "Shift",
     "ShiftEndReason",
