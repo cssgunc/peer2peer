@@ -20,6 +20,8 @@ def seed_dev() -> None:
     if get_settings().environment != "development":
         raise RuntimeError("seed-dev is only allowed in the development environment")
 
+    import app.services.resources  # noqa: F401 -- registers its seed function
+    import app.services.site_settings  # noqa: F401 -- registers its seed function
     from app.database import SessionLocal
 
     with SessionLocal.begin() as session:
@@ -81,4 +83,32 @@ def seed_faqs_and_statistics(session: Session) -> None:
             session.add(
                 Statistic(label=label, value=value, display_order=order, is_published=published)
             )
+    session.flush()
+
+
+@register
+def seed_hours(session: Session) -> None:
+    """Placeholder hours pending Peer2Peer's decision; preserve existing schedules."""
+    from datetime import datetime, time, timedelta
+    from zoneinfo import ZoneInfo
+
+    from sqlalchemy import select
+
+    from app.config import get_settings
+    from app.models.hours import HoursException, WeeklyHours
+
+    if session.scalar(select(WeeklyHours.id).limit(1)) is None:
+        session.add_all(
+            WeeklyHours(day_of_week=day, opens_at=time(19), closes_at=time(23))
+            for day in (0, 1, 2, 3, 6)
+        )
+    if session.scalar(select(HoursException.id).limit(1)) is None:
+        today = datetime.now(ZoneInfo(get_settings().line_timezone)).date()
+        session.add(
+            HoursException(
+                date=today + timedelta(days=7),
+                is_closed=True,
+                note="Placeholder closure (development only)",
+            )
+        )
     session.flush()

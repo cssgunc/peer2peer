@@ -5,6 +5,7 @@ from app.models.audit import AuditLog
 from app.models.content_block import ContentBlock
 from app.models.faq import Faq
 from app.models.feedback import FeedbackSubmission
+from app.models.hours import HoursException, WeeklyHours
 from app.models.messaging import (
     Channel,
     ClosedBy,
@@ -15,7 +16,9 @@ from app.models.messaging import (
     MessageSender,
     Texter,
 )
+from app.models.resource import Resource, ResourceTag, ResourceTagLink
 from app.models.shift import Shift, ShiftEndReason
+from app.models.site_setting import SiteSetting
 from app.models.statistic import Statistic
 
 __all__ = [
@@ -32,9 +35,15 @@ __all__ = [
     "ConversationStatus",
     "DeliveryStatus",
     "FeedbackSubmission",
+    "HoursException",
     "Message",
     "MessageSender",
+    "Resource",
+    "ResourceTag",
+    "ResourceTagLink",
+    "SiteSetting",
     "Shift",
     "ShiftEndReason",
     "Texter",
+    "WeeklyHours",
 ]
