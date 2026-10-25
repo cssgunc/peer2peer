@@ -1,6 +1,9 @@
 import { Suspense } from "react";
 
 import ContactDetails from "@/components/content/ContactDetails";
+import CrisisResources, {
+  CrisisResourcesFallback,
+} from "@/components/layout/CrisisResources";
 
 export function Footer() {
   return (
@@ -13,7 +16,9 @@ export function Footer() {
           </Suspense>
         </div>
         <div id="crisis-resources">
-          {/* CrisisResources will be added here in its own ticket. */}
+          <Suspense fallback={<CrisisResourcesFallback />}>
+            <CrisisResources />
+          </Suspense>
         </div>
       </div>
     </footer>
