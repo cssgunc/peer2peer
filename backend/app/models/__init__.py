@@ -3,8 +3,8 @@
 from app.models.account import Account, AccountRole, AuthSession
 from app.models.audit import AuditLog
 from app.models.content_block import ContentBlock
-from app.models.hours import HoursException, WeeklyHours
 from app.models.feedback import FeedbackSubmission
+from app.models.hours import HoursException, WeeklyHours
 from app.models.messaging import (
     Channel,
     ClosedBy,
