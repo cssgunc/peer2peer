@@ -56,8 +56,10 @@ describe("Public fallbacks", () => {
       expect(screen.getByText(/For emergencies, call 911/)).toHaveTextContent(
         "988",
       );
+      // The page's own text stays plain; the footer's crisis links are separate.
+      const content = container.querySelector("main") ?? container;
       expect(
-        container.querySelector('a[href^="tel:"], a[href^="sms:"]'),
+        content.querySelector('a[href^="tel:"], a[href^="sms:"]'),
       ).toBeNull();
     },
   );
