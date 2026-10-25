@@ -1,7 +1,7 @@
 """add resources and tags
 
 Revision ID: cefeb0403238
-Revises: a33f7a001c32
+Revises: d9d57470c1f1
 Create Date: 2026-10-21 18:26:54.136923
 
 """
@@ -17,7 +17,7 @@ STARTING_TAGS = ["Crisis/Urgent", "Ongoing Care", "Peer & Community", "Training"
 
 # revision identifiers, used by Alembic.
 revision: str = "cefeb0403238"
-down_revision: str | Sequence[str] | None = "a33f7a001c32"
+down_revision: str | Sequence[str] | None = "d9d57470c1f1"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 

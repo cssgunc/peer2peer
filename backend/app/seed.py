@@ -21,6 +21,7 @@ def seed_dev() -> None:
         raise RuntimeError("seed-dev is only allowed in the development environment")
 
     import app.services.resources  # noqa: F401 -- registers its seed function
+    import app.services.site_settings  # noqa: F401 -- registers its seed function
     from app.database import SessionLocal
 
     with SessionLocal.begin() as session:
