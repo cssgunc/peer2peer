@@ -3,9 +3,9 @@ name: peer2peer
 
 services:
   app:
-    build:
-      context: ..
-      dockerfile: .devcontainer/Dockerfile
+    # Built by initializeCommand in devcontainer.json, not here. A `build:` section makes the Dev
+    # Containers CLI generate a Dockerfile outside the repo, which buildx 0.38+ bake refuses to read.
+    image: peer2peer-devcontainer
     volumes:
       - ..:/workspace:cached
       # AI assistant state (chats, auth, settings) survives container rebuilds.
