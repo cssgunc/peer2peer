@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
+import { StatusBanner } from "@/components/layout/StatusBanner";
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
   return (
@@ -12,8 +13,8 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
+      <StatusBanner />
       <Header />
-      {/* The shared StatusBanner will be added here in its own ticket. */}
       <main
         id="main-content"
         tabIndex={-1}

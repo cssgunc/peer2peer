@@ -1,10 +1,9 @@
 import uuid
 from copy import deepcopy
 from dataclasses import dataclass
-from datetime import datetime
 from typing import Annotated, Any, Literal
 
-from pydantic import AnyHttpUrl, EmailStr, Field, TypeAdapter, ValidationError
+from pydantic import AnyHttpUrl, AwareDatetime, EmailStr, Field, TypeAdapter, ValidationError
 from sqlalchemy.orm import Session
 
 from app.models.site_setting import SiteSetting
@@ -37,7 +36,7 @@ SETTINGS: dict[str, SettingDef] = {
     "sms_number": _def(str | None, None, "Text line number, if SMS is enabled."),
     "channels": _def(list[Literal["web", "sms"]], ["web"], "Which channels the line accepts."),
     "line_launch_at": _def(
-        datetime | None,
+        AwareDatetime | None,
         None,
         "When the line launches. Served by the status endpoint, not here.",
         public=False,

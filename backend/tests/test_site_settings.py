@@ -37,3 +37,8 @@ def test_non_public_keys_not_served(db: Session, client: TestClient) -> None:
     body = client.get("/api/settings").json()
     assert "line_launch_at" not in body
     assert body["contact_email"] == "peer2peernc@unc.edu"
+
+
+def test_launch_date_requires_timezone(db: Session) -> None:
+    with pytest.raises(ValidationError):
+        set_setting(db, "line_launch_at", "2026-11-01T00:00:00", None)
