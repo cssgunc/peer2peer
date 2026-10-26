@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     session_max_hours: int = 12
     session_cookie_secure: bool = True
 
+    # Allowed domains for new staff emails, e.g. ["unc.edu"]. Empty allows any domain; whether
+    # staff must use UNC emails is still open (TDD 4.5.1). Matches the exact domain only.
+    staff_email_domains: list[str] = []
+
     # Key version -> base64-encoded 32-byte AES key (TDD 4.6.7). The highest version encrypts.
     message_keys: dict[int, str]
     escalation_keys: dict[int, str]
