@@ -16,6 +16,7 @@ from app.routers import (
     statistics,
     status,
 )
+from app.routers.admin import accounts as admin_accounts
 from app.routers.admin import faqs as admin_faqs
 from app.routers.admin import statistics as admin_statistics
 
@@ -46,5 +47,6 @@ app.include_router(resources.router, prefix="/api")
 app.include_router(status.router, prefix="/api")
 app.include_router(faqs.router, prefix="/api")
 app.include_router(statistics.router, prefix="/api")
+app.include_router(admin_accounts.router, prefix="/api")
 app.include_router(admin_faqs.router, prefix="/api")
 app.include_router(admin_statistics.router, prefix="/api")
