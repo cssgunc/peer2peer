@@ -21,7 +21,8 @@ def eligible_responders(db: Session, now: datetime) -> list[Account]:
 def assign_conversation(db: Session, conversation: Conversation, now: datetime) -> Account | None:
     """Assign a queued conversation; locks last until the caller ends its transaction.
 
-    Locked conversations or responders are skipped so parallel workers can make progress.
+    Locked conversations are skipped so parallel workers can make progress. Locked
+    responders are waited on, so a busy responder is never mistaken for an absent one.
     """
     db.flush()
     queued = db.scalar(
@@ -37,14 +38,16 @@ def assign_conversation(db: Session, conversation: Conversation, now: datetime) 
         return None
 
     responders = eligible_responders(db, now)
-    # Lock before reading workloads, in a stable order. A separate workload query
-    # sees assignments committed before these locks were acquired (READ COMMITTED).
+    # Lock before reading workloads, in a stable order so waiting workers can't deadlock.
+    # A separate workload query sees assignments committed before these locks were
+    # acquired (READ COMMITTED). FOR NO KEY UPDATE leaves inserts referencing the
+    # account unblocked.
     locked_ids = list(
         db.scalars(
             select(Account.id)
             .where(Account.id.in_([account.id for account in responders]))
             .order_by(Account.id)
-            .with_for_update(skip_locked=True)
+            .with_for_update(key_share=True)
         )
     )
     if not locked_ids:

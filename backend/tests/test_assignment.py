@@ -1,3 +1,4 @@
+import threading
 import uuid
 from collections.abc import Iterator
 from datetime import UTC, datetime, timedelta
@@ -239,16 +240,38 @@ def test_assign_queued_skips_locked_conversations(
         assert [conversation.id for conversation in assigned] == [conversation_ids[1]]
 
 
-def test_assignment_skips_locked_responder(
+def test_assignment_waits_for_locked_responders(
     test_engine: Engine, concurrent_data: tuple[list[uuid.UUID], list[uuid.UUID]]
 ) -> None:
-    account_ids, conversation_ids = concurrent_data
-    with Session(test_engine) as first, Session(test_engine) as second:
-        first.scalar(select(Account).where(Account.id == account_ids[0]).with_for_update())
-        second.execute(text("SET LOCAL lock_timeout = '1s'"))
-        conversation = second.get(Conversation, conversation_ids[0])
-        assert conversation is not None
-        account = assign_conversation(second, conversation, NOW)
+    _, conversation_ids = concurrent_data
+    results: list[uuid.UUID | None] = []
 
-        assert account is not None
-        assert account.id == account_ids[1]
+    def assign_second() -> None:
+        with Session(test_engine) as second:
+            # Fail instead of hanging if the first transaction never releases its locks.
+            second.execute(text("SET LOCAL lock_timeout = '5s'"))
+            conversation = second.get(Conversation, conversation_ids[1])
+            assert conversation is not None
+            account = assign_conversation(second, conversation, NOW)
+            results.append(account.id if account else None)
+            second.commit()
+
+    with Session(test_engine) as first:
+        conversation = first.get(Conversation, conversation_ids[0])
+        assert conversation is not None
+        first_account = assign_conversation(first, conversation, NOW)
+        assert first_account is not None
+        first_account_id = first_account.id
+
+        worker = threading.Thread(target=assign_second)
+        worker.start()
+        worker.join(timeout=0.5)
+        # Skipping the locked responders would have returned None by now.
+        assert worker.is_alive()
+        first.commit()
+    worker.join(timeout=5)
+
+    assert not worker.is_alive()
+    assert len(results) == 1
+    assert results[0] is not None
+    assert results[0] != first_account_id
