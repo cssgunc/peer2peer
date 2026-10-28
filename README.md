@@ -80,6 +80,24 @@ make migration m="add responders table"
 make migrate
 ```
 
+### Staff accounts
+
+Create a staff account from the backend directory:
+
+```bash
+cd backend
+uv run python -m app.cli create-account --email staff@unc.edu --name "Staff Name" --role coordinator
+```
+
+The command prompts for a password without displaying it. Passwords must pass the password rules;
+the account can sign in immediately without a required password change. Use `--role responder` for
+a responder account.
+
+For local development, run `make seed` from the repository root. In the development environment,
+this creates `coordinator@example.com` and `responder@example.com` with password
+`Tarheel!Support2026` and prints the credentials for newly created accounts. Repeated runs preserve
+existing accounts and passwords. The seed command refuses to run outside development.
+
 ## Code Quality
 
 **Pre-commit hooks** run on every `git commit`, and only against the files you staged: Ruff for Python, Prettier and ESLint for the frontend, plus basic file hygiene. Most issues get fixed automatically; re-stage the fixed files and commit again.

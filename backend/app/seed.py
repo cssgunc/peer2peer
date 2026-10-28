@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 SeedFunction = Callable[[Session], None]
 registry: list[SeedFunction] = []
+DEV_PASSWORD = "SuperSecretAdminPassword123"
 
 
 def register(seed: SeedFunction) -> SeedFunction:
@@ -27,6 +28,30 @@ def seed_dev() -> None:
     with SessionLocal.begin() as session:
         for seed in registry:
             seed(session)
+
+
+@register
+def seed_accounts(session: Session) -> None:
+    """Create development staff without overwriting existing accounts."""
+    from sqlalchemy import select
+
+    from app.models import Account, AccountRole
+    from app.security.passwords import hash_password
+
+    for role in AccountRole:
+        email = f"{role.value}@example.com"
+        if session.scalar(select(Account.id).where(Account.email == email)) is None:
+            session.add(
+                Account(
+                    email=email,
+                    display_name=f"Development {role.value}",
+                    password_hash=hash_password(DEV_PASSWORD),
+                    role=role,
+                    must_change_password=False,
+                )
+            )
+            session.flush()
+            print(f"Development account: {email} / password: {DEV_PASSWORD}")
 
 
 @register
