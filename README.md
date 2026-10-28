@@ -95,8 +95,8 @@ a responder account.
 
 For local development, run `make seed` from the repository root. In the development environment,
 this creates `coordinator@example.com` and `responder@example.com` with password
-`Tarheel!Support2026` and prints the credentials for newly created accounts. Repeated runs preserve
-existing accounts and passwords. The seed command refuses to run outside development.
+`SuperSecretAdminPassword123` and prints the credentials for newly created accounts. Repeated runs
+preserve existing accounts and passwords. The seed command refuses to run outside development.
 
 ## Code Quality
 
