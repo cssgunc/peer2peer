@@ -6,6 +6,7 @@ from sqlalchemy.orm import Session
 
 SeedFunction = Callable[[Session], None]
 registry: list[SeedFunction] = []
+DEV_PASSWORD = "SuperSecretAdminPassword123"
 
 
 def register(seed: SeedFunction) -> SeedFunction:
@@ -27,6 +28,87 @@ def seed_dev() -> None:
     with SessionLocal.begin() as session:
         for seed in registry:
             seed(session)
+
+
+@register
+def seed_accounts(session: Session) -> None:
+    """Create development staff without overwriting existing accounts."""
+    from sqlalchemy import select
+
+    from app.models import Account, AccountRole
+    from app.security.passwords import hash_password
+
+    for role in AccountRole:
+        email = f"{role.value}@example.com"
+        if session.scalar(select(Account.id).where(Account.email == email)) is None:
+            session.add(
+                Account(
+                    email=email,
+                    display_name=f"Development {role.value}",
+                    password_hash=hash_password(DEV_PASSWORD),
+                    role=role,
+                    must_change_password=False,
+                )
+            )
+            session.flush()
+            print(f"Development account: {email} / password: {DEV_PASSWORD}")
+
+
+@register
+def seed_faqs_and_statistics(session: Session) -> None:
+    """Sample development copy; pending privacy answers remain drafts."""
+    from sqlalchemy import select
+
+    from app.models import Faq, Statistic
+
+    faqs = [
+        ("Getting started", "What is Peer2Peer?", "Peer support from fellow UNC students.", True),
+        (
+            "Getting started",
+            "What can I talk about?",
+            "You can talk about what is on your mind.",
+            True,
+        ),
+        ("Getting started", "Do I need an appointment?", "No appointment is needed.", True),
+        ("Hours", "When can I reach Peer2Peer?", "Check the current hours on our website.", True),
+        (
+            "Hours",
+            "What if the line is closed?",
+            "Visit our resources page for other support.",
+            True,
+        ),
+        ("Anonymity", "Is my conversation anonymous?", "Draft: pending the privacy policy.", False),
+        ("Anonymity", "What information is retained?", "Draft: pending the privacy policy.", False),
+        (
+            "Safety",
+            "When might someone escalate a concern?",
+            "Draft: pending the safety protocol.",
+            False,
+        ),
+    ]
+    for order, (category, question, answer, published) in enumerate(faqs):
+        if session.scalar(select(Faq.id).where(Faq.question == question)) is None:
+            session.add(
+                Faq(
+                    category=category,
+                    question=question,
+                    answer_md=answer,
+                    display_order=order,
+                    is_published=published,
+                )
+            )
+    for order, (label, value, published) in enumerate(
+        [
+            ("Sample conversations this semester", "120+", True),
+            ("Sample trained peer supporters", "20", True),
+            ("Sample hours of support", "80+", False),
+        ]
+    ):
+        if session.scalar(select(Statistic.id).where(Statistic.label == label)) is None:
+            session.add(
+                Statistic(label=label, value=value, display_order=order, is_published=published)
+            )
+    session.flush()
 
 
 @register

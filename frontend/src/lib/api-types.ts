@@ -140,10 +140,150 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/faqs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Faqs */
+        get: operations["list_faqs_api_faqs_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/statistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Statistics */
+        get: operations["list_statistics_api_statistics_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/faqs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Faqs */
+        get: operations["list_faqs_api_admin_faqs_get"];
+        put?: never;
+        /** Create Faq */
+        post: operations["create_faq_api_admin_faqs_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/faqs/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Faq */
+        delete: operations["delete_faq_api_admin_faqs__id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Faq */
+        patch: operations["update_faq_api_admin_faqs__id__patch"];
+        trace?: never;
+    };
+    "/api/admin/statistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Statistics */
+        get: operations["list_statistics_api_admin_statistics_get"];
+        put?: never;
+        /** Create Statistic */
+        post: operations["create_statistic_api_admin_statistics_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/statistics/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Statistic */
+        delete: operations["delete_statistic_api_admin_statistics__id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Statistic */
+        patch: operations["update_statistic_api_admin_statistics__id__patch"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AdminFaqDTO */
+        AdminFaqDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Category */
+            category: string;
+            /** Question */
+            question: string;
+            /** Answer Md */
+            answer_md: string;
+            /** Display Order */
+            display_order: number;
+            /** Is Published */
+            is_published: boolean;
+        };
+        /** AdminStatisticDTO */
+        AdminStatisticDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Label */
+            label: string;
+            /** Value */
+            value: string;
+            /** Display Order */
+            display_order: number;
+            /** Is Published */
+            is_published: boolean;
+        };
         /** ContentBlockDTO */
         ContentBlockDTO: {
             /** Slug */
@@ -154,6 +294,49 @@ export interface components {
             body_md: string;
             /** Updated At */
             updated_at: string | null;
+        };
+        /** FaqDTO */
+        FaqDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Category */
+            category: string;
+            /** Question */
+            question: string;
+            /** Answer Md */
+            answer_md: string;
+        };
+        /** FaqInputDTO */
+        FaqInputDTO: {
+            /** Category */
+            category: string;
+            /** Question */
+            question: string;
+            /** Answer Md */
+            answer_md: string;
+            /** Display Order */
+            display_order?: number | null;
+            /**
+             * Is Published
+             * @default false
+             */
+            is_published: boolean;
+        };
+        /** FaqPatchDTO */
+        FaqPatchDTO: {
+            /** Category */
+            category?: string | null;
+            /** Question */
+            question?: string | null;
+            /** Answer Md */
+            answer_md?: string | null;
+            /** Display Order */
+            display_order?: number | null;
+            /** Is Published */
+            is_published?: boolean | null;
         };
         /**
          * FeedbackInputDTO
@@ -239,6 +422,43 @@ export interface components {
             sms_number: string | null;
             /** Channels */
             channels: ("web" | "sms")[];
+        };
+        /** StatisticDTO */
+        StatisticDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Label */
+            label: string;
+            /** Value */
+            value: string;
+        };
+        /** StatisticInputDTO */
+        StatisticInputDTO: {
+            /** Label */
+            label: string;
+            /** Value */
+            value: string;
+            /** Display Order */
+            display_order?: number | null;
+            /**
+             * Is Published
+             * @default false
+             */
+            is_published: boolean;
+        };
+        /** StatisticPatchDTO */
+        StatisticPatchDTO: {
+            /** Label */
+            label?: string | null;
+            /** Value */
+            value?: string | null;
+            /** Display Order */
+            display_order?: number | null;
+            /** Is Published */
+            is_published?: boolean | null;
         };
         /** StatusDTO */
         StatusDTO: {
@@ -480,6 +700,280 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StatusDTO"];
+                };
+            };
+        };
+    };
+    list_faqs_api_faqs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FaqDTO"][];
+                };
+            };
+        };
+    };
+    list_statistics_api_statistics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StatisticDTO"][];
+                };
+            };
+        };
+    };
+    list_faqs_api_admin_faqs_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFaqDTO"][];
+                };
+            };
+        };
+    };
+    create_faq_api_admin_faqs_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FaqInputDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFaqDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_faq_api_admin_faqs__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_faq_api_admin_faqs__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FaqPatchDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFaqDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_statistics_api_admin_statistics_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminStatisticDTO"][];
+                };
+            };
+        };
+    };
+    create_statistic_api_admin_statistics_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatisticInputDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminStatisticDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_statistic_api_admin_statistics__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_statistic_api_admin_statistics__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["StatisticPatchDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminStatisticDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -4,8 +4,21 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import get_settings
 from app.errors import register_exception_handlers
 from app.logging import RequestLoggingMiddleware, configure_logging
-from app.routers import content, feedback, health, hours, resources, settings, status
+from app.routers import (
+    auth,
+    content,
+    faqs,
+    feedback,
+    health,
+    hours,
+    resources,
+    settings,
+    statistics,
+    status,
+)
 from app.routers.admin import accounts as admin_accounts
+from app.routers.admin import faqs as admin_faqs
+from app.routers.admin import statistics as admin_statistics
 
 configure_logging()
 
@@ -24,6 +37,7 @@ app.add_middleware(
 app.add_middleware(RequestLoggingMiddleware)
 
 app.include_router(health.router, prefix="/api")
+app.include_router(auth.router, prefix="/api")
 app.include_router(settings.router, prefix="/api")
 
 app.include_router(content.router, prefix="/api")
@@ -31,5 +45,8 @@ app.include_router(hours.router, prefix="/api")
 app.include_router(feedback.router, prefix="/api")
 app.include_router(resources.router, prefix="/api")
 app.include_router(status.router, prefix="/api")
-
+app.include_router(faqs.router, prefix="/api")
+app.include_router(statistics.router, prefix="/api")
 app.include_router(admin_accounts.router, prefix="/api")
+app.include_router(admin_faqs.router, prefix="/api")
+app.include_router(admin_statistics.router, prefix="/api")
