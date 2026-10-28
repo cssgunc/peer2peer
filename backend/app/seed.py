@@ -137,3 +137,46 @@ def seed_hours(session: Session) -> None:
             )
         )
     session.flush()
+
+
+@register
+def seed_fit_guide(session: Session) -> None:
+    """Sample guide copy with links to development resources; preserve existing items."""
+    from sqlalchemy import select
+
+    from app.models import Fit, FitGuideItem, Resource
+    from app.services.resources import seed_resources
+
+    # Seeds can be registered in different orders depending on which modules were imported first.
+    seed_resources(session)
+    resources = {resource.name: resource.id for resource in session.scalars(select(Resource))}
+    samples: dict[Fit, list[tuple[str, str | None]]] = {
+        Fit.GOOD_FIT: [
+            ("You want someone to listen.", None),
+            ("You want to talk through everyday stress.", None),
+            ("You are navigating friendships or relationships.", None),
+            ("You would like support from a fellow student.", None),
+        ],
+        Fit.OTHER_RESOURCE: [
+            ("You need emergency help for immediate danger.", "911"),
+            (
+                "You are looking for professional counseling or ongoing care.",
+                "UNC Counseling and Psychological Services (CAPS)",
+            ),
+            ("You need a diagnosis or medication advice.", None),
+            ("You need official academic or administrative advice.", None),
+        ],
+    }
+    existing = set(session.scalars(select(FitGuideItem.text)))
+    for fit, items in samples.items():
+        for order, (text, resource_name) in enumerate(items):
+            if text not in existing:
+                session.add(
+                    FitGuideItem(
+                        fit=fit,
+                        text=text,
+                        resource_id=resources[resource_name] if resource_name else None,
+                        display_order=order,
+                    )
+                )
+    session.flush()
