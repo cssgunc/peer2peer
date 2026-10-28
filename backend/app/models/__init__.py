@@ -5,6 +5,7 @@ from app.models.audit import AuditLog
 from app.models.content_block import ContentBlock
 from app.models.faq import Faq
 from app.models.feedback import FeedbackSubmission
+from app.models.fit_guide import Fit, FitGuideItem
 from app.models.hours import HoursException, WeeklyHours
 from app.models.messaging import (
     Channel,
@@ -35,6 +36,8 @@ __all__ = [
     "ConversationStatus",
     "DeliveryStatus",
     "FeedbackSubmission",
+    "Fit",
+    "FitGuideItem",
     "HoursException",
     "Message",
     "MessageSender",
