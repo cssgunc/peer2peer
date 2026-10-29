@@ -1,7 +1,8 @@
 """The one path every message takes, whatever the channel (TDD 4.6.3).
 
 Like every service, these functions only flush. The caller commits, and that commit fires the
-events and adapter sends queued here. Assignment (TDD 4.6.6) is connected later.
+events and adapter sends queued here. The after-hours check (TDD 4.6.5) runs before assignment
+(TDD 4.6.6), which is connected later.
 """
 
 from dataclasses import dataclass
@@ -11,8 +12,7 @@ from zoneinfo import ZoneInfo
 from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
-from app.channels.base import ChannelAdapter
-from app.channels.web import WebChatAdapter
+from app.channels import ADAPTERS
 from app.config import get_settings
 from app.events import MESSAGE_CREATED, Event, portal_topic, publish_after_commit, run_after_commit
 from app.models import (
@@ -25,9 +25,8 @@ from app.models import (
     Texter,
 )
 from app.schemas.portal import PortalMessageDTO
+from app.services.after_hours import handle_after_hours
 from app.services.messages import add_message
-
-ADAPTERS: dict[Channel, ChannelAdapter] = {Channel.WEB: WebChatAdapter()}
 
 # Any constant works; it only has to be the same everywhere labels are picked.
 LABEL_LOCK_KEY = 4_746_301
@@ -81,6 +80,9 @@ def handle_inbound(
     if provider_message_id is not None:
         message.provider_message_id = provider_message_id
         db.flush()
+
+    # Must run before assignment: an after-hours conversation may be closed here.
+    handle_after_hours(db, conversation, is_new_conversation, now)
 
     if conversation.assigned_account_id is not None:
         publish_after_commit(

@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app import events
 from app.events import MESSAGE_CREATED, Event, EventBus, portal_topic, texter_topic
-from app.models import Account, AccountRole, Channel, ConversationStatus, Texter
+from app.models import Account, AccountRole, Channel, ConversationStatus, Shift, Texter
 from app.services.pipeline import handle_inbound, send_responder_message
 
 NOW = datetime(2026, 10, 28, 16, 0, tzinfo=UTC)
@@ -29,6 +29,21 @@ def make_responder(db: Session) -> Account:
     db.add(account)
     db.flush()
     return account
+
+
+@pytest.fixture(autouse=True)
+def _line_online(db: Session) -> None:
+    # Offline, a new conversation gets the after-hours reply (tested in test_after_hours.py).
+    account = Account(
+        email="on-shift@unc.edu",
+        display_name="On shift",
+        password_hash="unused",
+        role=AccountRole.RESPONDER,
+    )
+    db.add(account)
+    db.flush()
+    db.add(Shift(account_id=account.id, started_at=NOW, last_heartbeat_at=NOW))
+    db.flush()
 
 
 def test_first_message_creates_texter_and_queued_conversation(db: Session) -> None:
