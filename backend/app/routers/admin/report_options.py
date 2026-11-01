@@ -31,12 +31,13 @@ def get_item(db: Session, id: uuid.UUID) -> ReportOption:
 
 @router.get("", response_model=list[AdminReportOptionDTO])
 def list_admin_report_options(db: Database, actor: Coordinator) -> list[AdminReportOptionDTO]:
-    return db.scalars(
+    items = db.scalars(
         select(ReportOption).order_by(
             ReportOption.display_order,
             ReportOption.id,
         )
     ).all()
+    return [AdminReportOptionDTO.model_validate(item) for item in items]
 
 
 @router.post("", response_model=AdminReportOptionDTO, status_code=201)
