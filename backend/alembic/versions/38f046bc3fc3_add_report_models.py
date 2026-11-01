@@ -78,4 +78,5 @@ def downgrade() -> None:
     op.drop_table("conversation_report_topics")
     op.drop_table("conversation_reports")
     op.drop_table("report_options")
+    sa.Enum(name="report_option_kind").drop(op.get_bind())
     # ### end Alembic commands ###
