@@ -60,7 +60,8 @@ def staff_client(db: Session, account: Account) -> Iterator[TestClient]:
 
     app.dependency_overrides[get_db] = override_db
     try:
-        with TestClient(app) as client:
+        # HTTPS so the session cookie comes back whether or not it is marked Secure.
+        with TestClient(app, base_url="https://testserver") as client:
             response = client.post("/api/auth/sign-in", json={"email": EMAIL, "password": PASSWORD})
             assert response.status_code == 200
             yield client
