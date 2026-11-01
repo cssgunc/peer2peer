@@ -12,6 +12,7 @@ from app.routers import (
     fit_guide,
     health,
     hours,
+    report,
     resources,
     settings,
     statistics,
@@ -20,6 +21,7 @@ from app.routers import (
 from app.routers.admin import accounts as admin_accounts
 from app.routers.admin import faqs as admin_faqs
 from app.routers.admin import fit_guide as admin_fit_guide
+from app.routers.admin import report_options as admin_report_options
 from app.routers.admin import statistics as admin_statistics
 
 configure_logging()
@@ -54,3 +56,5 @@ app.include_router(admin_faqs.router, prefix="/api")
 app.include_router(admin_statistics.router, prefix="/api")
 app.include_router(fit_guide.router, prefix="/api")
 app.include_router(admin_fit_guide.router, prefix="/api")
+app.include_router(report.router, prefix="/api")
+app.include_router(admin_report_options.router, prefix="/api")

@@ -180,3 +180,39 @@ def seed_fit_guide(session: Session) -> None:
                     )
                 )
     session.flush()
+
+
+@register
+def seed_report_options(session: Session) -> None:
+    from sqlalchemy import select
+
+    from app.models import ReportOption, ReportOptionKind
+
+    samples = [
+        (ReportOptionKind.TOPIC, "Academic stress"),
+        (ReportOptionKind.TOPIC, "Relationships"),
+        (ReportOptionKind.TOPIC, "Loneliness"),
+        (ReportOptionKind.TOPIC, "Family stress"),
+        (ReportOptionKind.TOPIC, "Loss of loved one"),
+        (ReportOptionKind.TOPIC, "Fitting in"),
+        (ReportOptionKind.TOPIC, "Roommate problems"),
+        (ReportOptionKind.TOPIC, "Life transitions"),
+        (ReportOptionKind.OUTCOME, "Felt heard"),
+        (ReportOptionKind.OUTCOME, "Referred to a resource"),
+        (ReportOptionKind.OUTCOME, "Explored coping strategies"),
+        (ReportOptionKind.OUTCOME, "Discussed setting boundaries"),
+    ]
+
+    # won't duplicate values after running "make seed" again
+    existing = set(session.execute(select(ReportOption.kind, ReportOption.label)).all())
+
+    for order, (kind, label) in enumerate(samples):
+        if (kind, label) not in existing:
+            session.add(
+                ReportOption(
+                    kind=kind,
+                    label=label,
+                    display_order=order,
+                    is_active=True,
+                )
+            )
