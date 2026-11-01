@@ -1,6 +1,8 @@
 import uuid
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
+
+from app.models.report import ReportOptionKind
 
 
 class ReportOptionDTO(BaseModel):
@@ -11,3 +13,13 @@ class ReportOptionDTO(BaseModel):
 class ReportOptionsDTO(BaseModel):
     topics: list[ReportOptionDTO]
     outcomes: list[ReportOptionDTO]
+
+
+class AdminReportOptionsDTO(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
+    kind: ReportOptionKind
+    label: str
+    display_order: int
+    is_active: bool
