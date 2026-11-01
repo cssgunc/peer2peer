@@ -12,6 +12,7 @@ from app.routers import (
     fit_guide,
     health,
     hours,
+    report,
     resources,
     settings,
     statistics,
@@ -54,3 +55,4 @@ app.include_router(admin_faqs.router, prefix="/api")
 app.include_router(admin_statistics.router, prefix="/api")
 app.include_router(fit_guide.router, prefix="/api")
 app.include_router(admin_fit_guide.router, prefix="/api")
+app.include_router(report.router, prefix="/api")
