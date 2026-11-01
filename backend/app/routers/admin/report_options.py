@@ -9,7 +9,7 @@ from app.database import get_db
 from app.dependencies.auth import require_coordinator
 from app.models import Account
 from app.models.report import ReportOption
-from app.schemas.report import AdminReportOptionDTO, ReportOptionInputDTO, ReportOptionPatchDTO
+from app.schemas.report import AdminReportOptionDTO, ReportOptionInputDTO
 from app.services.audit import AuditAction, record_audit
 
 Database = Annotated[Session, Depends(get_db)]
@@ -58,12 +58,10 @@ def create_report_option(data: ReportOptionInputDTO, db: Database, actor: Coordi
 
 @router.patch("/{id}", response_model=AdminReportOptionDTO)
 def update_report_option(
-    id: uuid.UUID, data: ReportOptionPatchDTO, db: Database, actor: Coordinator
+    id: uuid.UUID, data: ReportOptionInputDTO, db: Database, actor: Coordinator
 ):
     item = get_item(db, id)
-    values = data.model_dump(exclude_unset=True)
-    if not values:
-        raise HTTPException(status_code=422, detail="At least one field must be provided")
+    values = data.model_dump()
 
     for field, value in values.items():
         setattr(item, field, value)
