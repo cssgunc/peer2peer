@@ -1,6 +1,7 @@
 import uuid
+from typing import Annotated
 
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from app.models.report import ReportOptionKind
 
@@ -21,5 +22,14 @@ class AdminReportOptionDTO(BaseModel):
     id: uuid.UUID
     kind: ReportOptionKind
     label: str
+    display_order: int
+    is_active: bool
+
+
+class ReportOptionInputDTO(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    kind: ReportOptionKind
+    label: Annotated[str, Field(min_length=1, max_length=100)]
     display_order: int
     is_active: bool

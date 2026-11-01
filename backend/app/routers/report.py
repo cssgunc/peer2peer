@@ -9,16 +9,13 @@ from app.dependencies.auth import require_staff
 from app.models.report import ReportOption, ReportOptionKind
 from app.schemas.report import ReportOptionDTO, ReportOptionsDTO
 
-#  GET /api/portal/report-options (require_staff),
-# returning ReportOptionsDTO: active options only,
-# ordered by display_order
 router = APIRouter(
     prefix="/portal/report-options", tags=["portal"], dependencies=[Depends(require_staff)]
 )
 
 
 @router.get("", response_model=ReportOptionsDTO)
-def get_report_options(db: Annotated[Session, Depends(get_db)]) -> ReportOptionsDTO:
+def list_report_options(db: Annotated[Session, Depends(get_db)]) -> ReportOptionsDTO:
     options = db.scalars(
         select(ReportOption)
         .where(ReportOption.is_active.is_(True))
