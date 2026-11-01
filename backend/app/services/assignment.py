@@ -1,10 +1,17 @@
-"""Assign queued conversations without committing or publishing events."""
+"""Assign queued conversations. Only flushes; events are queued to fire after the caller commits."""
 
 from datetime import datetime
 
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
+from app.events import (
+    CONVERSATION_CREATED,
+    STATUS_CHANGED,
+    portal_topic,
+    publish_after_commit,
+    texter_topic,
+)
 from app.models.account import Account
 from app.models.messaging import Conversation, ConversationStatus
 from app.services.shifts import online_shifts
@@ -98,3 +105,34 @@ def assign_queued(db: Session, now: datetime) -> list[Conversation]:
         if conversation is None or assign_conversation(db, conversation, now) is None:
             return assigned
         assigned.append(conversation)
+
+
+def notify_assigned(db: Session, conversation: Conversation, account: Account) -> None:
+    """Tell the responder about their new conversation and the texter that someone joined."""
+    publish_after_commit(
+        db,
+        portal_topic(account.id),
+        {
+            "type": CONVERSATION_CREATED,
+            "data": {
+                "conversation_id": str(conversation.id),
+                "label_number": conversation.label_number,
+                "channel": conversation.channel.value,
+                "status": conversation.status.value,
+                "opened_at": conversation.opened_at.isoformat(),
+            },
+        },
+    )
+    if conversation.texter_id is not None:
+        # Never the responder's name: texters only learn that someone joined.
+        publish_after_commit(
+            db,
+            texter_topic(conversation.texter_id),
+            {
+                "type": STATUS_CHANGED,
+                "data": {
+                    "conversation_id": str(conversation.id),
+                    "status": conversation.status.value,
+                },
+            },
+        )

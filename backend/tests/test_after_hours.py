@@ -6,7 +6,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app import events
-from app.events import CONVERSATION_CLOSED, MESSAGE_CREATED, Event, texter_topic
+from app.events import CONVERSATION_CLOSED, MESSAGE_CREATED, STATUS_CHANGED, Event, texter_topic
 from app.models import (
     Account,
     AccountRole,
@@ -83,11 +83,14 @@ def test_online_sends_no_reply(db: Session, published: list[tuple[str, Event]]) 
 
     conversation = handle_inbound(db, Channel.WEB, identity("a"), "hi", NOW).conversation
     db.commit()
+    assert conversation.texter_id is not None
 
     assert not conversation.opened_after_hours
-    assert conversation.status == ConversationStatus.QUEUED
+    assert conversation.status == ConversationStatus.ACTIVE
     assert system_messages(db) == []
-    assert published == []
+    # The texter only hears that a responder joined: no reply, no close.
+    texter_events = [e["type"] for t, e in published if t == texter_topic(conversation.texter_id)]
+    assert texter_events == [STATUS_CHANGED]
 
 
 def test_second_message_sends_no_second_reply(db: Session) -> None:

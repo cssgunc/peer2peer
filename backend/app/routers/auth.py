@@ -21,7 +21,7 @@ from app.services.sessions import (
     revoke_session,
     set_session_cookie,
 )
-from app.services.shifts import end_shift, get_open_shift
+from app.services.shifts import end_shift_and_requeue, get_open_shift
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 WINDOW_SECONDS = 15 * 60
@@ -81,9 +81,9 @@ def sign_out(
 ) -> None:
     now = datetime.now(UTC)
     revoke_session(db, session, now)
-    shift = get_open_shift(db, session.account_id)
-    if shift is not None:
-        end_shift(db, shift, ShiftEndReason.SIGNED_OUT, now)
+    account = db.get(Account, session.account_id)
+    if account is not None:
+        end_shift_and_requeue(db, account, ShiftEndReason.SIGNED_OUT, now)
     db.commit()
     clear_session_cookie(response)
 
