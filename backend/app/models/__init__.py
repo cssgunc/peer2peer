@@ -17,6 +17,12 @@ from app.models.messaging import (
     MessageSender,
     Texter,
 )
+from app.models.report import (
+    ConversationReport,
+    ConversationReportTopic,
+    ReportOption,
+    ReportOptionKind,
+)
 from app.models.resource import Resource, ResourceTag, ResourceTagLink
 from app.models.shift import Shift, ShiftEndReason
 from app.models.site_setting import SiteSetting
@@ -49,4 +55,8 @@ __all__ = [
     "ShiftEndReason",
     "Texter",
     "WeeklyHours",
+    "ConversationReport",
+    "ConversationReportTopic",
+    "ReportOption",
+    "ReportOptionKind",
 ]
