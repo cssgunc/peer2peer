@@ -41,6 +41,12 @@ SETTINGS: dict[str, SettingDef] = {
         "When the line launches. Served by the status endpoint, not here.",
         public=False,
     ),
+    "after_hours_behavior": _def(
+        Literal["close", "queue"],
+        "close",
+        "After the after-hours reply: close the conversation, or keep it queued for the next shift",
+        public=False,
+    ),
 }
 
 
