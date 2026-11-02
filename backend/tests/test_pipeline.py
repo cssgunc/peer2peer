@@ -46,11 +46,11 @@ def _line_online(db: Session) -> None:
     db.flush()
 
 
-def test_first_message_creates_texter_and_queued_conversation(db: Session) -> None:
+def test_first_message_creates_texter_and_assigned_conversation(db: Session) -> None:
     result = handle_inbound(db, Channel.WEB, identity("a"), "hi", NOW)
 
     assert result.is_new_conversation
-    assert result.conversation.status == ConversationStatus.QUEUED
+    assert result.conversation.status == ConversationStatus.ACTIVE
     assert result.conversation.label_number == 1
     assert result.conversation.message_count == 1
     texter = db.get(Texter, result.conversation.texter_id)
@@ -116,6 +116,8 @@ def test_events_publish_only_after_commit(db: Session, monkeypatch: pytest.Monke
     responder = make_responder(db)
     conversation = handle_inbound(db, Channel.WEB, identity("a"), "hi", NOW).conversation
     assert conversation.texter_id is not None
+    db.commit()
+    published.clear()  # Assignment events; covered in test_shift_routes.py.
 
     send_responder_message(db, conversation, responder, "hello", NOW)
     assert published == []

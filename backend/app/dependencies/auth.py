@@ -5,8 +5,10 @@ from fastapi import Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 
 from app.database import get_db
+from app.errors import AppError
 from app.models import Account, AccountRole, AuthSession
 from app.services.sessions import SESSION_COOKIE_NAME, resolve_session
+from app.services.shifts import get_open_shift
 
 
 def get_current_session(request: Request, db: Annotated[Session, Depends(get_db)]) -> AuthSession:
@@ -34,4 +36,12 @@ def require_staff(
 def require_coordinator(account: Annotated[Account, Depends(require_staff)]) -> Account:
     if account.role != AccountRole.COORDINATOR:
         raise HTTPException(status_code=403, detail="Coordinator access required")
+    return account
+
+
+def require_on_shift(
+    account: Annotated[Account, Depends(require_staff)], db: Annotated[Session, Depends(get_db)]
+) -> Account:
+    if get_open_shift(db, account.id) is None:
+        raise AppError(403, "not_on_shift", "Start a shift to access conversations.")
     return account
