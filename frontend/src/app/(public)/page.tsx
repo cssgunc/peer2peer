@@ -1,4 +1,6 @@
 import HoursList, { type Hours } from "@/components/content/HoursList";
+import ImpactStats from "@/components/content/ImpactStats";
+import LaunchCountdown from "@/components/content/LaunchCountdown";
 import Markdown from "@/components/content/Markdown";
 import { Button } from "@/components/ui/button";
 import { getPublicData } from "@/lib/public-data";
@@ -58,7 +60,9 @@ async function HomeContent() {
         <HoursList hours={hours} />
       </section>
 
-      {/* Impact stats and countdown will go here. */}
+      <LaunchCountdown />
+
+      <ImpactStats />
 
       <section>
         <h2 className="mb-4 text-2xl font-semibold">{howItWorks.title}</h2>
