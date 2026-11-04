@@ -1,0 +1,19 @@
+import type { Metadata } from "next";
+
+import { SignInForm } from "@/components/portal/SignInForm";
+
+export const metadata: Metadata = { title: "Sign in" };
+
+export default function SignInPage() {
+  return (
+    <main
+      id="main-content"
+      className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center gap-6 px-4 py-12"
+    >
+      <h1 className="text-2xl font-semibold tracking-tight">
+        Sign in to the Peer2Peer portal
+      </h1>
+      <SignInForm />
+    </main>
+  );
+}
