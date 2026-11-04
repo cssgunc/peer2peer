@@ -8,7 +8,7 @@ logger = logging.getLogger("app.request")
 
 class RedactWebSocketFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
-        return '"WebSocket ' not in record.getMessage()
+        return "websocket" not in record.getMessage().lower()
 
 
 def configure_logging() -> None:

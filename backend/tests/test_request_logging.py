@@ -4,6 +4,25 @@ import re
 import pytest
 from fastapi.testclient import TestClient
 
+from app.logging import RedactWebSocketFilter
+
+
+@pytest.mark.parametrize(
+    "message",
+    [
+        '203.0.113.1:9000 - "WebSocket /ws/portal?secret=abc" [accepted]',
+        '203.0.113.1:9000 - "WebSocket /ws/portal?secret=abc" 403',
+        "203.0.113.1:9000 - WebSocket connection made",
+        "203.0.113.1:9000 - WebSocket connection lost",
+        "ASGI Receive {'type': 'websocket.receive', 'text': 'private content'}",
+    ],
+)
+def test_portal_websocket_logs_are_filtered(message: str) -> None:
+    logger = logging.getLogger("uvicorn.error")
+    record = logging.LogRecord(logger.name, logging.INFO, "", 0, message, (), None)
+    assert any(isinstance(filter, RedactWebSocketFilter) for filter in logger.filters)
+    assert not logger.filter(record)
+
 
 def test_request_log_has_no_query_or_ip(
     client: TestClient, caplog: pytest.LogCaptureFixture

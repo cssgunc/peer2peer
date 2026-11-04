@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     database_url: str = "postgresql+psycopg://postgres:postgres@db:5432/peer2peer"
     test_database_url: str = "postgresql+psycopg://postgres:postgres@db:5432/peer2peer_test"
     cors_origins: list[str] = ["http://localhost:3000"]
+    app_origin: str = "http://localhost:3000"
     line_timezone: str = "America/New_York"
 
     # Staff sessions (TDD 4.6.1). The devcontainer turns off Secure so cookies work over local http.

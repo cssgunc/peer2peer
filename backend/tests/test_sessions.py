@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from sqlalchemy import inspect, select
 from sqlalchemy.orm import Session
 
+from app import events
 from app.config import get_settings
 from app.database import get_db
 from app.dependencies.auth import require_coordinator, require_staff
@@ -123,6 +124,53 @@ def test_revoke_all_sessions_keeps_the_excepted_session(db: Session) -> None:
     assert kept.revoked_at is None
     assert revoked.revoked_at == NOW
     assert unrelated.revoked_at is None
+
+
+@pytest.mark.parametrize("bulk", [False, True])
+def test_revocation_events_only_publish_once_after_commit(
+    db: Session, monkeypatch: pytest.MonkeyPatch, bulk: bool
+) -> None:
+    token = issue_session(db, make_account(db), NOW)
+    session = session_for(db, token)
+    db.commit()
+    published: list[tuple[str, events.Event]] = []
+    monkeypatch.setattr(
+        events.event_bus, "publish", lambda topic, event: published.append((topic, event))
+    )
+
+    def revoke() -> None:
+        if bulk:
+            revoke_all_sessions(db, session.account_id, NOW)
+        else:
+            revoke_session(db, session, NOW)
+
+    revoke()
+    assert published == []
+    db.commit()
+    assert published == [
+        (events.portal_topic(session.account_id), {"type": events.SESSION_REVOKED, "data": {}})
+    ]
+    revoke()
+    db.commit()
+    assert len(published) == 1
+
+
+def test_rolled_back_revocation_does_not_publish(
+    db: Session, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    token = issue_session(db, make_account(db), NOW)
+    session = session_for(db, token)
+    db.commit()
+    published: list[tuple[str, events.Event]] = []
+    monkeypatch.setattr(
+        events.event_bus, "publish", lambda topic, event: published.append((topic, event))
+    )
+    revoke_session(db, session, NOW)
+    db.rollback()
+    db.commit()
+    assert published == []
+    db.refresh(session)
+    assert session.revoked_at is None
 
 
 def test_raw_token_is_not_stored_in_the_row(db: Session) -> None:
