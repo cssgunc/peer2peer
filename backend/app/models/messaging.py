@@ -65,6 +65,7 @@ class Texter(UUIDPrimaryKeyMixin, CreatedAtMixin, Base):
     channel: Mapped[Channel] = mapped_column(_enum(Channel, "channel"))
     identity_hash: Mapped[bytes] = mapped_column(BYTEA)
     last_seen_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    revoked_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
 
 
 class Conversation(UUIDPrimaryKeyMixin, TimestampMixin, Base):
