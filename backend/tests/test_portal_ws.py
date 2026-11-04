@@ -251,6 +251,33 @@ def test_committed_revocation_is_forwarded_and_closes_the_socket(
         assert error.value.code == 4001
 
 
+@pytest.mark.parametrize("bulk", [False, True])
+def test_other_session_revocation_keeps_the_socket_open(
+    db: Session,
+    client: TestClient,
+    auth_session: AuthSession,
+    account: Account,
+    clock: Clock,
+    bus: EventBus,
+    bulk: bool,
+) -> None:
+    issue_session(db, account, clock.value)
+    db.commit()
+    other = db.scalars(select(AuthSession).where(AuthSession.id != auth_session.id)).one()
+    with client.websocket_connect(PATH, headers=HEADERS) as socket:
+        if bulk:
+            revoke_all_sessions(db, account.id, clock.value, except_session_id=auth_session.id)
+        else:
+            revoke_session(db, other, clock.value)
+        db.commit()
+        # The revocation is skipped, so the next event is the first one the client sees.
+        event: Event = {"type": SHIFT_ENDED, "data": {}}
+        bus.publish(portal_topic(account.id), event)
+        assert socket.receive_json() == event
+    db.refresh(auth_session)
+    assert auth_session.revoked_at is None
+
+
 @pytest.mark.parametrize("invalid", ["revoked", "expired", "inactive"])
 def test_heartbeat_rechecks_session_against_database(
     db: Session,

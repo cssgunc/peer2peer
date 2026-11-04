@@ -63,10 +63,14 @@ async def portal_socket(websocket: WebSocket, db: Annotated[Session, Depends(get
             # One task owns all socket sends, including closes, so they cannot race each other.
             if event_task in done:
                 event = event_task.result()
-                await websocket.send_json(event)
                 if event["type"] == SESSION_REVOKED:
-                    await websocket.close(code=4001)
-                    return
+                    # The topic is per account; another device's revocation leaves this one valid.
+                    if await run_in_threadpool(_check_session, db, token) is None:
+                        await websocket.send_json(event)
+                        await websocket.close(code=4001)
+                        return
+                else:
+                    await websocket.send_json(event)
                 event_task = asyncio.create_task(queue.get())
             if receive_task in done:
                 message = receive_task.result()
