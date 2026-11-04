@@ -14,6 +14,7 @@ from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
+from app.events import SESSION_REVOKED, portal_topic, publish_after_commit
 from app.models import Account, AuthSession
 
 SESSION_COOKIE_NAME = "p2p_session"
@@ -39,7 +40,10 @@ def issue_session(db: Session, account: Account, now: datetime) -> str:
     return token
 
 
-def resolve_session(db: Session, raw_token: str, now: datetime) -> AuthSession | None:
+def resolve_session(
+    db: Session, raw_token: str, now: datetime, *, update_last_seen: bool = True
+) -> AuthSession | None:
+    """Validate a session; background WebSocket traffic must not count as user activity."""
     row = db.execute(
         select(AuthSession, Account)
         .join(Account, Account.id == AuthSession.account_id)
@@ -59,7 +63,7 @@ def resolve_session(db: Session, raw_token: str, now: datetime) -> AuthSession |
     if not account.is_active:
         return None
 
-    if now - session.last_seen_at > LAST_SEEN_THROTTLE:
+    if update_last_seen and now - session.last_seen_at > LAST_SEEN_THROTTLE:
         session.last_seen_at = now
         db.flush()
     return session
@@ -69,6 +73,9 @@ def revoke_session(db: Session, session: AuthSession, now: datetime) -> None:
     if session.revoked_at is None:
         session.revoked_at = now
         db.flush()
+        publish_after_commit(
+            db, portal_topic(session.account_id), {"type": SESSION_REVOKED, "data": {}}
+        )
 
 
 def revoke_all_sessions(
@@ -84,7 +91,11 @@ def revoke_all_sessions(
     )
     if except_session_id is not None:
         stmt = stmt.where(AuthSession.id != except_session_id)
-    db.execute(stmt, execution_options={"synchronize_session": "fetch"})
+    revoked = db.scalars(
+        stmt.returning(AuthSession.id), execution_options={"synchronize_session": "fetch"}
+    ).all()
+    if revoked:
+        publish_after_commit(db, portal_topic(account_id), {"type": SESSION_REVOKED, "data": {}})
 
 
 def _cookie_options() -> dict:
