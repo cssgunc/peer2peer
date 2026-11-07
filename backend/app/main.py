@@ -22,9 +22,11 @@ from app.routers import (
 from app.routers.admin import accounts as admin_accounts
 from app.routers.admin import faqs as admin_faqs
 from app.routers.admin import fit_guide as admin_fit_guide
+from app.routers.admin import hours as admin_hours
 from app.routers.admin import report_options as admin_report_options
 from app.routers.admin import resources as admin_resources
 from app.routers.admin import statistics as admin_statistics
+from app.routers.portal import inbox as portal_inbox
 from app.routers.portal import shift as portal_shift
 from app.routers.portal import ws as portal_ws
 
@@ -63,6 +65,9 @@ app.include_router(fit_guide.router, prefix="/api")
 app.include_router(admin_fit_guide.router, prefix="/api")
 app.include_router(report.router, prefix="/api")
 app.include_router(portal_shift.router, prefix="/api")
+app.include_router(portal_inbox.router, prefix="/api")
 app.include_router(admin_report_options.router, prefix="/api")
 app.include_router(admin_resources.router, prefix="/api")
 app.include_router(portal_ws.router)
+
+app.include_router(admin_hours.router, prefix="/api")
