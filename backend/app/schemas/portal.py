@@ -25,3 +25,10 @@ class PortalMessageDTO(BaseModel):
             created_at=message.created_at,
             delivery_status=message.delivery_status,
         )
+
+
+class PortalConversationDTO(BaseModel):
+    """A conversation with its messages as shown to a responder."""
+
+    id: uuid.UUID
+    messages: list[PortalMessageDTO]
