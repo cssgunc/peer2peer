@@ -11,12 +11,16 @@ def load_responder_conversation(
     db: Session,
     id: uuid.UUID,
     account: Account,
+    lock: bool = True,
 ) -> Conversation:
-    conversation = db.scalar(
-        select(Conversation).where(
-            Conversation.id == id, Conversation.assigned_account_id == account.id
-        )
+    query = select(Conversation).where(
+        Conversation.id == id,
+        Conversation.assigned_account_id == account.id,
     )
+    if lock:
+        query = query.with_for_update().execution_options(populate_existing=True)
+
+    conversation = db.scalar(query)
 
     if conversation is None:
         raise AppError(404, "no_conversation", "No conversation yet.")
