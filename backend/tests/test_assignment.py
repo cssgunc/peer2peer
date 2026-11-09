@@ -12,6 +12,7 @@ from app.models.messaging import Channel, Conversation, ConversationStatus
 from app.models.shift import Shift, ShiftEndReason
 from app.services.assignment import assign_conversation, assign_queued, eligible_responders
 from app.services.shifts import HEARTBEAT_TIMEOUT, start_shift
+from app.services.site_settings import set_setting
 
 NOW = datetime(2026, 1, 1, 12, tzinfo=UTC)
 
@@ -86,6 +87,8 @@ def test_fewer_active_conversations_wins_over_assignment_age(db: Session) -> Non
 
 
 def test_tie_uses_most_recent_assignment_including_closed_conversations(db: Session) -> None:
+    # Unreported closed conversations would otherwise make these responders ineligible.
+    set_setting(db, "report_required", False, None)
     recent = make_responder(db)
     older = make_responder(db)
     for account, age in [(recent, 3), (recent, 1), (older, 2)]:
@@ -142,6 +145,8 @@ def test_heartbeat_exactly_90_seconds_old_is_eligible(db: Session) -> None:
 
 
 def test_closed_conversations_do_not_count_as_active(db: Session) -> None:
+    # Unreported closed conversations would otherwise make these responders ineligible.
+    set_setting(db, "report_required", False, None)
     busy = make_responder(db)
     available = make_responder(db)
     make_conversation(db, account=busy, status=ConversationStatus.ACTIVE, assigned_at=NOW)

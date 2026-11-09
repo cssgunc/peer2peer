@@ -47,6 +47,12 @@ SETTINGS: dict[str, SettingDef] = {
         "After the after-hours reply: close the conversation, or keep it queued for the next shift",
         public=False,
     ),
+    "report_required": _def(
+        bool,
+        True,
+        "Require a post-conversation report before the responder gets another conversation.",
+        public=False,
+    ),
 }
 
 

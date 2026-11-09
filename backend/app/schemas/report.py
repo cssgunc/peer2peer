@@ -33,3 +33,11 @@ class ReportOptionInputDTO(BaseModel):
     label: Annotated[str, Field(min_length=1, max_length=100)]
     display_order: int
     is_active: bool
+
+
+class SubmitReportDTO(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    topic_ids: Annotated[list[uuid.UUID], Field(min_length=1)]
+    outcome_id: uuid.UUID
+    confidence: Annotated[int, Field(ge=1, le=5)]
