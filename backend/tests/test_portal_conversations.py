@@ -63,9 +63,11 @@ def make_conversation_with_texter(
     )
     db.add(texter)
     db.flush()
+
     conversation = Conversation(
         texter_id=texter.id,
         channel=Channel.WEB,
+        label_number=14,
         assigned_account_id=account.id,
         opened_at=now,
     )
@@ -94,6 +96,13 @@ def test_portal_conversation_decrypts_message_bodies(
     assert response.status_code == 200
     result = response.json()
     assert [message["body"] for message in result["messages"]] == ["First", "Second"]
+
+    assert result["conversation_id"] == str(conversation.id)
+    assert result["label"] == "Texter 14"
+    assert result["channel"] == "web"
+    assert result["status"] == "queued"
+    assert datetime.fromisoformat(result["opened_at"].replace("Z", "+00:00")) == now
+    assert result["closed_at"] is None
 
 
 def test_portal_conversation_after_works(
@@ -207,6 +216,12 @@ def test_closes_conversation_and_notifies_texter(
     assert conversation.closed_at is not None
     assert conversation.closed_by == ClosedBy.RESPONDER
     assert conversation.status == ConversationStatus.CLOSED
+
+    view_response = client.get(f"/api/portal/conversations/{conversation.id}")
+
+    assert view_response.status_code == 200
+    assert view_response.json()["status"] == "closed"
+    assert view_response.json()["closed_at"] is not None
 
     texter_events = [event for topic, event in published if topic == texter_topic(texter.id)]
 

@@ -58,5 +58,10 @@ class InboxItemDTO(BaseModel):
 class PortalConversationDTO(BaseModel):
     """A conversation with its messages as shown to a responder."""
 
-    id: uuid.UUID
+    conversation_id: uuid.UUID
+    label: str
+    channel: Channel
+    status: ConversationStatus
+    opened_at: datetime
+    closed_at: datetime | None
     messages: list[PortalMessageDTO]

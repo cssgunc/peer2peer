@@ -71,7 +71,17 @@ def get_conversation(
     message_rows = db.scalars(messages.order_by(Message.created_at, Message.id)).all()
     message_dtos = [PortalMessageDTO.from_message(message) for message in message_rows]
 
-    return PortalConversationDTO(id=conversation.id, messages=message_dtos)
+    return PortalConversationDTO(
+        conversation_id=conversation.id,
+        label="Texter"
+        if conversation.label_number is None
+        else f"Texter {conversation.label_number}",
+        channel=conversation.channel,
+        status=conversation.status,
+        opened_at=conversation.opened_at,
+        closed_at=conversation.closed_at,
+        messages=message_dtos,
+    )
 
 
 @router.post(
