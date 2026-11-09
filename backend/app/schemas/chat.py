@@ -1,10 +1,20 @@
 import uuid
 from datetime import datetime
+from typing import Annotated
 
-from pydantic import BaseModel
+from pydantic import BaseModel, StringConstraints
 
-from app.models import Message, MessageSender
+from app.models import ConversationStatus, Message, MessageSender
 from app.services.messages import message_body
+
+
+class ChatSessionDTO(BaseModel):
+    token: str
+    conversation_id: uuid.UUID | None = None
+
+
+class SendMessageDTO(BaseModel):
+    body: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=2000)]
 
 
 class ChatMessageDTO(BaseModel):
@@ -23,3 +33,9 @@ class ChatMessageDTO(BaseModel):
             body=message_body(message),
             created_at=message.created_at,
         )
+
+
+class ChatConversationDTO(BaseModel):
+    id: uuid.UUID
+    status: ConversationStatus
+    messages: list[ChatMessageDTO]

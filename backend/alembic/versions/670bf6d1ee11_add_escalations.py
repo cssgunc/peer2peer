@@ -1,8 +1,8 @@
 """add escalations
 
-Revision ID: 6d6bdb1ebc89
-Revises: 38f046bc3fc3
-Create Date: 2026-11-04 12:42:07.865168
+Revision ID: 670bf6d1ee11
+Revises: 4bfad84b2ce1
+Create Date: 2026-11-09 15:05:49.959029
 
 """
 
@@ -14,8 +14,8 @@ from sqlalchemy.dialects import postgresql
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision: str = "6d6bdb1ebc89"
-down_revision: str | Sequence[str] | None = "38f046bc3fc3"
+revision: str = "670bf6d1ee11"
+down_revision: str | Sequence[str] | None = "4bfad84b2ce1"
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
