@@ -15,9 +15,8 @@ from app.errors import AppError
 from app.models import Account
 from app.models.hours import HoursException, WeeklyHours
 from app.schemas.hours import (
+    AdminHoursDTO,
     AdminHoursExceptionDTO,
-    HoursDTO,
-    HoursExceptionDTO,
     HoursExceptionInputDTO,
     UpdateHoursDTO,
     WeeklyWindowDTO,
@@ -31,23 +30,23 @@ Database = Annotated[Session, Depends(get_db)]
 Coordinator = Annotated[Account, Depends(require_coordinator)]
 
 
-@router.get("", response_model=HoursDTO)
-def read_hours(db: Database) -> HoursDTO:
+@router.get("", response_model=AdminHoursDTO)
+def read_hours(db: Database) -> AdminHoursDTO:
     timezone = get_settings().line_timezone
     today = datetime.now(ZoneInfo(timezone)).date()
     weekly = db.scalars(select(WeeklyHours).order_by(WeeklyHours.day_of_week, WeeklyHours.opens_at))
     exceptions = db.scalars(
         select(HoursException).where(HoursException.date >= today).order_by(HoursException.date)
     )
-    return HoursDTO(
+    return AdminHoursDTO(
         timezone=timezone,
         weekly=[WeeklyWindowDTO.model_validate(row) for row in weekly],
-        exceptions=[HoursExceptionDTO.model_validate(row) for row in exceptions],
+        exceptions=[AdminHoursExceptionDTO.model_validate(row) for row in exceptions],
     )
 
 
-@router.put("", response_model=HoursDTO)
-def update_hours(payload: UpdateHoursDTO, db: Database, actor: Coordinator) -> HoursDTO:
+@router.put("", response_model=AdminHoursDTO)
+def update_hours(payload: UpdateHoursDTO, db: Database, actor: Coordinator) -> AdminHoursDTO:
     db.execute(delete(WeeklyHours))
     db.add_all(WeeklyHours(**window.model_dump()) for window in payload.weekly)
     record_audit(db, actor_id=actor.id, action=AuditAction.HOURS_UPDATE, target_type="hours")

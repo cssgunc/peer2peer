@@ -76,3 +76,9 @@ class HoursExceptionInputDTO(BaseModel):
 
 class AdminHoursExceptionDTO(HoursExceptionDTO):
     id: UUID
+
+
+class AdminHoursDTO(BaseModel):
+    timezone: str
+    weekly: list[WeeklyWindowDTO]
+    exceptions: list[AdminHoursExceptionDTO]

@@ -149,10 +149,18 @@ def test_patch_duplicate_and_missing(client, coordinator):
 
 
 def test_admin_exception_horizon(db, client, coordinator):
-    for offset in (-1, 0, 60, 61, 365):
-        db.add(HoursException(date=today() + timedelta(days=offset), is_closed=True))
-    db.flush()
-    assert [e["date"] for e in client.get(URL).json()["exceptions"]] == [
-        (today() + timedelta(days=offset)).isoformat() for offset in (0, 60, 61, 365)
+    items = [
+        HoursException(date=today() + timedelta(days=offset), is_closed=True)
+        for offset in (-1, 0, 60, 61, 365)
     ]
-    assert len(client.get("/api/hours").json()["exceptions"]) == 2
+    db.add_all(items)
+    db.flush()
+    expected = [{"date": item.date.isoformat(), "id": str(item.id)} for item in items[1:]]
+    for response in (client.get(URL), client.put(URL, json={"weekly": [WINDOW]})):
+        assert response.status_code == 200
+        assert [
+            {"date": e["date"], "id": e["id"]} for e in response.json()["exceptions"]
+        ] == expected
+    public_exceptions = client.get("/api/hours").json()["exceptions"]
+    assert len(public_exceptions) == 2
+    assert all("id" not in item for item in public_exceptions)
