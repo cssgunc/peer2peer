@@ -26,6 +26,7 @@ from app.routers.admin import hours as admin_hours
 from app.routers.admin import report_options as admin_report_options
 from app.routers.admin import resources as admin_resources
 from app.routers.admin import statistics as admin_statistics
+from app.routers.portal import conversations as portal_conversations
 from app.routers.portal import inbox as portal_inbox
 from app.routers.portal import shift as portal_shift
 from app.routers.portal import ws as portal_ws
@@ -71,3 +72,4 @@ app.include_router(admin_resources.router, prefix="/api")
 app.include_router(portal_ws.router)
 
 app.include_router(admin_hours.router, prefix="/api")
+app.include_router(portal_conversations.router, prefix="/api")
