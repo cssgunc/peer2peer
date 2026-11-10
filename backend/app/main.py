@@ -22,6 +22,7 @@ from app.routers import (
 from app.routers.admin import accounts as admin_accounts
 from app.routers.admin import faqs as admin_faqs
 from app.routers.admin import fit_guide as admin_fit_guide
+from app.routers.admin import hours as admin_hours
 from app.routers.admin import report_options as admin_report_options
 from app.routers.admin import resources as admin_resources
 from app.routers.admin import statistics as admin_statistics
@@ -69,4 +70,6 @@ app.include_router(portal_inbox.router, prefix="/api")
 app.include_router(admin_report_options.router, prefix="/api")
 app.include_router(admin_resources.router, prefix="/api")
 app.include_router(portal_ws.router)
+
+app.include_router(admin_hours.router, prefix="/api")
 app.include_router(portal_conversations.router, prefix="/api")
