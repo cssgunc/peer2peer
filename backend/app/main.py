@@ -24,6 +24,7 @@ from app.routers.admin import escalations as admin_escalations
 from app.routers.admin import faqs as admin_faqs
 from app.routers.admin import fit_guide as admin_fit_guide
 from app.routers.admin import hours as admin_hours
+from app.routers.admin import reorder as admin_reorder
 from app.routers.admin import report_options as admin_report_options
 from app.routers.admin import resources as admin_resources
 from app.routers.admin import statistics as admin_statistics
@@ -81,3 +82,4 @@ app.include_router(admin_hours.router, prefix="/api")
 app.include_router(portal_conversations.router, prefix="/api")
 app.include_router(portal_escalations.router, prefix="/api")
 app.include_router(admin_escalations.router, prefix="/api")
+app.include_router(admin_reorder.router, prefix="/api")
