@@ -53,3 +53,15 @@ class InboxItemDTO(BaseModel):
             unread_count=row.unread_count,
             needs_report=row.status == ConversationStatus.CLOSED and not row.has_report,
         )
+
+
+class PortalConversationDTO(BaseModel):
+    """A conversation with its messages as shown to a responder."""
+
+    conversation_id: uuid.UUID
+    label: str
+    channel: Channel
+    status: ConversationStatus
+    opened_at: datetime
+    closed_at: datetime | None
+    messages: list[PortalMessageDTO]

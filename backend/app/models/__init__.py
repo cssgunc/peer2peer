@@ -3,6 +3,7 @@
 from app.models.account import Account, AccountRole, AuthSession
 from app.models.audit import AuditLog
 from app.models.content_block import ContentBlock
+from app.models.escalation import Escalation, EscalationStatus
 from app.models.faq import Faq
 from app.models.feedback import FeedbackSubmission
 from app.models.fit_guide import Fit, FitGuideItem
@@ -41,6 +42,8 @@ __all__ = [
     "Conversation",
     "ConversationStatus",
     "DeliveryStatus",
+    "Escalation",
+    "EscalationStatus",
     "FeedbackSubmission",
     "Fit",
     "FitGuideItem",
