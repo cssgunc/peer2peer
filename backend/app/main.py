@@ -1,8 +1,13 @@
+import asyncio
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.errors import register_exception_handlers
+from app.jobs.runner import run_background_jobs
 from app.logging import RequestLoggingMiddleware, configure_logging
 from app.routers import (
     auth,
@@ -31,7 +36,22 @@ from app.routers.portal import ws as portal_ws
 
 configure_logging()
 
-app = FastAPI(title="Peer2Peer API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    if not get_settings().run_background_jobs:
+        yield
+        return
+    stop = asyncio.Event()
+    task = asyncio.create_task(run_background_jobs(stop))
+    try:
+        yield
+    finally:
+        stop.set()
+        await task
+
+
+app = FastAPI(title="Peer2Peer API", lifespan=lifespan)
 
 register_exception_handlers(app)
 

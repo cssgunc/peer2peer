@@ -64,6 +64,9 @@ def handle_inbound(
         select(Conversation)
         .where(Conversation.texter_id == texter.id, Conversation.status.in_(OPEN_STATUSES))
         .order_by(Conversation.opened_at.desc())
+        # Serialize message activity with timer-driven closure. Recheck status after waiting.
+        .with_for_update()
+        .execution_options(populate_existing=True)
     )
     is_new_conversation = conversation is None
     if conversation is None:

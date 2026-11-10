@@ -15,7 +15,8 @@ from sqlalchemy.orm import Session
 
 from app.config import get_settings
 from app.events import SESSION_REVOKED, portal_topic, publish_after_commit
-from app.models import Account, AuthSession
+from app.models import Account, AuthSession, ShiftEndReason
+from app.services.shifts import end_shift_and_requeue
 
 SESSION_COOKIE_NAME = "p2p_session"
 # Bump last_seen_at at most this often, so authenticated requests don't all write.
@@ -48,6 +49,8 @@ def resolve_session(
         select(AuthSession, Account)
         .join(Account, Account.id == AuthSession.account_id)
         .where(AuthSession.token_hash == _hash(raw_token))
+        .with_for_update(of=AuthSession)
+        .execution_options(populate_existing=True)
     ).first()
     if row is None:
         return None
@@ -56,9 +59,12 @@ def resolve_session(
         return None
 
     idle_window = timedelta(minutes=get_settings().session_idle_minutes)
-    if session.expires_at <= now or now - session.last_seen_at >= idle_window:
-        # TODO: an idle session must also end the account's open shift (TDD 4.6.1).
+    idle = now - session.last_seen_at >= idle_window
+    if session.expires_at <= now or idle:
         revoke_session(db, session, now)
+        if idle:
+            end_shift_and_requeue(db, account, ShiftEndReason.IDLE, now)
+            db.flush()
         return None
     if not account.is_active:
         return None
