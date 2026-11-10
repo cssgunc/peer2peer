@@ -30,3 +30,19 @@ class CreateAccountDTO(BaseModel):
         str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)
     ]
     role: AccountRole
+
+
+class UpdateAccountDTO(BaseModel):
+    """Any omitted (or null) field is left as it is."""
+
+    display_name: (
+        Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=100)]
+        | None
+    ) = None
+    role: AccountRole | None = None
+    is_active: bool | None = None
+
+
+class TemporaryPasswordDTO(BaseModel):
+    # Shown once to the coordinator; never stored, logged, or audited.
+    temporary_password: str
