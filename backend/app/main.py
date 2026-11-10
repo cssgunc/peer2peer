@@ -31,6 +31,7 @@ from app.routers.portal import conversations as portal_conversations
 from app.routers.portal import escalations as portal_escalations
 from app.routers.portal import guide as portal_guide
 from app.routers.portal import inbox as portal_inbox
+from app.routers.portal import reports as portal_reports
 from app.routers.portal import shift as portal_shift
 from app.routers.portal import ws as portal_ws
 
@@ -68,6 +69,7 @@ app.include_router(admin_statistics.router, prefix="/api")
 app.include_router(fit_guide.router, prefix="/api")
 app.include_router(admin_fit_guide.router, prefix="/api")
 app.include_router(report.router, prefix="/api")
+app.include_router(portal_reports.router, prefix="/api")
 app.include_router(portal_shift.router, prefix="/api")
 app.include_router(portal_inbox.router, prefix="/api")
 app.include_router(portal_guide.router, prefix="/api")

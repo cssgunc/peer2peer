@@ -2,7 +2,7 @@
 
 from datetime import datetime
 
-from sqlalchemy import func, select
+from sqlalchemy import exists, func, select
 from sqlalchemy.orm import Session
 
 from app.events import (
@@ -14,15 +14,26 @@ from app.events import (
 )
 from app.models.account import Account
 from app.models.messaging import Conversation, ConversationStatus
+from app.models.report import ConversationReport
 from app.services.shifts import online_shifts
+from app.services.site_settings import get_setting
 
 
 def eligible_responders(db: Session, now: datetime) -> list[Account]:
-    """Active staff with an open shift and a current heartbeat."""
+    """Active staff with an open shift and a current heartbeat.
+
+    When report_required is on, also skips anyone with a closed conversation still unreported.
+    """
     account_ids = [shift.account_id for shift in online_shifts(db, now)]
-    return list(
-        db.scalars(select(Account).where(Account.id.in_(account_ids), Account.is_active.is_(True)))
-    )
+    query = select(Account).where(Account.id.in_(account_ids), Account.is_active.is_(True))
+    if get_setting(db, "report_required"):
+        unreported = exists().where(
+            Conversation.assigned_account_id == Account.id,
+            Conversation.status == ConversationStatus.CLOSED,
+            ~exists().where(ConversationReport.conversation_id == Conversation.id),
+        )
+        query = query.where(~unreported)
+    return list(db.scalars(query))
 
 
 def assign_conversation(db: Session, conversation: Conversation, now: datetime) -> Account | None:
