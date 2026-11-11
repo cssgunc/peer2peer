@@ -14,6 +14,10 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="Peer2Peer backend commands")
     commands = parser.add_subparsers(dest="command", required=True)
     commands.add_parser("seed-dev", help="Run idempotent development seeds")
+    jobs = commands.add_parser("run-jobs", help="Run background cleanup jobs")
+    jobs.add_argument(
+        "--once", action="store_true", required=True, help="Run every job once and exit"
+    )
     create = commands.add_parser("create-account", help="Create a staff account")
     create.add_argument("--email", required=True)
     create.add_argument("--name", required=True)
@@ -24,6 +28,11 @@ def main(argv: list[str] | None = None) -> None:
             seed_dev()
         except RuntimeError as error:
             parser.exit(1, f"{error}\n")
+    elif args.command == "run-jobs":
+        from app.jobs.runner import run_jobs_once
+
+        if not run_jobs_once():
+            parser.exit(1)
     elif args.command == "create-account":
         try:
             email = TypeAdapter(NormalizedEmail).validate_python(args.email)

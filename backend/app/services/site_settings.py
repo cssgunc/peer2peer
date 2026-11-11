@@ -47,6 +47,12 @@ SETTINGS: dict[str, SettingDef] = {
         "After the after-hours reply: close the conversation, or keep it queued for the next shift",
         public=False,
     ),
+    "conversation_inactive_minutes": _def(
+        Annotated[int, Field(strict=True, gt=0)],
+        30,
+        "Close queued or active conversations after this many minutes without a message.",
+        public=False,
+    ),
     "report_required": _def(
         bool,
         True,

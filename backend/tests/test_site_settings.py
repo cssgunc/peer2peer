@@ -42,3 +42,14 @@ def test_non_public_keys_not_served(db: Session, client: TestClient) -> None:
 def test_launch_date_requires_timezone(db: Session) -> None:
     with pytest.raises(ValidationError):
         set_setting(db, "line_launch_at", "2026-11-01T00:00:00", None)
+
+
+@pytest.mark.parametrize("value", [0, -1, True, 1.5, "30", None])
+def test_conversation_timeout_requires_positive_integer(db: Session, value) -> None:
+    with pytest.raises(ValidationError):
+        set_setting(db, "conversation_inactive_minutes", value, None)
+
+
+def test_conversation_timeout_is_private(db: Session, client: TestClient) -> None:
+    set_setting(db, "conversation_inactive_minutes", 45, None)
+    assert "conversation_inactive_minutes" not in client.get("/api/settings").json()
