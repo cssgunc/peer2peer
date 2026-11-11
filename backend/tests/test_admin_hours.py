@@ -24,7 +24,13 @@ def exception():
 
 
 def sign_in(db, client, role):
-    account = Account(email="staff@unc.edu", display_name="Staff", password_hash="test", role=role)
+    account = Account(
+        email="staff@unc.edu",
+        display_name="Staff",
+        password_hash="test",
+        role=role,
+        must_change_password=False,
+    )
     db.add(account)
     db.flush()
     client.cookies.set(SESSION_COOKIE_NAME, issue_session(db, account, datetime.now(UTC)))

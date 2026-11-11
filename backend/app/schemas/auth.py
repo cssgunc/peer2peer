@@ -21,6 +21,13 @@ class SignInDTO(BaseModel):
     password: str
 
 
+class ChangePasswordDTO(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    current_password: str
+    new_password: str
+
+
 class ShiftDTO(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 

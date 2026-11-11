@@ -19,6 +19,7 @@ def staff(db: Session, request: pytest.FixtureRequest) -> Account:
         display_name="Guide staff",
         password_hash="unused",
         role=request.param,
+        must_change_password=False,
     )
     db.add(account)
     db.flush()

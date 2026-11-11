@@ -2,8 +2,9 @@
 
 import { useQueryClient } from "@tanstack/react-query";
 import { MenuIcon, XIcon } from "lucide-react";
+import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +22,8 @@ import { useMe } from "@/lib/portal/queries";
 import { GuidePanel } from "./GuidePanel";
 import { PortalNavLinks } from "./PortalNavLinks";
 
+const PASSWORD_PATH = "/portal/password";
+
 export function PortalShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
@@ -33,6 +36,7 @@ export function PortalShell({ children }: { children: ReactNode }) {
 
 function SignedInShell({ children }: { children: ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const queryClient = useQueryClient();
   const { data: me } = useMe();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,8 +53,18 @@ function SignedInShell({ children }: { children: ReactNode }) {
     }
   }
 
+  // The backend refuses every other route until a temporary password is replaced.
+  const mustChangePassword = me?.must_change_password ?? false;
+  const leavingPasswordPage = mustChangePassword && pathname !== PASSWORD_PATH;
+
+  useEffect(() => {
+    if (leavingPasswordPage) {
+      router.replace(PASSWORD_PATH);
+    }
+  }, [leavingPasswordPage, router]);
+
   // A failed /me redirects through the QueryCache handler; show nothing until it settles.
-  if (!me) {
+  if (!me || leavingPasswordPage) {
     return null;
   }
 
@@ -59,46 +73,48 @@ function SignedInShell({ children }: { children: ReactNode }) {
       <header className="border-b bg-background">
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6">
           <div className="flex items-center gap-2">
-            <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-              <SheetTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="min-h-11 min-w-11 md:hidden"
-                  aria-label="Open portal menu"
-                >
-                  <MenuIcon aria-hidden="true" />
-                </Button>
-              </SheetTrigger>
-              <SheetContent
-                side="left"
-                showCloseButton={false}
-                className="gap-6 overflow-y-auto p-6"
-              >
-                <SheetHeader className="p-0 pr-10">
-                  <SheetTitle>Portal menu</SheetTitle>
-                  <SheetDescription>
-                    Signed in as {me.display_name}
-                  </SheetDescription>
-                </SheetHeader>
-                <nav aria-label="Portal mobile">
-                  <PortalNavLinks
-                    role={me.role}
-                    onNavigate={() => setMenuOpen(false)}
-                  />
-                </nav>
-                <SheetClose asChild>
+            {!mustChangePassword && (
+              <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+                <SheetTrigger asChild>
                   <Button
-                    variant="ghost"
+                    variant="outline"
                     size="icon"
-                    className="absolute top-3 right-3 min-h-11 min-w-11"
-                    aria-label="Close portal menu"
+                    className="min-h-11 min-w-11 md:hidden"
+                    aria-label="Open portal menu"
                   >
-                    <XIcon aria-hidden="true" />
+                    <MenuIcon aria-hidden="true" />
                   </Button>
-                </SheetClose>
-              </SheetContent>
-            </Sheet>
+                </SheetTrigger>
+                <SheetContent
+                  side="left"
+                  showCloseButton={false}
+                  className="gap-6 overflow-y-auto p-6"
+                >
+                  <SheetHeader className="p-0 pr-10">
+                    <SheetTitle>Portal menu</SheetTitle>
+                    <SheetDescription>
+                      Signed in as {me.display_name}
+                    </SheetDescription>
+                  </SheetHeader>
+                  <nav aria-label="Portal mobile">
+                    <PortalNavLinks
+                      role={me.role}
+                      onNavigate={() => setMenuOpen(false)}
+                    />
+                  </nav>
+                  <SheetClose asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-3 right-3 min-h-11 min-w-11"
+                      aria-label="Close portal menu"
+                    >
+                      <XIcon aria-hidden="true" />
+                    </Button>
+                  </SheetClose>
+                </SheetContent>
+              </Sheet>
+            )}
             <span className="text-lg font-semibold tracking-tight">
               Peer2Peer Portal
             </span>
@@ -107,7 +123,14 @@ function SignedInShell({ children }: { children: ReactNode }) {
             <span className="hidden text-sm text-muted-foreground sm:inline">
               {me.display_name}
             </span>
-            <GuidePanel />
+            {!mustChangePassword && (
+              <>
+                <GuidePanel />
+                <Button asChild variant="ghost" className="min-h-11">
+                  <Link href={PASSWORD_PATH}>Change password</Link>
+                </Button>
+              </>
+            )}
             <Button
               variant="outline"
               className="min-h-11"
@@ -120,11 +143,13 @@ function SignedInShell({ children }: { children: ReactNode }) {
         </div>
       </header>
       <div className="flex flex-1">
-        <aside className="hidden w-56 shrink-0 border-r p-4 md:block">
-          <nav aria-label="Portal">
-            <PortalNavLinks role={me.role} />
-          </nav>
-        </aside>
+        {!mustChangePassword && (
+          <aside className="hidden w-56 shrink-0 border-r p-4 md:block">
+            <nav aria-label="Portal">
+              <PortalNavLinks role={me.role} />
+            </nav>
+          </aside>
+        )}
         <main
           id="main-content"
           tabIndex={-1}

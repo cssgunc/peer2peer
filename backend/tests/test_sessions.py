@@ -35,6 +35,7 @@ def make_account(
         display_name="Test staff",
         password_hash="placeholder-not-a-real-password-hash",
         role=role,
+        must_change_password=False,
     )
     db.add(account)
     db.flush()

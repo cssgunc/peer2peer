@@ -23,13 +23,25 @@ def get_current_session(request: Request, db: Annotated[Session, Depends(get_db)
     return session
 
 
-def require_staff(
+def get_current_account(
     session: Annotated[AuthSession, Depends(get_current_session)],
     db: Annotated[Session, Depends(get_db)],
 ) -> Account:
+    """The signed-in account, even one that still has to change its password.
+
+    Only GET /api/auth/me and POST /api/auth/password use this directly; everything else goes
+    through require_staff.
+    """
     account = db.get(Account, session.account_id)
     if account is None:
         raise HTTPException(status_code=401, detail="Not signed in")
+    return account
+
+
+def require_staff(account: Annotated[Account, Depends(get_current_account)]) -> Account:
+    # A temporary password was seen by a coordinator, so it unlocks nothing until replaced.
+    if account.must_change_password:
+        raise AppError(403, "password_change_required", "Change your password to continue.")
     return account
 
 
