@@ -53,6 +53,12 @@ SETTINGS: dict[str, SettingDef] = {
         "Close queued or active conversations after this many minutes without a message.",
         public=False,
     ),
+    "report_required": _def(
+        bool,
+        True,
+        "Require a post-conversation report before the responder gets another conversation.",
+        public=False,
+    ),
 }
 
 
