@@ -27,6 +27,8 @@ export type SocketOptions<In, Out> = {
   heartbeatMs?: number;
   /** Called once when the socket closes for good. */
   onClose?: (code: number) => void;
+  /** Called whenever the connection state changes. */
+  onStateChange?: (state: SocketState) => void;
 };
 
 export type Socket<Out> = {
@@ -39,7 +41,15 @@ export type Socket<Out> = {
 export function createSocket<In, Out = unknown>(
   options: SocketOptions<In, Out>,
 ): Socket<Out> {
-  const { url, onOpen, onMessage, onReconnect, heartbeatMs, onClose } = options;
+  const {
+    url,
+    onOpen,
+    onMessage,
+    onReconnect,
+    heartbeatMs,
+    onClose,
+    onStateChange,
+  } = options;
 
   let ws: WebSocket | null = null;
   let state: SocketState = "connecting";
@@ -48,6 +58,12 @@ export function createSocket<In, Out = unknown>(
   let reconnectTimer: ReturnType<typeof setTimeout> | undefined;
   let stableTimer: ReturnType<typeof setTimeout> | undefined;
   let heartbeatTimer: ReturnType<typeof setInterval> | undefined;
+
+  function setState(next: SocketState) {
+    if (state === next) return;
+    state = next;
+    onStateChange?.(next);
+  }
 
   function send(data: Out | { type: "heartbeat" }): boolean {
     if (ws?.readyState !== WebSocket.OPEN) return false;
@@ -70,7 +86,7 @@ export function createSocket<In, Out = unknown>(
 
     socket.onopen = () => {
       if (ws !== socket) return;
-      state = "open";
+      setState("open");
       stableTimer = setTimeout(() => (attempt = 0), STABLE_AFTER_MS);
       if (heartbeatMs) {
         heartbeatTimer = setInterval(
@@ -107,7 +123,7 @@ export function createSocket<In, Out = unknown>(
   }
 
   function scheduleReconnect() {
-    state = "reconnecting";
+    setState("reconnecting");
     const base = Math.min(MAX_DELAY_MS, BASE_DELAY_MS * 2 ** attempt);
     const jitter = 1 + (Math.random() * 2 - 1) * JITTER;
     const delay = Math.min(MAX_DELAY_MS, base * jitter);
@@ -126,7 +142,7 @@ export function createSocket<In, Out = unknown>(
   }
 
   function finish(code: number) {
-    state = "closed";
+    setState("closed");
     window.removeEventListener("online", reconnectNow);
     document.removeEventListener("visibilitychange", onVisibilityChange);
     onClose?.(code);

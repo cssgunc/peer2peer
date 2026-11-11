@@ -15,6 +15,12 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), replace }),
 }));
 vi.mock("@/lib/portal/queries", () => ({ useMe: vi.fn() }));
+// The socket has its own tests; keep the shell tests offline.
+vi.mock("@/lib/portal/PortalSocketProvider", () => ({
+  PortalSocketProvider: ({ children }: { children: React.ReactNode }) =>
+    children,
+  ConnectionIndicator: () => null,
+}));
 
 function mockMe(role: Me["role"], mustChangePassword = false) {
   vi.mocked(useMe).mockReturnValue({
