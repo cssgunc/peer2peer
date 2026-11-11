@@ -43,6 +43,7 @@ def account(db: Session, password_hash: str) -> Account:
         display_name="Test staff",
         password_hash=password_hash,
         role=AccountRole.RESPONDER,
+        must_change_password=False,
     )
     db.add(account)
     db.commit()

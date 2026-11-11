@@ -23,6 +23,11 @@ export function Providers({ children }: { children: ReactNode }) {
           onError: (error) => {
             if (error instanceof ApiError && error.status === 401) {
               router.replace("/portal/sign-in");
+            } else if (
+              error instanceof ApiError &&
+              error.code === "password_change_required"
+            ) {
+              router.replace("/portal/password");
             }
           },
         }),

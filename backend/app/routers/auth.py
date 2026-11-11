@@ -8,16 +8,17 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.database import get_db
-from app.dependencies.auth import get_current_session, require_staff
+from app.dependencies.auth import get_current_account, get_current_session
 from app.errors import AppError
 from app.models import Account, AuthSession
 from app.models.shift import ShiftEndReason
-from app.schemas.auth import MeDTO, ShiftDTO, SignInDTO
-from app.security.passwords import hash_password, verify_password
+from app.schemas.auth import ChangePasswordDTO, MeDTO, ShiftDTO, SignInDTO
+from app.security.passwords import hash_password, password_problems, verify_password
 from app.security.rate_limit import limiter, rate_limit
 from app.services.sessions import (
     clear_session_cookie,
     issue_session,
+    revoke_all_sessions,
     revoke_session,
     set_session_cookie,
 )
@@ -90,6 +91,39 @@ def sign_out(
 
 @router.get("/me", response_model=MeDTO)
 def me(
-    account: Annotated[Account, Depends(require_staff)], db: Annotated[Session, Depends(get_db)]
+    account: Annotated[Account, Depends(get_current_account)],
+    db: Annotated[Session, Depends(get_db)],
 ) -> MeDTO:
     return _me(db, account)
+
+
+@router.post("/password", status_code=204)
+def change_password(
+    payload: ChangePasswordDTO,
+    session: Annotated[AuthSession, Depends(get_current_session)],
+    account: Annotated[Account, Depends(get_current_account)],
+    db: Annotated[Session, Depends(get_db)],
+) -> None:
+    # Keyed by account, so someone at an unlocked computer can't guess the current password.
+    retry_after = limiter.hit(f"change-password:{account.id}", 5, WINDOW_SECONDS)
+    if retry_after is not None:
+        raise HTTPException(
+            status_code=429,
+            detail="Too many requests. Try again later.",
+            headers={"Retry-After": str(math.ceil(retry_after))},
+        )
+
+    if not verify_password(payload.current_password, account.password_hash):
+        raise AppError(400, "wrong_password", "Current password is incorrect.")
+    problems = password_problems(payload.new_password, account.email)
+    if payload.new_password == payload.current_password:
+        # Otherwise a flagged account could keep the temporary password a coordinator has seen.
+        problems.append("New password must be different from your current password.")
+    if problems:
+        raise AppError(422, "weak_password", " ".join(problems))
+
+    account.password_hash = hash_password(payload.new_password)
+    account.must_change_password = False
+    # The old password may have leaked, so end every session except the one making this change.
+    revoke_all_sessions(db, account.id, datetime.now(UTC), except_session_id=session.id)
+    db.commit()

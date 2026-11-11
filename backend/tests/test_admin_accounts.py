@@ -29,6 +29,7 @@ def make_account(
         password_hash="placeholder-not-a-real-password-hash",
         role=role,
         is_active=is_active,
+        must_change_password=False,
     )
     db.add(account)
     db.flush()

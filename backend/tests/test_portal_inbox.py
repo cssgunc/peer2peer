@@ -53,6 +53,7 @@ def account(db: Session) -> Account:
         display_name="Inbox staff",
         password_hash=hash_password(PASSWORD),
         role=AccountRole.RESPONDER,
+        must_change_password=False,
     )
     db.add(account)
     db.flush()
