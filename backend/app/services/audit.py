@@ -46,6 +46,12 @@ class AuditAction(StrEnum):
     RESOURCE_TAG_CREATE = "resource_tag.create"
     RESOURCE_TAG_UPDATE = "resource_tag.update"
     RESOURCE_TAG_DELETE = "resource_tag.delete"
+    FAQ_REORDER = "faq.reorder"
+    STATISTIC_REORDER = "statistic.reorder"
+    FIT_GUIDE_REORDER = "fit_guide.reorder"
+    RESOURCE_REORDER = "resource.reorder"
+    RESOURCE_TAG_REORDER = "resource_tag.reorder"
+    REPORT_OPTION_REORDER = "report_option.reorder"
 
 
 _BLOCKED_PARTS = {"body", "message", "phone", "ip", "password", "token"}
