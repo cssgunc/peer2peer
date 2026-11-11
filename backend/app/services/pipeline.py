@@ -78,6 +78,10 @@ def handle_inbound(
         db.flush()
 
     message = add_message(db, conversation, MessageSender.TEXTER, body, now)
+    if channel == Channel.WEB:
+        # The saved-message acknowledgement reaches every texter tab, before auto-replies.
+        adapter = ADAPTERS[channel]
+        run_after_commit(db, lambda: adapter.send(conversation, message))
     if provider_message_id is not None:
         message.provider_message_id = provider_message_id
         db.flush()

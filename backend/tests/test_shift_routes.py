@@ -14,6 +14,7 @@ from app.dependencies.auth import require_on_shift
 from app.errors import AppError
 from app.events import (
     CONVERSATION_CREATED,
+    MESSAGE_CREATED,
     SHIFT_ENDED,
     STATUS_CHANGED,
     Event,
@@ -216,8 +217,8 @@ def test_new_inbound_goes_to_the_on_shift_responder(
     assert conversation.assigned_account_id == account.id
     assert created_events(published, account) == [str(conversation.id)]
     texter_events = [e for t, e in published if t == texter_topic(conversation.texter_id)]
-    assert [e["type"] for e in texter_events] == [STATUS_CHANGED]
-    assert texter_events[0]["data"] == {
+    assert [e["type"] for e in texter_events] == [MESSAGE_CREATED, STATUS_CHANGED]
+    assert texter_events[1]["data"] == {
         "conversation_id": str(conversation.id),
         "status": ConversationStatus.ACTIVE.value,
     }
