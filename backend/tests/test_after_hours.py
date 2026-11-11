@@ -73,7 +73,11 @@ def test_offline_new_conversation_gets_the_reply(
     assert reply.conversation_id == conversation.id
     assert published == []
     db.commit()
-    replies = [e for topic, e in published if e["type"] == MESSAGE_CREATED]
+    replies = [
+        e
+        for topic, e in published
+        if e["type"] == MESSAGE_CREATED and e["data"]["message"]["sender"] == "system"
+    ]
     assert [r["data"]["message"]["id"] for r in replies] == [str(reply.id)]
     assert all(topic == texter_topic(conversation.texter_id) for topic, _ in published)
 
@@ -88,9 +92,9 @@ def test_online_sends_no_reply(db: Session, published: list[tuple[str, Event]]) 
     assert not conversation.opened_after_hours
     assert conversation.status == ConversationStatus.ACTIVE
     assert system_messages(db) == []
-    # The texter only hears that a responder joined: no reply, no close.
+    # Acknowledge the saved message, then announce the responder: no reply, no close.
     texter_events = [e["type"] for t, e in published if t == texter_topic(conversation.texter_id)]
-    assert texter_events == [STATUS_CHANGED]
+    assert texter_events == [MESSAGE_CREATED, STATUS_CHANGED]
 
 
 def test_second_message_sends_no_second_reply(db: Session) -> None:
@@ -115,9 +119,14 @@ def test_close_ends_the_conversation_after_the_reply(
     topic = texter_topic(conversation.texter_id)
     assert [(t, e["type"]) for t, e in published] == [
         (topic, MESSAGE_CREATED),
+        (topic, MESSAGE_CREATED),
         (topic, CONVERSATION_CLOSED),
     ]
-    assert published[1][1]["data"] == {
+    assert [event["data"]["message"]["sender"] for _, event in published[:2]] == [
+        "texter",
+        "system",
+    ]
+    assert published[2][1]["data"] == {
         "conversation_id": str(conversation.id),
         "closed_by": "system",
     }
@@ -131,7 +140,7 @@ def test_queue_keeps_the_conversation_open(db: Session, published: list[tuple[st
 
     assert conversation.status == ConversationStatus.QUEUED
     assert conversation.closed_by is None
-    assert [e["type"] for _, e in published] == [MESSAGE_CREATED]
+    assert [e["type"] for _, e in published] == [MESSAGE_CREATED, MESSAGE_CREATED]
 
 
 def test_nothing_is_sent_on_rollback(db: Session, published: list[tuple[str, Event]]) -> None:

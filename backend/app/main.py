@@ -7,6 +7,7 @@ from app.logging import RequestLoggingMiddleware, configure_logging
 from app.routers import (
     auth,
     chat,
+    chat_ws,
     content,
     faqs,
     feedback,
@@ -55,6 +56,7 @@ app.add_middleware(RequestLoggingMiddleware)
 app.include_router(health.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
 app.include_router(chat.router, prefix="/api")
+app.include_router(chat_ws.router)
 app.include_router(settings.router, prefix="/api")
 
 app.include_router(content.router, prefix="/api")

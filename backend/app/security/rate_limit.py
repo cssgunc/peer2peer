@@ -87,6 +87,17 @@ def client_ip(request: Request) -> str:
     return request.client.host if request.client else "unknown"
 
 
+def check_rate_limit(name: str, key: str, limit: int, window_seconds: int) -> None:
+    """Check a bucket without requiring an HTTP request (also used by WebSockets)."""
+    retry_after = limiter.hit(f"{name}:{key}", limit, window_seconds)
+    if retry_after is not None:
+        raise HTTPException(
+            status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+            detail="Too many requests. Try again later.",
+            headers={"Retry-After": str(math.ceil(retry_after))},
+        )
+
+
 def rate_limit(
     name: str,
     limit: int,
@@ -100,12 +111,6 @@ def rate_limit(
     """
 
     def dependency(request: Request) -> None:
-        retry_after = limiter.hit(f"{name}:{key(request)}", limit, window_seconds)
-        if retry_after is not None:
-            raise HTTPException(
-                status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail="Too many requests. Try again later.",
-                headers={"Retry-After": str(math.ceil(retry_after))},
-            )
+        check_rate_limit(name, key(request), limit, window_seconds)
 
     return dependency
