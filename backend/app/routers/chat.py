@@ -3,18 +3,19 @@ import uuid
 from datetime import UTC, datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request
+from fastapi import APIRouter, Depends
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.channels.web import WebChatAdapter, hash_token
 from app.database import get_db
 from app.errors import AppError
-from app.events import CONVERSATION_CLOSED, portal_topic, publish_after_commit
+from app.events import CONVERSATION_CLOSED, Event, portal_topic, publish_after_commit, texter_topic
 from app.models import Channel, ClosedBy, Conversation, ConversationStatus, Message, Texter
 from app.schemas.chat import ChatConversationDTO, ChatMessageDTO, ChatSessionDTO, SendMessageDTO
-from app.security.rate_limit import rate_limit
+from app.security.rate_limit import check_rate_limit, rate_limit
 from app.services.pipeline import OPEN_STATUSES, handle_inbound
 
 router = APIRouter(prefix="/chat", tags=["chat"])
@@ -27,13 +28,17 @@ def get_current_texter(
 ) -> Texter:
     if credentials is None:
         raise AppError(401, "invalid_token", "Invalid chat token.")
+    return resolve_texter(db, credentials.credentials)
+
+
+def resolve_texter(db: Session, token: str) -> Texter:
     # Serialize sends and revocation for this texter. A waiting request must recheck
     # revoked_at after the ending request commits before it can open a conversation.
     texter = db.scalar(
         select(Texter)
         .where(
             Texter.channel == Channel.WEB,
-            Texter.identity_hash == hash_token(credentials.credentials),
+            Texter.identity_hash == hash_token(token),
             Texter.revoked_at.is_(None),
         )
         .with_for_update()
@@ -44,12 +49,20 @@ def get_current_texter(
     return texter
 
 
-def _limit_messages(
-    request: Request, texter: Annotated[Texter, Depends(get_current_texter)]
-) -> None:
-    # Key by the authenticated hash, so no raw token is retained in the limiter,
-    # and alternate spellings of the Bearer scheme cannot bypass the limit.
-    rate_limit("chat-messages", 20, 60, key=lambda _request: texter.identity_hash.hex())(request)
+def send_texter_message(db: Session, texter: Texter, payload: object) -> ChatMessageDTO:
+    """Validate and send through the same per-identity bucket for REST and WebSocket."""
+    try:
+        message = SendMessageDTO.model_validate(payload)
+    except ValidationError as exc:
+        first = exc.errors()[0]
+        field = ".".join(str(part) for part in first["loc"]) or "body"
+        raise AppError(422, "validation_error", f"{field}: {first['msg']}") from None
+    # No raw token is retained, and switching transports cannot bypass the limit.
+    check_rate_limit("chat-messages", texter.identity_hash.hex(), 20, 60)
+    result = handle_inbound(
+        db, WebChatAdapter.channel, texter.identity_hash, message.body, datetime.now(UTC)
+    )
+    return ChatMessageDTO.from_message(result.message)
 
 
 @router.post(
@@ -110,17 +123,13 @@ def get_conversation(
     "/messages",
     response_model=ChatMessageDTO,
     status_code=201,
-    dependencies=[Depends(_limit_messages)],
 )
 def send_message(
     payload: SendMessageDTO,
     texter: Annotated[Texter, Depends(get_current_texter)],
     db: Annotated[Session, Depends(get_db)],
 ) -> ChatMessageDTO:
-    result = handle_inbound(
-        db, WebChatAdapter.channel, texter.identity_hash, payload.body, datetime.now(UTC)
-    )
-    response = ChatMessageDTO.from_message(result.message)
+    response = send_texter_message(db, texter, payload)
     db.commit()
     return response
 
@@ -139,18 +148,19 @@ def end_conversation(
         .with_for_update()
         .execution_options(populate_existing=True)
     )
+    close_event: Event = {"type": CONVERSATION_CLOSED, "data": {"closed_by": "texter"}}
     if conversation is not None:
         conversation.status = ConversationStatus.CLOSED
         conversation.closed_by = ClosedBy.TEXTER
         conversation.closed_at = now
+        close_event["data"]["conversation_id"] = str(conversation.id)
         if conversation.assigned_account_id is not None:
             publish_after_commit(
                 db,
                 portal_topic(conversation.assigned_account_id),
-                {
-                    "type": CONVERSATION_CLOSED,
-                    "data": {"conversation_id": str(conversation.id), "closed_by": "texter"},
-                },
+                close_event,
             )
     texter.revoked_at = now
+    # Also notify sockets with no open conversation: their token is revoked too.
+    publish_after_commit(db, texter_topic(texter.id), close_event)
     db.commit()

@@ -9,20 +9,27 @@ import { type Me, useMe } from "@/lib/portal/queries";
 import { portalNav } from "./nav";
 import { PortalShell } from "./PortalShell";
 
+const replace = vi.fn();
 vi.mock("next/navigation", () => ({
   usePathname: vi.fn(),
-  useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
+  useRouter: () => ({ push: vi.fn(), replace }),
 }));
 vi.mock("@/lib/portal/queries", () => ({ useMe: vi.fn() }));
+// The socket has its own tests; keep the shell tests offline.
+vi.mock("@/lib/portal/PortalSocketProvider", () => ({
+  PortalSocketProvider: ({ children }: { children: React.ReactNode }) =>
+    children,
+  ConnectionIndicator: () => null,
+}));
 
-function mockMe(role: Me["role"]) {
+function mockMe(role: Me["role"], mustChangePassword = false) {
   vi.mocked(useMe).mockReturnValue({
     data: {
       id: "00000000-0000-0000-0000-000000000001",
       email: "staff@example.com",
       display_name: "Staff Member",
       role,
-      must_change_password: false,
+      must_change_password: mustChangePassword,
       shift: null,
     },
   } as UseQueryResult<Me>);
@@ -80,5 +87,48 @@ describe("PortalShell", () => {
     expect(useMe).not.toHaveBeenCalled();
     expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
     expect(screen.getByText("Page content")).toBeInTheDocument();
+  });
+
+  it("puts a Change password link next to Sign out", () => {
+    mockMe("responder");
+    renderShell();
+
+    expect(
+      screen.getByRole("link", { name: "Change password" }),
+    ).toHaveAttribute("href", "/portal/password");
+    expect(
+      screen.getByRole("button", { name: "Sign out" }),
+    ).toBeInTheDocument();
+    expect(replace).not.toHaveBeenCalled();
+  });
+
+  it("sends an account with a temporary password to the password page", () => {
+    mockMe("coordinator", true);
+    renderShell();
+
+    expect(replace).toHaveBeenCalledWith("/portal/password");
+    expect(screen.queryByText("Page content")).not.toBeInTheDocument();
+  });
+
+  it("shows only the password page and sign-out while the change is pending", () => {
+    vi.mocked(usePathname).mockReturnValue("/portal/password");
+    mockMe("coordinator", true);
+    renderShell();
+
+    expect(replace).not.toHaveBeenCalled();
+    expect(screen.getByText("Page content")).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Sign out" }),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Start shift" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "Guide" }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("link", { name: "Change password" }),
+    ).not.toBeInTheDocument();
   });
 });

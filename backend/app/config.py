@@ -20,6 +20,7 @@ class Settings(BaseSettings):
     cors_origins: list[str] = ["http://localhost:3000"]
     app_origin: str = "http://localhost:3000"
     line_timezone: str = "America/New_York"
+    run_background_jobs: bool = True
 
     # Staff sessions (TDD 4.6.1). The devcontainer turns off Secure so cookies work over local http.
     session_idle_minutes: int = 30

@@ -1,12 +1,18 @@
+import asyncio
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
 from app.errors import register_exception_handlers
+from app.jobs.runner import run_background_jobs
 from app.logging import RequestLoggingMiddleware, configure_logging
 from app.routers import (
     auth,
     chat,
+    chat_ws,
     content,
     faqs,
     feedback,
@@ -24,6 +30,7 @@ from app.routers.admin import escalations as admin_escalations
 from app.routers.admin import faqs as admin_faqs
 from app.routers.admin import fit_guide as admin_fit_guide
 from app.routers.admin import hours as admin_hours
+from app.routers.admin import reorder as admin_reorder
 from app.routers.admin import report_options as admin_report_options
 from app.routers.admin import resources as admin_resources
 from app.routers.admin import statistics as admin_statistics
@@ -37,7 +44,22 @@ from app.routers.portal import ws as portal_ws
 
 configure_logging()
 
-app = FastAPI(title="Peer2Peer API")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    if not get_settings().run_background_jobs:
+        yield
+        return
+    stop = asyncio.Event()
+    task = asyncio.create_task(run_background_jobs(stop))
+    try:
+        yield
+    finally:
+        stop.set()
+        await task
+
+
+app = FastAPI(title="Peer2Peer API", lifespan=lifespan)
 
 register_exception_handlers(app)
 
@@ -54,6 +76,7 @@ app.add_middleware(RequestLoggingMiddleware)
 app.include_router(health.router, prefix="/api")
 app.include_router(auth.router, prefix="/api")
 app.include_router(chat.router, prefix="/api")
+app.include_router(chat_ws.router)
 app.include_router(settings.router, prefix="/api")
 
 app.include_router(content.router, prefix="/api")
@@ -81,3 +104,4 @@ app.include_router(admin_hours.router, prefix="/api")
 app.include_router(portal_conversations.router, prefix="/api")
 app.include_router(portal_escalations.router, prefix="/api")
 app.include_router(admin_escalations.router, prefix="/api")
+app.include_router(admin_reorder.router, prefix="/api")

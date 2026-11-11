@@ -98,6 +98,23 @@ this creates `coordinator@example.com` and `responder@example.com` with password
 `SuperSecretAdminPassword123` and prints the credentials for newly created accounts. Repeated runs
 preserve existing accounts and passwords. The seed command refuses to run outside development.
 
+### Background jobs
+
+The backend runs cleanup jobs at startup and every 60 seconds. Each job has its own transaction;
+if one fails, the others still run. Jobs end lost-heartbeat shifts, revoke idle staff sessions
+and end their shifts, and close inactive conversations. The conversation timeout is the private
+`conversation_inactive_minutes` site setting (default 30).
+
+To run one cleanup pass from the backend directory:
+
+```bash
+uv run python -m app.cli run-jobs --once
+```
+
+The command exits with status 1 if any job fails. When using an external scheduler, set
+`RUN_BACKGROUND_JOBS=false` on the API to disable its timer. The timer is disabled during pytest.
+The event bus is in-process: a separate CLI process cannot notify the API's live WebSocket clients.
+
 ## Code Quality
 
 **Pre-commit hooks** run on every `git commit`, and only against the files you staged: Ruff for Python, Prettier and ESLint for the frontend, plus basic file hygiene. Most issues get fixed automatically; re-stage the fixed files and commit again.

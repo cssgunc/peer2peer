@@ -6,6 +6,13 @@ from sqlalchemy import Engine, create_engine, text
 from sqlalchemy.orm import Session, sessionmaker
 
 
+@pytest.fixture(autouse=True)
+def _disable_background_jobs(monkeypatch: pytest.MonkeyPatch) -> None:
+    from app.config import get_settings
+
+    monkeypatch.setattr(get_settings(), "run_background_jobs", False)
+
+
 @pytest.fixture(scope="session")
 def test_engine() -> Engine:
     from app.config import get_settings

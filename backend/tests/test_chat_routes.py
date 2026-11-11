@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from app import events
 from app.channels.web import hash_token
 from app.database import get_db
-from app.events import CONVERSATION_CLOSED, Event, portal_topic
+from app.events import CONVERSATION_CLOSED, Event, portal_topic, texter_topic
 from app.main import app
 from app.models import (
     Account,
@@ -255,7 +255,14 @@ def test_ending_closes_chat_revokes_token_and_publishes_after_commit(
                 "type": CONVERSATION_CLOSED,
                 "data": {"conversation_id": str(conversation.id), "closed_by": "texter"},
             },
-        )
+        ),
+        (
+            texter_topic(texter.id),
+            {
+                "type": CONVERSATION_CLOSED,
+                "data": {"conversation_id": str(conversation.id), "closed_by": "texter"},
+            },
+        ),
     ]
     for method, path in (
         ("GET", "/conversation"),
@@ -301,7 +308,10 @@ def test_ending_an_unassigned_conversation(
     assert conversation.status == ConversationStatus.CLOSED
     assert conversation.closed_by == (ClosedBy.SYSTEM if already_closed else ClosedBy.TEXTER)
     assert texter.revoked_at is not None
-    assert published == []
+    data = {"closed_by": "texter"}
+    if not already_closed:
+        data["conversation_id"] = str(conversation.id)
+    assert published == [(texter_topic(texter.id), {"type": CONVERSATION_CLOSED, "data": data})]
 
 
 def test_failed_end_rolls_back_revocation_and_drops_the_close_event(

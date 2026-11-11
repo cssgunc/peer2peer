@@ -64,6 +64,9 @@ def handle_inbound(
         select(Conversation)
         .where(Conversation.texter_id == texter.id, Conversation.status.in_(OPEN_STATUSES))
         .order_by(Conversation.opened_at.desc())
+        # Serialize message activity with timer-driven closure. Recheck status after waiting.
+        .with_for_update()
+        .execution_options(populate_existing=True)
     )
     is_new_conversation = conversation is None
     if conversation is None:
@@ -78,6 +81,10 @@ def handle_inbound(
         db.flush()
 
     message = add_message(db, conversation, MessageSender.TEXTER, body, now)
+    if channel == Channel.WEB:
+        # The saved-message acknowledgement reaches every texter tab, before auto-replies.
+        adapter = ADAPTERS[channel]
+        run_after_commit(db, lambda: adapter.send(conversation, message))
     if provider_message_id is not None:
         message.provider_message_id = provider_message_id
         db.flush()

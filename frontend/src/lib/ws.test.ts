@@ -1,47 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { FakeWebSocket } from "./fake-websocket";
 import { createSocket } from "./ws";
-
-class FakeWebSocket {
-  static CONNECTING = 0;
-  static OPEN = 1;
-  static CLOSING = 2;
-  static CLOSED = 3;
-  static instances: FakeWebSocket[] = [];
-
-  readyState = FakeWebSocket.CONNECTING;
-  sent: unknown[] = [];
-  onopen: (() => void) | null = null;
-  onmessage: ((event: { data: string }) => void) | null = null;
-  onclose: ((event: { code: number }) => void) | null = null;
-
-  constructor(public url: string) {
-    FakeWebSocket.instances.push(this);
-  }
-
-  send(data: string) {
-    this.sent.push(JSON.parse(data));
-  }
-
-  close() {
-    this.readyState = FakeWebSocket.CLOSED;
-  }
-
-  // Test helpers that simulate the server side.
-  open() {
-    this.readyState = FakeWebSocket.OPEN;
-    this.onopen?.();
-  }
-
-  emit(data: string) {
-    this.onmessage?.({ data });
-  }
-
-  serverClose(code: number) {
-    this.readyState = FakeWebSocket.CLOSED;
-    this.onclose?.({ code });
-  }
-}
 
 const latest = () => FakeWebSocket.instances.at(-1)!;
 
@@ -187,5 +147,21 @@ describe("createSocket", () => {
     latest().serverClose(1006);
     expect(socket.send({ type: "message" })).toBe(false);
     socket.close();
+  });
+
+  it("reports state changes", () => {
+    const onStateChange = vi.fn();
+    const socket = createSocket({ url: "/ws/chat", onStateChange });
+    latest().open();
+    latest().serverClose(1006);
+    vi.advanceTimersByTime(1_000);
+    latest().open();
+    socket.close();
+    expect(onStateChange.mock.calls.map(([state]) => state)).toEqual([
+      "open",
+      "reconnecting",
+      "open",
+      "closed",
+    ]);
   });
 });
