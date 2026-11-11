@@ -17,6 +17,10 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { apiFetch } from "@/lib/api";
+import {
+  ConnectionIndicator,
+  PortalSocketProvider,
+} from "@/lib/portal/PortalSocketProvider";
 import { useMe } from "@/lib/portal/queries";
 
 import { GuidePanel } from "./GuidePanel";
@@ -69,95 +73,98 @@ function SignedInShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="flex min-h-full flex-1 flex-col">
-      <header className="border-b bg-background">
-        <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6">
-          <div className="flex items-center gap-2">
-            {!mustChangePassword && (
-              <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
-                <SheetTrigger asChild>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="min-h-11 min-w-11 md:hidden"
-                    aria-label="Open portal menu"
-                  >
-                    <MenuIcon aria-hidden="true" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent
-                  side="left"
-                  showCloseButton={false}
-                  className="gap-6 overflow-y-auto p-6"
-                >
-                  <SheetHeader className="p-0 pr-10">
-                    <SheetTitle>Portal menu</SheetTitle>
-                    <SheetDescription>
-                      Signed in as {me.display_name}
-                    </SheetDescription>
-                  </SheetHeader>
-                  <nav aria-label="Portal mobile">
-                    <PortalNavLinks
-                      role={me.role}
-                      onNavigate={() => setMenuOpen(false)}
-                    />
-                  </nav>
-                  <SheetClose asChild>
+    <PortalSocketProvider>
+      <div className="flex min-h-full flex-1 flex-col">
+        <header className="border-b bg-background">
+          <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6">
+            <div className="flex items-center gap-2">
+              {!mustChangePassword && (
+                <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+                  <SheetTrigger asChild>
                     <Button
-                      variant="ghost"
+                      variant="outline"
                       size="icon"
-                      className="absolute top-3 right-3 min-h-11 min-w-11"
-                      aria-label="Close portal menu"
+                      className="min-h-11 min-w-11 md:hidden"
+                      aria-label="Open portal menu"
                     >
-                      <XIcon aria-hidden="true" />
+                      <MenuIcon aria-hidden="true" />
                     </Button>
-                  </SheetClose>
-                </SheetContent>
-              </Sheet>
-            )}
-            <span className="text-lg font-semibold tracking-tight">
-              Peer2Peer Portal
-            </span>
+                  </SheetTrigger>
+                  <SheetContent
+                    side="left"
+                    showCloseButton={false}
+                    className="gap-6 overflow-y-auto p-6"
+                  >
+                    <SheetHeader className="p-0 pr-10">
+                      <SheetTitle>Portal menu</SheetTitle>
+                      <SheetDescription>
+                        Signed in as {me.display_name}
+                      </SheetDescription>
+                    </SheetHeader>
+                    <nav aria-label="Portal mobile">
+                      <PortalNavLinks
+                        role={me.role}
+                        onNavigate={() => setMenuOpen(false)}
+                      />
+                    </nav>
+                    <SheetClose asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-3 right-3 min-h-11 min-w-11"
+                        aria-label="Close portal menu"
+                      >
+                        <XIcon aria-hidden="true" />
+                      </Button>
+                    </SheetClose>
+                  </SheetContent>
+                </Sheet>
+              )}
+              <span className="text-lg font-semibold tracking-tight">
+                Peer2Peer Portal
+              </span>
+            </div>
+            <div className="ml-auto flex items-center gap-3">
+              <ConnectionIndicator />
+              <span className="hidden text-sm text-muted-foreground sm:inline">
+                {me.display_name}
+              </span>
+              {!mustChangePassword && (
+                <>
+                  <GuidePanel />
+                  <Button asChild variant="ghost" className="min-h-11">
+                    <Link href={PASSWORD_PATH}>Change password</Link>
+                  </Button>
+                </>
+              )}
+              <Button
+                variant="outline"
+                className="min-h-11"
+                onClick={signOut}
+                disabled={signingOut}
+              >
+                Sign out
+              </Button>
+            </div>
           </div>
-          <div className="ml-auto flex items-center gap-3">
-            <span className="hidden text-sm text-muted-foreground sm:inline">
-              {me.display_name}
-            </span>
-            {!mustChangePassword && (
-              <>
-                <GuidePanel />
-                <Button asChild variant="ghost" className="min-h-11">
-                  <Link href={PASSWORD_PATH}>Change password</Link>
-                </Button>
-              </>
-            )}
-            <Button
-              variant="outline"
-              className="min-h-11"
-              onClick={signOut}
-              disabled={signingOut}
-            >
-              Sign out
-            </Button>
-          </div>
+        </header>
+        <div className="flex flex-1">
+          {!mustChangePassword && (
+            <aside className="hidden w-56 shrink-0 border-r p-4 md:block">
+              <nav aria-label="Portal">
+                <PortalNavLinks role={me.role} />
+              </nav>
+            </aside>
+          )}
+          <main
+            id="main-content"
+            tabIndex={-1}
+            className="w-full flex-1 px-4 py-8 sm:px-6"
+          >
+            {children}
+          </main>
         </div>
-      </header>
-      <div className="flex flex-1">
-        {!mustChangePassword && (
-          <aside className="hidden w-56 shrink-0 border-r p-4 md:block">
-            <nav aria-label="Portal">
-              <PortalNavLinks role={me.role} />
-            </nav>
-          </aside>
-        )}
-        <main
-          id="main-content"
-          tabIndex={-1}
-          className="w-full flex-1 px-4 py-8 sm:px-6"
-        >
-          {children}
-        </main>
       </div>
-    </div>
+    </PortalSocketProvider>
   );
 }

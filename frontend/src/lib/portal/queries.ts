@@ -24,6 +24,32 @@ export function useMe() {
   });
 }
 
+// Shared with the inbox and conversation screens; the portal socket keeps them fresh.
+export const inboxQueryKey = ["inbox"] as const;
+
+export const conversationQueryKey = (id: string) =>
+  ["conversation", id] as const;
+
+// Mirrors PortalMessageDTO in backend/app/schemas/portal.py.
+export type PortalMessage = {
+  id: string;
+  sender: "texter" | "responder" | "system";
+  body: string;
+  created_at: string;
+  delivery_status: "received" | "sent" | "delivered" | "failed" | null;
+};
+
+// Mirrors PortalConversationDTO in backend/app/schemas/portal.py.
+export type PortalConversation = {
+  conversation_id: string;
+  label: string;
+  channel: "web" | "sms";
+  status: "queued" | "active" | "closed";
+  opened_at: string;
+  closed_at: string | null;
+  messages: PortalMessage[];
+};
+
 export type Guide = components["schemas"]["ContentBlockDTO"];
 
 export const guideQueryKey = ["guide"] as const;
