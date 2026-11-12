@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useInbox } from "@/lib/portal/queries";
 
+import { EscalateButton } from "./EscalateButton";
 import { ReportForm } from "./ReportForm";
 
 export function Inbox() {
@@ -65,9 +66,16 @@ export function Inbox() {
               <>
                 <div className="flex flex-wrap items-center justify-between gap-3">
                   <h2 className="text-xl font-semibold">{selected.label}</h2>
-                  <Button variant="ghost" onClick={() => setSelectedId(null)}>
-                    Back to inbox
-                  </Button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    {/* TODO(#137): move into the ConversationView header. */}
+                    <EscalateButton
+                      conversationId={selected.conversation_id}
+                      status={selected.status}
+                    />
+                    <Button variant="ghost" onClick={() => setSelectedId(null)}>
+                      Back to inbox
+                    </Button>
+                  </div>
                 </div>
                 {selected.status === "closed" || selected.needs_report ? (
                   <>
