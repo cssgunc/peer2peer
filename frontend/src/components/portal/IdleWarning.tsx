@@ -34,8 +34,10 @@ const ACTIVITY_EVENTS = [
 export const ACTIVITY_THROTTLE_MS = 5_000;
 // While the person is active, refresh the server session this often. Activity here never
 // reaches the backend on its own, and its idle timer would otherwise sign out someone who is
-// reading or typing without making requests.
-export const KEEPALIVE_MS = 5 * 60_000;
+// reading or typing without making requests. The backend only saves last-seen once a minute
+// (LAST_SEEN_THROTTLE in backend/app/services/sessions.py), so this plus that minute has to
+// stay well inside the 2-minute warning, or the server times out before the dialog opens.
+export const KEEPALIVE_MS = 30_000;
 const CHECK_MS = 1_000;
 export const ACTIVITY_CHANNEL = "p2p-portal-activity";
 export const IDLE_SIGN_IN_URL = "/portal/sign-in?reason=idle";

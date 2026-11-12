@@ -9,8 +9,9 @@ import {
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { apiFetch } from "@/lib/api";
+import { IDLE_WARNING_MS } from "@/lib/portal/constants";
 
-import { IdleWarning, KEEPALIVE_MS } from "./IdleWarning";
+import { ACTIVITY_THROTTLE_MS, IdleWarning, KEEPALIVE_MS } from "./IdleWarning";
 
 const replace = vi.fn();
 vi.mock("next/navigation", () => ({
@@ -214,6 +215,37 @@ describe("IdleWarning", () => {
     advance(10_000);
     fireEvent.mouseMove(window);
     expect(apiCalls("/api/auth/me")).toHaveLength(1);
+  });
+
+  it("keeps the server's last-seen close enough that the warning opens first", () => {
+    // Mirrors LAST_SEEN_THROTTLE in backend/app/services/sessions.py.
+    const LAST_SEEN_THROTTLE_MS = 60_000;
+    expect(
+      KEEPALIVE_MS + ACTIVITY_THROTTLE_MS + LAST_SEEN_THROTTLE_MS,
+    ).toBeLessThan(IDLE_WARNING_MS);
+
+    // Read and scroll for 4.5 minutes without the page making any request.
+    renderWarning();
+    const meCallTimes: number[] = [];
+    vi.mocked(apiFetch).mockImplementation(async (path) => {
+      if (path === "/api/auth/me") meCallTimes.push(Date.now());
+      return undefined as never;
+    });
+    const start = Date.now();
+    for (let t = 0; t < 4.5 * MINUTE; t += 1_000) {
+      advance(1_000);
+      fireEvent.scroll(window);
+    }
+    const lastActivity = Date.now();
+
+    // The session was refreshed throughout, and recently enough when they stepped away.
+    expect(meCallTimes.length).toBeGreaterThanOrEqual(8);
+    expect(meCallTimes[0] - start).toBeLessThanOrEqual(
+      KEEPALIVE_MS + ACTIVITY_THROTTLE_MS,
+    );
+    expect(lastActivity - meCallTimes.at(-1)!).toBeLessThanOrEqual(
+      KEEPALIVE_MS + ACTIVITY_THROTTLE_MS,
+    );
   });
 
   it("cleans up its timer, listeners, and channel when unmounted", () => {
