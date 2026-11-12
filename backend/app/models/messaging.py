@@ -13,6 +13,7 @@ from sqlalchemy import (
     String,
     UniqueConstraint,
     false,
+    text,
 )
 from sqlalchemy.dialects.postgresql import BYTEA
 from sqlalchemy.orm import Mapped, mapped_column
@@ -75,6 +76,12 @@ class Conversation(UUIDPrimaryKeyMixin, TimestampMixin, Base):
     __table_args__ = (
         Index("ix_conversations_status", "status"),
         Index("ix_conversations_assigned_account_id_status", "assigned_account_id", "status"),
+        # Keeps the retention job's every-minute "anything to purge?" check cheap.
+        Index(
+            "ix_conversations_closed_at_unpurged",
+            "closed_at",
+            postgresql_where=text("messages_purged_at IS NULL"),
+        ),
     )
 
     texter_id: Mapped[uuid.UUID | None] = mapped_column(
