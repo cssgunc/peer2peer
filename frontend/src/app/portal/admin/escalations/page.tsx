@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
-import { Placeholder } from "@/components/portal/Placeholder";
+import { EscalationRecords } from "@/components/portal/EscalationRecords";
 
 export const metadata: Metadata = { title: "Escalations" };
 
 export default function Page() {
-  return <Placeholder title="Escalations" />;
+  return <EscalationRecords />;
 }

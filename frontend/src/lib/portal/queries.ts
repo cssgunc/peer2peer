@@ -100,3 +100,45 @@ export function useGuide() {
     staleTime: Infinity,
   });
 }
+
+// Set once a responder records an escalation; the API doesn't report it back yet.
+export const escalatedQueryKey = (conversationId: string) =>
+  ["escalated", conversationId] as const;
+
+// Mirrors EscalationDTO in backend/app/schemas/escalations.py.
+// TODO(escalation-protocol): the final shape waits on the CAPS protocol.
+export type Escalation = {
+  id: string;
+  conversation_label: string;
+  status: "open" | "handed_off" | "closed";
+  created_by_display_name: string;
+  created_at: string;
+};
+
+// Mirrors EscalationDetailDTO in backend/app/schemas/escalations.py.
+export type EscalationDetail = Escalation & {
+  payload: Record<string, unknown> | null;
+};
+
+export const escalationsQueryKey = ["escalations"] as const;
+
+export function useEscalations() {
+  return useQuery({
+    queryKey: escalationsQueryKey,
+    queryFn: () => apiFetch<Escalation[]>("/api/admin/escalations"),
+  });
+}
+
+// Every fetch writes an audit entry, so only fetch when enabled and keep nothing afterwards.
+export function useEscalation(id: string, enabled: boolean) {
+  return useQuery({
+    queryKey: ["escalation", id],
+    queryFn: () => apiFetch<EscalationDetail>(`/api/admin/escalations/${id}`),
+    enabled,
+    gcTime: 0,
+    staleTime: Infinity,
+    retry: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+  });
+}
