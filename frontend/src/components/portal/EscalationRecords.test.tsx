@@ -56,7 +56,7 @@ describe("EscalationRecords", () => {
     const user = userEvent.setup();
 
     expect(await screen.findByText("Texter 14")).toBeInTheDocument();
-    expect(screen.getByRole("cell", { name: "Open" })).toBeInTheDocument();
+    expect(screen.getAllByRole("cell")[1]).toHaveTextContent(/^Open$/);
     expect(screen.getByText("Alex Responder")).toBeInTheDocument();
 
     await user.hover(
