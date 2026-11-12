@@ -53,6 +53,19 @@ SETTINGS: dict[str, SettingDef] = {
         "Close queued or active conversations after this many minutes without a message.",
         public=False,
     ),
+    # TODO(privacy-policy): both retention periods are placeholders until the policy sets them.
+    "message_retention_days": _def(
+        Annotated[int, Field(strict=True, gt=0)],
+        30,
+        "Delete message content this many days after a conversation closes.",
+        public=False,
+    ),
+    "feedback_retention_days": _def(
+        Annotated[int, Field(strict=True, gt=0)],
+        365,
+        "Delete Contact-page feedback this many days after it was submitted.",
+        public=False,
+    ),
     "report_required": _def(
         bool,
         True,
