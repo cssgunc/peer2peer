@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { useInbox } from "@/lib/portal/queries";
 
+import { ConversationView } from "./ConversationView";
 import { EscalateButton } from "./EscalateButton";
 import { ReportForm } from "./ReportForm";
 
 export function Inbox() {
   const { data: items, isPending, isError, refetch } = useInbox();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const clearSelection = useCallback(() => setSelectedId(null), []);
   const selected = items?.find((item) => item.conversation_id === selectedId);
 
   return (
@@ -63,36 +65,49 @@ export function Inbox() {
             className="min-w-0 space-y-4"
           >
             {selected ? (
-              <>
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <h2 className="text-xl font-semibold">{selected.label}</h2>
-                  <div className="flex flex-wrap items-center gap-2">
-                    {/* TODO(#137): move into the ConversationView header. */}
-                    <EscalateButton
-                      conversationId={selected.conversation_id}
-                      status={selected.status}
-                    />
-                    <Button variant="ghost" onClick={() => setSelectedId(null)}>
+              selected.status === "closed" || selected.needs_report ? (
+                <>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <h2 className="text-xl font-semibold">{selected.label}</h2>
+                    <Button variant="ghost" onClick={clearSelection}>
                       Back to inbox
                     </Button>
                   </div>
-                </div>
-                {selected.status === "closed" || selected.needs_report ? (
-                  <>
-                    <p>This conversation has ended.</p>
-                    <ReportForm
-                      conversationId={selected.conversation_id}
-                      onSubmitted={() =>
-                        setSelectedId((current) =>
-                          current === selected.conversation_id ? null : current,
-                        )
+                  <p>This conversation has ended.</p>
+                  <ReportForm
+                    conversationId={selected.conversation_id}
+                    onSubmitted={() =>
+                      setSelectedId((current) =>
+                        current === selected.conversation_id ? null : current,
+                      )
+                    }
+                  />
+                </>
+              ) : (
+                <>
+                  <Button variant="ghost" onClick={clearSelection}>
+                    Back to inbox
+                  </Button>
+                  <div className="h-[70vh] min-h-96 rounded-lg border border-border">
+                    <ConversationView
+                      id={selected.conversation_id}
+                      onUnavailable={clearSelection}
+                      headerActions={
+                        <EscalateButton
+                          conversationId={selected.conversation_id}
+                          status={selected.status}
+                        />
+                      }
+                      reportSlot={
+                        <ReportForm
+                          conversationId={selected.conversation_id}
+                          onSubmitted={clearSelection}
+                        />
                       }
                     />
-                  </>
-                ) : (
-                  <p>This conversation is {selected.status}.</p>
-                )}
-              </>
+                  </div>
+                </>
+              )
             ) : (
               <p className="text-muted-foreground">
                 Select a conversation from the inbox.
