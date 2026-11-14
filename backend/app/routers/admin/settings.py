@@ -63,7 +63,7 @@ def update_setting(
 
     record_audit(
         db,
-        acord_id=actor.id,
+        actor_id=actor.id,
         action=AuditAction.SETTINGS_UPDATE,
         target_type="setting",
         details={"key": key},
