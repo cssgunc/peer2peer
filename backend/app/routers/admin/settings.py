@@ -21,29 +21,33 @@ Coordinator = Annotated[Account, Depends(require_coordinator)]
 @router.get("", response_model=list[AdminSiteSettingsDTO])
 def get_settings(db: Database, actor: Coordinator) -> list[AdminSiteSettingsDTO]:
     rows = db.scalars(select(SiteSetting)).all()
-
     rows_by_key = {row.key: row for row in rows}
+
     updater_ids = {row.updated_by for row in rows if row.updated_by is not None}
-
     accounts = db.scalars(select(Account).where(Account.id.in_(updater_ids))).all()
-
     names_by_id = {account.id: account.display_name for account in accounts}
 
-    return [
-        AdminSiteSettingsDTO(
-            key=key,
-            value=get_setting(db, key),
-            description=definition.description,
-            public=definition.public,
-            updated_by=(
-                names_by_id.get(rows_by_key[key].updated_by)
-                if key in rows_by_key and rows_by_key[key].updated_by is not None
-                else None
-            ),
-            updated_at=rows_by_key[key].updated_at if key in rows_by_key else None,
+    result = []
+    for key, definition in SETTINGS.items():
+        row = rows_by_key.get(key)
+        updater_name = None
+
+        if row is not None:
+            updater_id = row.updated_by
+            if updater_id is not None:
+                updater_name = names_by_id.get(updater_id)
+
+        result.append(
+            AdminSiteSettingsDTO(
+                key=key,
+                value=get_setting(db, key),
+                description=definition.description,
+                public=definition.public,
+                updated_by=updater_name,
+                updated_at=row.updated_at if row is not None else None,
+            )
         )
-        for key, definition in SETTINGS.items()
-    ]
+    return result
 
 
 @router.put("/{key}", response_model=AdminSiteSettingsDTO, status_code=200)
