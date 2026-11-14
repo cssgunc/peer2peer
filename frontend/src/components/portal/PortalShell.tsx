@@ -24,7 +24,9 @@ import {
 import { useMe } from "@/lib/portal/queries";
 
 import { GuidePanel } from "./GuidePanel";
+import { IdleWarning } from "./IdleWarning";
 import { PortalNavLinks } from "./PortalNavLinks";
+import { ShiftToggle } from "./ShiftToggle";
 
 const PASSWORD_PATH = "/portal/password";
 
@@ -75,6 +77,8 @@ function SignedInShell({ children }: { children: ReactNode }) {
   return (
     <PortalSocketProvider>
       <div className="flex min-h-full flex-1 flex-col">
+        {/* Here rather than in layout.tsx, so it never runs on the sign-in page. */}
+        <IdleWarning />
         <header className="border-b bg-background">
           <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:flex-nowrap sm:gap-4 sm:px-6">
             <div className="flex items-center gap-2">
@@ -124,7 +128,9 @@ function SignedInShell({ children }: { children: ReactNode }) {
                 Peer2Peer Portal
               </span>
             </div>
-            <div className="ml-auto flex items-center gap-3">
+            <div className="ml-auto flex flex-wrap items-center gap-3">
+              {/* No going on shift until the temporary password is replaced. */}
+              {!mustChangePassword && <ShiftToggle />}
               <ConnectionIndicator />
               <span className="hidden text-sm text-muted-foreground sm:inline">
                 {me.display_name}

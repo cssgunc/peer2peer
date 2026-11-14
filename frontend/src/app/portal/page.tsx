@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
-import { Placeholder } from "@/components/portal/Placeholder";
+import { Inbox } from "@/components/portal/Inbox";
 
 export const metadata: Metadata = { title: "Inbox" };
 
 export default function Page() {
-  return <Placeholder title="Inbox" />;
+  return <Inbox />;
 }

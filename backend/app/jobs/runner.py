@@ -8,12 +8,22 @@ from datetime import UTC, datetime
 from starlette.concurrency import run_in_threadpool
 
 from app.database import SessionLocal
-from app.jobs import close_idle_sessions, close_inactive_conversations, close_lost_shifts
+from app.jobs import (
+    close_idle_sessions,
+    close_inactive_conversations,
+    close_lost_shifts,
+    purge_expired_content,
+)
 
 logger = logging.getLogger("app.jobs")
 JOB_INTERVAL_SECONDS = 60
 # Idle expiry takes precedence when both the session and heartbeat are stale.
-JOBS = (close_idle_sessions, close_lost_shifts, close_inactive_conversations)
+JOBS = (
+    close_idle_sessions,
+    close_lost_shifts,
+    close_inactive_conversations,
+    purge_expired_content,
+)
 
 
 def run_jobs_once(now: datetime | None = None) -> bool:

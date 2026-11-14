@@ -43,6 +43,15 @@ class Clock:
         return self.value
 
 
+def commit_then_publish(db: Session) -> None:
+    # The socket shares the test's Session; publishing from inside `after_commit` would let the
+    # handler query it while it is still mid-commit. Production sockets have their own Session.
+    callbacks = db.info.pop(events._AFTER_COMMIT_KEY, [])
+    db.commit()
+    for callback in callbacks:
+        callback()
+
+
 @pytest.fixture
 def clock(monkeypatch: pytest.MonkeyPatch) -> Clock:
     clock = Clock()
@@ -244,7 +253,7 @@ def test_committed_revocation_is_forwarded_and_closes_the_socket(
             revoke_all_sessions(db, auth_session.account_id, clock.value)
         else:
             revoke_session(db, auth_session, clock.value)
-        db.commit()
+        commit_then_publish(db)
         assert socket.receive_json() == {"type": SESSION_REVOKED, "data": {}}
         with pytest.raises(WebSocketDisconnect) as error:
             socket.receive_json()
@@ -269,7 +278,7 @@ def test_other_session_revocation_keeps_the_socket_open(
             revoke_all_sessions(db, account.id, clock.value, except_session_id=auth_session.id)
         else:
             revoke_session(db, other, clock.value)
-        db.commit()
+        commit_then_publish(db)
         # The revocation is skipped, so the next event is the first one the client sees.
         event: Event = {"type": SHIFT_ENDED, "data": {}}
         bus.publish(portal_topic(account.id), event)

@@ -122,6 +122,9 @@ describe("PortalShell", () => {
     ).toBeInTheDocument();
     expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
     expect(
+      screen.queryByRole("button", { name: "Start shift" }),
+    ).not.toBeInTheDocument();
+    expect(
       screen.queryByRole("button", { name: "Guide" }),
     ).not.toBeInTheDocument();
     expect(
