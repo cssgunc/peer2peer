@@ -1,3 +1,5 @@
+import uuid
+from datetime import date
 from typing import Annotated
 
 from pydantic import BaseModel, StringConstraints
@@ -11,3 +13,16 @@ class FeedbackInputDTO(BaseModel):
     body: Annotated[
         str, StringConstraints(strip_whitespace=True, min_length=1, max_length=BODY_MAX_LENGTH)
     ]
+
+
+class FeedbackDTO(BaseModel):
+    """Anonymous feedback as coordinators see it (TDD 4.7.1)."""
+
+    id: uuid.UUID
+    body: str
+    created_on: date
+    read: bool
+
+
+class UpdateFeedbackDTO(BaseModel):
+    read: bool
