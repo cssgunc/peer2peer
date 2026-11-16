@@ -39,10 +39,16 @@ export type InboxItem = {
   needs_report: boolean;
 };
 
-export function useInbox() {
+export function fetchInbox() {
+  return apiFetch<InboxItem[]>("/api/portal/inbox");
+}
+
+/** Newest activity first, as the API sorts it. Pass `enabled: false` off shift (the API returns 403). */
+export function useInbox({ enabled = true }: { enabled?: boolean } = {}) {
   return useQuery({
     queryKey: inboxQueryKey,
-    queryFn: () => apiFetch<InboxItem[]>("/api/portal/inbox"),
+    queryFn: fetchInbox,
+    enabled,
   });
 }
 
@@ -83,10 +89,6 @@ export type PortalConversation = {
   closed_at: string | null;
   messages: PortalMessage[];
 };
-
-export function fetchInbox() {
-  return apiFetch<InboxItem[]>("/api/portal/inbox");
-}
 
 export type Guide = components["schemas"]["ContentBlockDTO"];
 
