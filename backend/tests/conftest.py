@@ -13,6 +13,16 @@ def _disable_background_jobs(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(get_settings(), "run_background_jobs", False)
 
 
+@pytest.fixture(autouse=True)
+def revalidations(monkeypatch: pytest.MonkeyPatch) -> list[list[str]]:
+    from app.services import revalidate
+
+    # The devcontainer sets REVALIDATE_SECRET, so record calls instead of sending them.
+    calls: list[list[str]] = []
+    monkeypatch.setattr(revalidate, "request_revalidation", calls.append)
+    return calls
+
+
 @pytest.fixture(scope="session")
 def test_engine() -> Engine:
     from app.config import get_settings

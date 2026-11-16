@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -11,6 +11,7 @@ from app.errors import AppError
 from app.models import Account, SiteSetting
 from app.schemas.settings import AdminSiteSettingsDTO, UpdateSiteSettingsDTO
 from app.services.audit import AuditAction, record_audit
+from app.services.revalidate import schedule_revalidation
 from app.services.site_settings import SETTINGS, get_setting, set_setting
 
 router = APIRouter(prefix="/admin/settings", tags=["admin settings"])
@@ -52,7 +53,11 @@ def get_settings(db: Database, actor: Coordinator) -> list[AdminSiteSettingsDTO]
 
 @router.put("/{key}", response_model=AdminSiteSettingsDTO, status_code=200)
 def update_setting(
-    key: str, new_value: UpdateSiteSettingsDTO, db: Database, actor: Coordinator
+    key: str,
+    new_value: UpdateSiteSettingsDTO,
+    db: Database,
+    actor: Coordinator,
+    background: BackgroundTasks,
 ) -> AdminSiteSettingsDTO:
     if key not in SETTINGS:
         raise HTTPException(status_code=404, detail="Unknown setting")
@@ -73,6 +78,7 @@ def update_setting(
         details={"key": key},
     )
     db.commit()
+    schedule_revalidation(background, "settings")
 
     return AdminSiteSettingsDTO(
         key=key,

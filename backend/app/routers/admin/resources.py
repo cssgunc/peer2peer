@@ -1,7 +1,7 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response
 from pydantic import ValidationError
 from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
@@ -21,6 +21,7 @@ from app.schemas.resources import (
     ResourceTagPatchDTO,
 )
 from app.services.audit import AuditAction, record_audit
+from app.services.revalidate import schedule_revalidation
 
 router = APIRouter(prefix="/admin", tags=["admin resources"])
 Database = Annotated[Session, Depends(get_db)]
@@ -75,7 +76,9 @@ def list_resources(db: Database, actor: Coordinator):
 
 
 @router.post("/resources", response_model=AdminResourceDTO, status_code=201)
-def create_resource(data: ResourceInputDTO, db: Database, actor: Coordinator):
+def create_resource(
+    data: ResourceInputDTO, db: Database, actor: Coordinator, background: BackgroundTasks
+):
     tags = resolve_tags(db, data.tag_ids)
     item = Resource(**data.model_dump(exclude={"tag_ids"}), tags=tags)
     db.add(item)
@@ -88,11 +91,18 @@ def create_resource(data: ResourceInputDTO, db: Database, actor: Coordinator):
         target_id=item.id,
     )
     db.commit()
+    schedule_revalidation(background, "resources", "fit-guide")
     return item
 
 
 @router.patch("/resources/{id}", response_model=AdminResourceDTO)
-def update_resource(id: uuid.UUID, data: ResourcePatchDTO, db: Database, actor: Coordinator):
+def update_resource(
+    id: uuid.UUID,
+    data: ResourcePatchDTO,
+    db: Database,
+    actor: Coordinator,
+    background: BackgroundTasks,
+):
     item = get_resource(db, id)
     values = data.model_dump(exclude_unset=True)
     try:
@@ -123,11 +133,14 @@ def update_resource(id: uuid.UUID, data: ResourcePatchDTO, db: Database, actor: 
         details={"fields": sorted(values)},
     )
     db.commit()
+    schedule_revalidation(background, "resources", "fit-guide")
     return item
 
 
 @router.delete("/resources/{id}", status_code=204)
-def delete_resource(id: uuid.UUID, db: Database, actor: Coordinator) -> Response:
+def delete_resource(
+    id: uuid.UUID, db: Database, actor: Coordinator, background: BackgroundTasks
+) -> Response:
     item = get_resource(db, id)
     record_audit(
         db,
@@ -138,6 +151,7 @@ def delete_resource(id: uuid.UUID, db: Database, actor: Coordinator) -> Response
     )
     db.delete(item)
     db.commit()
+    schedule_revalidation(background, "resources", "fit-guide")
     return Response(status_code=204)
 
 
@@ -149,7 +163,9 @@ def list_tags(db: Database, actor: Coordinator):
 
 
 @router.post("/resource-tags", response_model=AdminResourceTagDTO, status_code=201)
-def create_tag(data: ResourceTagInputDTO, db: Database, actor: Coordinator):
+def create_tag(
+    data: ResourceTagInputDTO, db: Database, actor: Coordinator, background: BackgroundTasks
+):
     item = ResourceTag(**data.model_dump())
     db.add(item)
     save_tag(db)
@@ -161,11 +177,18 @@ def create_tag(data: ResourceTagInputDTO, db: Database, actor: Coordinator):
         target_id=item.id,
     )
     db.commit()
+    schedule_revalidation(background, "resources")
     return item
 
 
 @router.patch("/resource-tags/{id}", response_model=AdminResourceTagDTO)
-def update_tag(id: uuid.UUID, data: ResourceTagPatchDTO, db: Database, actor: Coordinator):
+def update_tag(
+    id: uuid.UUID,
+    data: ResourceTagPatchDTO,
+    db: Database,
+    actor: Coordinator,
+    background: BackgroundTasks,
+):
     item = get_tag(db, id)
     values = data.model_dump(exclude_unset=True)
     for field, value in values.items():
@@ -180,11 +203,14 @@ def update_tag(id: uuid.UUID, data: ResourceTagPatchDTO, db: Database, actor: Co
         details={"fields": sorted(values)},
     )
     db.commit()
+    schedule_revalidation(background, "resources")
     return item
 
 
 @router.delete("/resource-tags/{id}", status_code=204)
-def delete_tag(id: uuid.UUID, db: Database, actor: Coordinator) -> Response:
+def delete_tag(
+    id: uuid.UUID, db: Database, actor: Coordinator, background: BackgroundTasks
+) -> Response:
     item = get_tag(db, id)
     record_audit(
         db,
@@ -195,4 +221,5 @@ def delete_tag(id: uuid.UUID, db: Database, actor: Coordinator) -> Response:
     )
     db.delete(item)
     db.commit()
+    schedule_revalidation(background, "resources")
     return Response(status_code=204)

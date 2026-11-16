@@ -3,7 +3,7 @@ from typing import Annotated
 from uuid import UUID
 from zoneinfo import ZoneInfo
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends
 from sqlalchemy import delete, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
@@ -22,6 +22,7 @@ from app.schemas.hours import (
     WeeklyWindowDTO,
 )
 from app.services.audit import AuditAction, record_audit
+from app.services.revalidate import schedule_revalidation
 
 router = APIRouter(
     prefix="/admin/hours", tags=["admin"], dependencies=[Depends(require_coordinator)]
@@ -46,11 +47,14 @@ def read_hours(db: Database) -> AdminHoursDTO:
 
 
 @router.put("", response_model=AdminHoursDTO)
-def update_hours(payload: UpdateHoursDTO, db: Database, actor: Coordinator) -> AdminHoursDTO:
+def update_hours(
+    payload: UpdateHoursDTO, db: Database, actor: Coordinator, background: BackgroundTasks
+) -> AdminHoursDTO:
     db.execute(delete(WeeklyHours))
     db.add_all(WeeklyHours(**window.model_dump()) for window in payload.weekly)
     record_audit(db, actor_id=actor.id, action=AuditAction.HOURS_UPDATE, target_type="hours")
     db.commit()
+    schedule_revalidation(background, "hours")
     return read_hours(db)
 
 
@@ -78,24 +82,36 @@ def _save_exception(db: Session, actor: Account, item: HoursException, action: A
 
 
 @router.post("/exceptions", response_model=AdminHoursExceptionDTO, status_code=201)
-def create_exception(payload: HoursExceptionInputDTO, db: Database, actor: Coordinator):
+def create_exception(
+    payload: HoursExceptionInputDTO, db: Database, actor: Coordinator, background: BackgroundTasks
+):
     item = HoursException(**payload.model_dump())
     db.add(item)
     _save_exception(db, actor, item, AuditAction.HOURS_EXCEPTION_CREATE)
+    schedule_revalidation(background, "hours")
     return item
 
 
 @router.patch("/exceptions/{id}", response_model=AdminHoursExceptionDTO)
-def update_exception(id: UUID, payload: HoursExceptionInputDTO, db: Database, actor: Coordinator):
+def update_exception(
+    id: UUID,
+    payload: HoursExceptionInputDTO,
+    db: Database,
+    actor: Coordinator,
+    background: BackgroundTasks,
+):
     item = _get_exception(db, id)
     for field, value in payload.model_dump().items():
         setattr(item, field, value)
     _save_exception(db, actor, item, AuditAction.HOURS_EXCEPTION_UPDATE)
+    schedule_revalidation(background, "hours")
     return item
 
 
 @router.delete("/exceptions/{id}", response_model=AdminHoursExceptionDTO)
-def delete_exception(id: UUID, db: Database, actor: Coordinator) -> AdminHoursExceptionDTO:
+def delete_exception(
+    id: UUID, db: Database, actor: Coordinator, background: BackgroundTasks
+) -> AdminHoursExceptionDTO:
     item = _get_exception(db, id)
     result = AdminHoursExceptionDTO.model_validate(item)
     record_audit(
@@ -107,4 +123,5 @@ def delete_exception(id: UUID, db: Database, actor: Coordinator) -> AdminHoursEx
     )
     db.delete(item)
     db.commit()
+    schedule_revalidation(background, "hours")
     return result

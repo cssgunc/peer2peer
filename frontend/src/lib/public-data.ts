@@ -38,8 +38,9 @@ export default function Page() {
 
 import { cacheLife, cacheTag } from "next/cache";
 import { apiFetch } from "./api";
+import type { CacheTag } from "./cache-tags";
 
-export async function getPublicData<T>(path: string, tag: string) {
+export async function getPublicData<T>(path: string, tag: CacheTag) {
   "use cache";
   cacheTag(tag);
   cacheLife("hours");
