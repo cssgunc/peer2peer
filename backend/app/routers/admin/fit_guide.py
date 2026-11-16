@@ -1,7 +1,7 @@
 import uuid
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -16,6 +16,7 @@ from app.schemas.fit_guide import (
     FitGuideItemPatchDTO,
 )
 from app.services.audit import AuditAction, record_audit
+from app.services.revalidate import schedule_revalidation
 
 router = APIRouter(prefix="/admin/fit-guide", tags=["admin fit guide"])
 Database = Annotated[Session, Depends(get_db)]
@@ -42,7 +43,9 @@ def list_items(db: Database, actor: Coordinator):
 
 
 @router.post("", response_model=AdminFitGuideItemDTO, status_code=201)
-def create_item(data: FitGuideItemInputDTO, db: Database, actor: Coordinator):
+def create_item(
+    data: FitGuideItemInputDTO, db: Database, actor: Coordinator, background: BackgroundTasks
+):
     validate_resource(db, data.resource_id)
     item = FitGuideItem(**data.model_dump())
     db.add(item)
@@ -55,11 +58,18 @@ def create_item(data: FitGuideItemInputDTO, db: Database, actor: Coordinator):
         target_id=item.id,
     )
     db.commit()
+    schedule_revalidation(background, "fit-guide")
     return item
 
 
 @router.patch("/{id}", response_model=AdminFitGuideItemDTO)
-def update_item(id: uuid.UUID, data: FitGuideItemPatchDTO, db: Database, actor: Coordinator):
+def update_item(
+    id: uuid.UUID,
+    data: FitGuideItemPatchDTO,
+    db: Database,
+    actor: Coordinator,
+    background: BackgroundTasks,
+):
     item = get_item(db, id)
     values = data.model_dump(exclude_unset=True)
     if "resource_id" in values:
@@ -75,11 +85,14 @@ def update_item(id: uuid.UUID, data: FitGuideItemPatchDTO, db: Database, actor: 
         details={"fields": sorted(values)},
     )
     db.commit()
+    schedule_revalidation(background, "fit-guide")
     return item
 
 
 @router.delete("/{id}", status_code=204)
-def delete_item(id: uuid.UUID, db: Database, actor: Coordinator) -> Response:
+def delete_item(
+    id: uuid.UUID, db: Database, actor: Coordinator, background: BackgroundTasks
+) -> Response:
     item = get_item(db, id)
     record_audit(
         db,
@@ -90,4 +103,5 @@ def delete_item(id: uuid.UUID, db: Database, actor: Coordinator) -> Response:
     )
     db.delete(item)
     db.commit()
+    schedule_revalidation(background, "fit-guide")
     return Response(status_code=204)

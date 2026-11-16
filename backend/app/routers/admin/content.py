@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -9,6 +9,7 @@ from app.models import Account, ContentBlock
 from app.schemas.content import ContentBlockDTO, UpdateContentBlockDTO
 from app.services.audit import AuditAction, record_audit
 from app.services.content_blocks import CONTENT_BLOCKS, get_block
+from app.services.revalidate import schedule_revalidation
 
 router = APIRouter(prefix="/admin/content", tags=["admin content"])
 Database = Annotated[Session, Depends(get_db)]
@@ -30,7 +31,11 @@ def get_content_block(db: Database, actor: Coordinator, slug: str) -> ContentBlo
 
 @router.put("/{slug}", response_model=ContentBlockDTO)
 def update_content_block(
-    db: Database, actor: Coordinator, slug: str, new_content: UpdateContentBlockDTO
+    db: Database,
+    actor: Coordinator,
+    slug: str,
+    new_content: UpdateContentBlockDTO,
+    background: BackgroundTasks,
 ) -> ContentBlockDTO:
     if slug not in CONTENT_BLOCKS:
         raise HTTPException(404, "Unknown slug")
@@ -59,6 +64,7 @@ def update_content_block(
         details={"slug": slug},
     )
     db.commit()
+    schedule_revalidation(background, "content")
 
     return ContentBlockDTO(
         slug=slug,
