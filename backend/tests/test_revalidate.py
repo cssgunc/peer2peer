@@ -160,6 +160,8 @@ NOT_PUBLIC = {
     ("POST", "/api/admin/accounts"),
     ("PATCH", "/api/admin/accounts/{account_id}"),
     ("POST", "/api/admin/accounts/{account_id}/reset-password"),
+    ("PATCH", "/api/admin/feedback/{feedback_id}"),
+    ("DELETE", "/api/admin/feedback/{feedback_id}"),
 }
 
 CASES = [
