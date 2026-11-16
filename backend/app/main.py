@@ -26,9 +26,11 @@ from app.routers import (
     status,
 )
 from app.routers.admin import accounts as admin_accounts
+from app.routers.admin import audit_log as admin_audit_log
 from app.routers.admin import content as admin_content
 from app.routers.admin import escalations as admin_escalations
 from app.routers.admin import faqs as admin_faqs
+from app.routers.admin import feedback as admin_feedback
 from app.routers.admin import fit_guide as admin_fit_guide
 from app.routers.admin import hours as admin_hours
 from app.routers.admin import reorder as admin_reorder
@@ -89,6 +91,8 @@ app.include_router(status.router, prefix="/api")
 app.include_router(faqs.router, prefix="/api")
 app.include_router(statistics.router, prefix="/api")
 app.include_router(admin_accounts.router, prefix="/api")
+app.include_router(admin_feedback.router, prefix="/api")
+app.include_router(admin_audit_log.router, prefix="/api")
 app.include_router(admin_faqs.router, prefix="/api")
 app.include_router(admin_statistics.router, prefix="/api")
 app.include_router(fit_guide.router, prefix="/api")
