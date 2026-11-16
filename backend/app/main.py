@@ -26,6 +26,7 @@ from app.routers import (
     status,
 )
 from app.routers.admin import accounts as admin_accounts
+from app.routers.admin import content as admin_content
 from app.routers.admin import escalations as admin_escalations
 from app.routers.admin import faqs as admin_faqs
 from app.routers.admin import fit_guide as admin_fit_guide
@@ -33,6 +34,7 @@ from app.routers.admin import hours as admin_hours
 from app.routers.admin import reorder as admin_reorder
 from app.routers.admin import report_options as admin_report_options
 from app.routers.admin import resources as admin_resources
+from app.routers.admin import settings as admin_settings
 from app.routers.admin import statistics as admin_statistics
 from app.routers.portal import conversations as portal_conversations
 from app.routers.portal import escalations as portal_escalations
@@ -105,3 +107,5 @@ app.include_router(portal_conversations.router, prefix="/api")
 app.include_router(portal_escalations.router, prefix="/api")
 app.include_router(admin_escalations.router, prefix="/api")
 app.include_router(admin_reorder.router, prefix="/api")
+app.include_router(admin_settings.router, prefix="/api")
+app.include_router(admin_content.router, prefix="/api")
