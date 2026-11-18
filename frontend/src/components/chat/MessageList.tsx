@@ -5,7 +5,9 @@ import { cn } from "cn";
 
 import type { ChatMessage } from "./chatReducer";
 
-const SENDER_LABELS: Record<ChatMessage["sender"], string> = {
+type Sender = ChatMessage["sender"];
+
+const SENDER_LABELS: Record<Sender, string> = {
   texter: "You",
   responder: "Peer responder",
   system: "Peer2Peer",
@@ -21,9 +23,15 @@ const timeFormat = new Intl.DateTimeFormat("en-US", {
 export default function MessageList({
   messages,
   onRetry,
+  self = "texter",
+  labels,
 }: {
   messages: ChatMessage[];
   onRetry: (tempId: string) => void;
+  /** Whose messages are "me": shown on the right in the primary color. */
+  self?: Exclude<Sender, "system">;
+  /** Overrides for the sender names shown above each message. */
+  labels?: Partial<Record<Sender, string>>;
 }) {
   const endRef = useRef<HTMLDivElement>(null);
 
@@ -43,13 +51,15 @@ export default function MessageList({
             key={m.id}
             className={cn(
               "flex max-w-[85%] flex-col gap-1",
-              m.sender === "texter" && "items-end self-end",
-              m.sender === "responder" && "items-start self-start",
+              m.sender === self && "items-end self-end",
+              m.sender !== self &&
+                m.sender !== "system" &&
+                "items-start self-start",
               m.sender === "system" && "max-w-full items-center self-center",
             )}
           >
             <span className="text-xs text-muted-foreground">
-              {SENDER_LABELS[m.sender]}
+              {labels?.[m.sender] ?? SENDER_LABELS[m.sender]}
               <span aria-hidden="true"> · </span>
               <time dateTime={m.created_at}>
                 {timeFormat.format(new Date(m.created_at))}
@@ -59,8 +69,10 @@ export default function MessageList({
             <p
               className={cn(
                 "rounded-lg px-3 py-2 break-words whitespace-pre-wrap",
-                m.sender === "texter" && "bg-primary text-primary-foreground",
-                m.sender === "responder" && "bg-secondary text-foreground",
+                m.sender === self && "bg-primary text-primary-foreground",
+                m.sender !== self &&
+                  m.sender !== "system" &&
+                  "bg-secondary text-foreground",
                 m.sender === "system" &&
                   "bg-muted text-center text-sm text-muted-foreground",
                 m.status === "pending" && "opacity-70",

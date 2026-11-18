@@ -90,6 +90,14 @@ export type PortalConversation = {
   messages: PortalMessage[];
 };
 
+export function useConversation(id: string) {
+  return useQuery({
+    queryKey: conversationQueryKey(id),
+    queryFn: () =>
+      apiFetch<PortalConversation>(`/api/portal/conversations/${id}`),
+  });
+}
+
 export type Guide = components["schemas"]["ContentBlockDTO"];
 
 export const guideQueryKey = ["guide"] as const;

@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import type { InboxItem } from "@/lib/portal/queries";
 
+import { ConversationView } from "./ConversationView";
 import { EscalateButton } from "./EscalateButton";
 import { ReportForm } from "./ReportForm";
 
@@ -11,6 +12,8 @@ type ConversationPanelProps = {
   /** Mobile only: back to the inbox list. */
   onBack: () => void;
   onReportSubmitted: () => void;
+  /** The conversation 404'd, for example because it went back to the queue. */
+  onUnavailable: () => void;
 };
 
 /** The right side of the inbox screen: the selected conversation. */
@@ -18,6 +21,7 @@ export function ConversationPanel({
   item,
   onBack,
   onReportSubmitted,
+  onUnavailable,
 }: ConversationPanelProps) {
   const ended = item.status === "closed" || item.needs_report;
   return (
@@ -29,16 +33,15 @@ export function ConversationPanel({
       >
         ← Back to inbox
       </Button>
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-xl font-semibold">{item.label}</h2>
-        {/* TODO(#137): move into the ConversationView header. */}
-        <EscalateButton
-          conversationId={item.conversation_id}
-          status={item.status}
-        />
-      </div>
       {ended ? (
         <>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-xl font-semibold">{item.label}</h2>
+            <EscalateButton
+              conversationId={item.conversation_id}
+              status={item.status}
+            />
+          </div>
           <p>This conversation has ended.</p>
           <ReportForm
             conversationId={item.conversation_id}
@@ -46,8 +49,24 @@ export function ConversationPanel({
           />
         </>
       ) : (
-        // TODO(#137): the conversation view (messages and composer) goes here.
-        <p>This conversation is {item.status}.</p>
+        <div className="h-[70vh] min-h-96 rounded-lg border border-border">
+          <ConversationView
+            id={item.conversation_id}
+            onUnavailable={onUnavailable}
+            headerActions={
+              <EscalateButton
+                conversationId={item.conversation_id}
+                status={item.status}
+              />
+            }
+            reportSlot={
+              <ReportForm
+                conversationId={item.conversation_id}
+                onSubmitted={onReportSubmitted}
+              />
+            }
+          />
+        </div>
       )}
     </div>
   );

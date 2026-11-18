@@ -15,8 +15,10 @@ import { Button } from "@/components/ui/button";
 
 export default function EndConversationDialog({
   onConfirm,
+  description = "This ends the conversation and clears it from this tab.",
 }: {
   onConfirm: () => void;
+  description?: string;
 }) {
   return (
     <AlertDialog>
@@ -26,9 +28,7 @@ export default function EndConversationDialog({
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>End conversation?</AlertDialogTitle>
-          <AlertDialogDescription>
-            This ends the conversation and clears it from this tab.
-          </AlertDialogDescription>
+          <AlertDialogDescription>{description}</AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Keep talking</AlertDialogCancel>
