@@ -26,6 +26,7 @@ from app.routers import (
     status,
 )
 from app.routers.admin import accounts as admin_accounts
+from app.routers.admin import analytics as admin_analytics
 from app.routers.admin import audit_log as admin_audit_log
 from app.routers.admin import content as admin_content
 from app.routers.admin import escalations as admin_escalations
@@ -91,6 +92,7 @@ app.include_router(status.router, prefix="/api")
 app.include_router(faqs.router, prefix="/api")
 app.include_router(statistics.router, prefix="/api")
 app.include_router(admin_accounts.router, prefix="/api")
+app.include_router(admin_analytics.router, prefix="/api")
 app.include_router(admin_feedback.router, prefix="/api")
 app.include_router(admin_audit_log.router, prefix="/api")
 app.include_router(admin_faqs.router, prefix="/api")
