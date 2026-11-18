@@ -45,6 +45,8 @@ export function InboxScreen() {
       setUnavailableId(shownId);
     }
   }
+  // Don't greet the next shift with a notice from the last one.
+  if (!onShift && unavailableId !== null) setUnavailableId(null);
   const unavailable = !selected && unavailableId !== null;
 
   // Clear the selection from the URL too, so it can't reopen if the conversation comes back.

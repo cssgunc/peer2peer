@@ -484,4 +484,30 @@ describe("Inbox report integration", () => {
       screen.queryByRole("heading", { name: "Texter 15" }),
     ).not.toBeInTheDocument();
   });
+
+  it("drops the unavailable message when the shift ends", async () => {
+    const user = userEvent.setup();
+    renderInbox();
+    await user.click(await screen.findByRole("button", { name: /^Texter 15/ }));
+    await screen.findByRole("heading", { name: "Texter 15" });
+    act(() => queryClient.setQueryData(inboxQueryKey, [conversation]));
+    await screen.findByText("This conversation is no longer available");
+
+    me = { ...onShift, shift: null };
+    await act(async () => {
+      await queryClient.invalidateQueries({ queryKey: meQueryKey });
+    });
+    await screen.findByText("You're off shift.");
+    me = onShift;
+    await act(async () => {
+      await queryClient.invalidateQueries({ queryKey: meQueryKey });
+    });
+
+    expect(
+      await screen.findByText("Select a conversation from the inbox."),
+    ).toBeVisible();
+    expect(
+      screen.queryByText("This conversation is no longer available"),
+    ).not.toBeInTheDocument();
+  });
 });
