@@ -24,6 +24,9 @@ services:
       # can never fall back to them. Never use these anywhere real.
       MESSAGE_KEYS: '{"1": "yte/qvigYS5WM5z+o4jOY9nxhWTR0u8Ipj9agvIeHVc="}'
       ESCALATION_KEYS: '{"1": "tqydBnCd89e+HlWEyLtYtKgrGRMOdjkz2ntlg00R5Fk="}'
+      # Shared by the backend and Next.js so admin saves refresh public pages (TDD 4.6.8). Dev-only;
+      # never use it anywhere real.
+      REVALIDATE_SECRET: dev-revalidate-secret-not-for-production
       # The dev server runs on plain http, where browsers drop Secure cookies.
       SESSION_COOKIE_SECURE: "false"
     depends_on:

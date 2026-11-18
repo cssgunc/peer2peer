@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Annotated, Any
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.orm import Session, selectinload
@@ -21,6 +21,7 @@ from app.schemas.report import AdminReportOptionDTO
 from app.schemas.resources import AdminResourceDTO, AdminResourceTagDTO
 from app.schemas.statistics import AdminStatisticDTO
 from app.services.audit import AuditAction, record_audit
+from app.services.revalidate import RevalidateTag, schedule_revalidation
 
 router = APIRouter(prefix="/admin", tags=["admin reorder"])
 Database = Annotated[Session, Depends(get_db)]
@@ -33,35 +34,57 @@ class Collection:
     dto: type[BaseModel]
     action: AuditAction
     target_type: str
+    # Public cache tags this collection's order shows up in. Empty when it isn't public.
+    revalidate: tuple[RevalidateTag, ...]
     options: tuple[Any, ...] = ()
 
 
 COLLECTIONS = {
-    "faqs": Collection(Faq, AdminFaqDTO, AuditAction.FAQ_REORDER, "faq"),
+    "faqs": Collection(Faq, AdminFaqDTO, AuditAction.FAQ_REORDER, "faq", ("faqs",)),
     "statistics": Collection(
-        Statistic, AdminStatisticDTO, AuditAction.STATISTIC_REORDER, "statistic"
+        Statistic, AdminStatisticDTO, AuditAction.STATISTIC_REORDER, "statistic", ("statistics",)
     ),
     "fit-guide": Collection(
-        FitGuideItem, AdminFitGuideItemDTO, AuditAction.FIT_GUIDE_REORDER, "fit_guide"
+        FitGuideItem,
+        AdminFitGuideItemDTO,
+        AuditAction.FIT_GUIDE_REORDER,
+        "fit_guide",
+        ("fit-guide",),
     ),
     "resources": Collection(
         Resource,
         AdminResourceDTO,
         AuditAction.RESOURCE_REORDER,
         "resource",
+        # The fit guide keeps its own order, so only the resources page changes.
+        ("resources",),
         (selectinload(Resource.tags),),
     ),
     "resource-tags": Collection(
-        ResourceTag, AdminResourceTagDTO, AuditAction.RESOURCE_TAG_REORDER, "resource_tag"
+        ResourceTag,
+        AdminResourceTagDTO,
+        AuditAction.RESOURCE_TAG_REORDER,
+        "resource_tag",
+        ("resources",),
     ),
     "report-options": Collection(
-        ReportOption, AdminReportOptionDTO, AuditAction.REPORT_OPTION_REORDER, "report_option"
+        ReportOption,
+        AdminReportOptionDTO,
+        AuditAction.REPORT_OPTION_REORDER,
+        "report_option",
+        (),  # Report options only show in the portal, so no public page changes.
     ),
 }
 
 
 @router.put("/{collection}/reorder")
-def reorder(collection: str, data: ReorderDTO, db: Database, actor: Coordinator) -> list[Any]:
+def reorder(
+    collection: str,
+    data: ReorderDTO,
+    db: Database,
+    actor: Coordinator,
+    background: BackgroundTasks,
+) -> list[Any]:
     config = COLLECTIONS.get(collection)
     if config is None:
         raise HTTPException(404, "Collection not found")
@@ -90,4 +113,5 @@ def reorder(collection: str, data: ReorderDTO, db: Database, actor: Coordinator)
         details={"count": len(items)},
     )
     db.commit()
+    schedule_revalidation(background, *config.revalidate)
     return [config.dto.model_validate(item, from_attributes=True) for item in items]

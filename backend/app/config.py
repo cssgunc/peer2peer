@@ -31,6 +31,11 @@ class Settings(BaseSettings):
     # staff must use UNC emails is still open (TDD 4.5.1). Matches the exact domain only.
     staff_email_domains: list[str] = []
 
+    # On-demand revalidation of public pages (TDD 4.6.8). No secret (or an empty one) turns it
+    # off, which is what local runs without the frontend and tests want.
+    revalidate_url: str = "http://localhost:3000/api/revalidate"
+    revalidate_secret: str | None = None
+
     # Key version -> base64-encoded 32-byte AES key (TDD 4.6.7). The highest version encrypts.
     message_keys: dict[int, str]
     escalation_keys: dict[int, str]
