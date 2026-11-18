@@ -12,8 +12,22 @@ import { ReportForm } from "./ReportForm";
 export function Inbox() {
   const { data: items, isPending, isError, refetch } = useInbox();
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // Shown after the selected conversation 404s or leaves the inbox (for example, it went back to the queue when a shift ended).
+  const [unavailable, setUnavailable] = useState(false);
   const clearSelection = useCallback(() => setSelectedId(null), []);
+  const markUnavailable = useCallback(() => {
+    setSelectedId(null);
+    setUnavailable(true);
+  }, []);
   const selected = items?.find((item) => item.conversation_id === selectedId);
+
+  // The inbox can drop the conversation before its view sees the 404.
+  if (selectedId !== null && items && !selected) markUnavailable();
+
+  function select(id: string) {
+    setSelectedId(id);
+    setUnavailable(false);
+  }
 
   return (
     <div className="space-y-6">
@@ -47,7 +61,7 @@ export function Inbox() {
                       }
                       aria-pressed={selectedId === item.conversation_id}
                       aria-label={`${item.label}, ${item.needs_report ? "Report needed" : item.status}`}
-                      onClick={() => setSelectedId(item.conversation_id)}
+                      onClick={() => select(item.conversation_id)}
                       className="h-auto min-h-11 w-full flex-col items-start gap-1 px-3 py-3 text-left whitespace-normal"
                     >
                       <span>{item.label}</span>
@@ -91,7 +105,7 @@ export function Inbox() {
                   <div className="h-[70vh] min-h-96 rounded-lg border border-border">
                     <ConversationView
                       id={selected.conversation_id}
-                      onUnavailable={clearSelection}
+                      onUnavailable={markUnavailable}
                       headerActions={
                         <EscalateButton
                           conversationId={selected.conversation_id}
@@ -108,6 +122,13 @@ export function Inbox() {
                   </div>
                 </>
               )
+            ) : unavailable ? (
+              <div className="space-y-3">
+                <p role="status">This conversation is no longer available</p>
+                <Button variant="ghost" onClick={() => setUnavailable(false)}>
+                  Back to inbox
+                </Button>
+              </div>
             ) : (
               <p className="text-muted-foreground">
                 Select a conversation from the inbox.

@@ -29,6 +29,7 @@ let items: InboxItem[];
 let reportStatus: number;
 let reportCode: string;
 let inboxStatus: number;
+let conversationStatus: number;
 
 function renderInbox() {
   return render(
@@ -43,6 +44,7 @@ beforeEach(() => {
   reportStatus = 201;
   reportCode = "";
   inboxStatus = 200;
+  conversationStatus = 200;
   queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false } },
   });
@@ -70,6 +72,23 @@ beforeEach(() => {
           { status: reportStatus },
         );
       }
+      if (path === `/api/portal/conversations/${active.conversation_id}/read`)
+        return new Response(null, { status: 204 });
+      if (path === `/api/portal/conversations/${active.conversation_id}`)
+        return conversationStatus === 200
+          ? Response.json({
+              conversation_id: active.conversation_id,
+              label: active.label,
+              channel: active.channel,
+              status: active.status,
+              opened_at: active.opened_at,
+              closed_at: null,
+              messages: [],
+            })
+          : Response.json(
+              { code: "conversation_not_found" },
+              { status: conversationStatus },
+            );
       throw new Error(`Unexpected request: ${path}`);
     }),
   );
@@ -217,5 +236,52 @@ describe("Inbox report integration", () => {
       conversation,
       active,
     ]);
+  });
+
+  it("keeps the unavailable message on screen after a 404", async () => {
+    conversationStatus = 404;
+    const user = userEvent.setup();
+    renderInbox();
+    await user.click(
+      await screen.findByRole("button", { name: "Texter 15, active" }),
+    );
+
+    expect(
+      await screen.findByText("This conversation is no longer available"),
+    ).toBeVisible();
+    await waitFor(() =>
+      expect(
+        screen.getByRole("button", { name: "Texter 15, active" }),
+      ).toHaveAttribute("aria-pressed", "false"),
+    );
+    expect(
+      screen.getByText("This conversation is no longer available"),
+    ).toBeVisible();
+    expect(
+      screen.queryByText("Select a conversation from the inbox."),
+    ).not.toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "Back to inbox" }));
+    expect(
+      screen.getByText("Select a conversation from the inbox."),
+    ).toBeVisible();
+  });
+
+  it("shows the unavailable message when the inbox drops the selected conversation", async () => {
+    const user = userEvent.setup();
+    renderInbox();
+    await user.click(
+      await screen.findByRole("button", { name: "Texter 15, active" }),
+    );
+    await screen.findByRole("heading", { name: "Texter 15" });
+
+    act(() => queryClient.setQueryData(inboxQueryKey, [conversation]));
+
+    expect(
+      await screen.findByText("This conversation is no longer available"),
+    ).toBeVisible();
+    expect(
+      screen.queryByRole("heading", { name: "Texter 15" }),
+    ).not.toBeInTheDocument();
   });
 });
