@@ -214,3 +214,44 @@ export function useAdminSetting<T>(key: string) {
       settings.find((setting) => setting.key === key)?.value as T | undefined,
   });
 }
+
+// Mirrors LineAnalyticsDTO in backend/app/schemas/analytics.py. Dates are date-only "YYYY-MM-DD".
+export type AnalyticsBucket = { label: string; count: number };
+
+export type LineAnalytics = {
+  range: { start: string; end: string };
+  conversations_total: number;
+  by_channel: Record<string, number>;
+  first_response_seconds: { median: number | null; p90: number | null };
+  duration_seconds: { median: number | null };
+  message_count: { median: number | null };
+  after_hours_attempts: number;
+  topics: AnalyticsBucket[];
+  outcomes: AnalyticsBucket[];
+  confidence_avg: number | null;
+  series: { date: string; conversations: number }[];
+  suppression_threshold: number;
+};
+
+export type AnalyticsChannel = "web" | "sms";
+
+export type LineAnalyticsParams = {
+  start: string;
+  end: string;
+  channel: AnalyticsChannel | null;
+};
+
+/** Pass `enabled: false` while the range is invalid, so no request is sent. */
+export function useLineAnalytics(
+  { start, end, channel }: LineAnalyticsParams,
+  { enabled = true }: { enabled?: boolean } = {},
+) {
+  const query = new URLSearchParams({ start, end });
+  if (channel) query.set("channel", channel);
+  return useQuery({
+    queryKey: ["admin-analytics", "line", start, end, channel] as const,
+    queryFn: () =>
+      apiFetch<LineAnalytics>(`/api/admin/analytics/line?${query}`),
+    enabled,
+  });
+}
