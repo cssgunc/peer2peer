@@ -152,3 +152,65 @@ export function useEscalation(id: string, enabled: boolean) {
     refetchOnReconnect: false,
   });
 }
+
+// Mirrors FeedbackDTO in backend/app/schemas/feedback.py. created_on is a date-only "YYYY-MM-DD".
+export type Feedback = {
+  id: string;
+  body: string;
+  created_on: string;
+  read: boolean;
+};
+
+export type FeedbackFilter = "all" | "unread" | "read";
+
+// The inbox list and the nav's unread count both live under this prefix, so one
+// invalidation refreshes both.
+export const feedbackQueryKey = ["admin-feedback"] as const;
+
+function feedbackQuery(filter: FeedbackFilter) {
+  return {
+    queryKey: [...feedbackQueryKey, filter] as const,
+    queryFn: () =>
+      apiFetch<Feedback[]>(
+        filter === "all"
+          ? "/api/admin/feedback"
+          : `/api/admin/feedback?unread=${filter === "unread"}`,
+      ),
+  };
+}
+
+export function useFeedback(filter: FeedbackFilter) {
+  return useQuery(feedbackQuery(filter));
+}
+
+/** No count endpoint, so this counts the Unread list; it shares that filter's cache entry. */
+export function useFeedbackUnreadCount({
+  enabled = true,
+}: { enabled?: boolean } = {}) {
+  return useQuery({
+    ...feedbackQuery("unread"),
+    select: (items: Feedback[]) => items.length,
+    enabled,
+  });
+}
+
+// Mirrors AdminSiteSettingsDTO in backend/app/schemas/settings.py.
+export type AdminSiteSetting = {
+  key: string;
+  value: unknown;
+  description: string;
+  public: boolean;
+  updated_by: string | null;
+  updated_at: string | null;
+};
+
+export const adminSettingsQueryKey = ["admin-settings"] as const;
+
+export function useAdminSetting<T>(key: string) {
+  return useQuery({
+    queryKey: adminSettingsQueryKey,
+    queryFn: () => apiFetch<AdminSiteSetting[]>("/api/admin/settings"),
+    select: (settings) =>
+      settings.find((setting) => setting.key === key)?.value as T | undefined,
+  });
+}

@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import type { Me } from "@/lib/portal/queries";
+import { Badge } from "@/components/ui/badge";
+import { type Me, useFeedbackUnreadCount } from "@/lib/portal/queries";
 
 import { navFor } from "./nav";
 
@@ -16,6 +17,11 @@ export function PortalNavLinks({
 }) {
   const pathname = usePathname();
   const items = navFor(role);
+  // Responders get a 403 from the admin API, so never ask on their behalf.
+  const { data: feedbackUnread } = useFeedbackUnreadCount({
+    enabled: role === "coordinator",
+  });
+  const counts = { feedbackUnread };
   const groups = [
     { heading: null, items: items.filter((item) => !item.coordinatorOnly) },
     { heading: "Admin", items: items.filter((item) => item.coordinatorOnly) },
@@ -31,18 +37,27 @@ export function PortalNavLinks({
             </p>
           )}
           <ul className="flex flex-col gap-1">
-            {items.map(({ href, label }) => (
-              <li key={href}>
-                <Link
-                  href={href}
-                  aria-current={pathname === href ? "page" : undefined}
-                  onClick={onNavigate}
-                  className="flex min-h-11 items-center rounded-md px-3 text-sm font-medium hover:bg-muted aria-[current=page]:bg-secondary aria-[current=page]:text-secondary-foreground"
-                >
-                  {label}
-                </Link>
-              </li>
-            ))}
+            {items.map(({ href, label, badge }) => {
+              const count = badge ? counts[badge] : undefined;
+              return (
+                <li key={href}>
+                  <Link
+                    href={href}
+                    aria-current={pathname === href ? "page" : undefined}
+                    onClick={onNavigate}
+                    className="flex min-h-11 items-center gap-2 rounded-md px-3 text-sm font-medium hover:bg-muted aria-[current=page]:bg-secondary aria-[current=page]:text-secondary-foreground"
+                  >
+                    {label}
+                    {!!count && (
+                      <Badge className="ml-auto">
+                        <span aria-hidden="true">{count}</span>
+                        <span className="sr-only">{`, ${count} unread`}</span>
+                      </Badge>
+                    )}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       ))}
