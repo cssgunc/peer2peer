@@ -306,6 +306,7 @@ function Results({ data }: { data: LineAnalytics }) {
         title="Topics"
         rows={data.topics}
         labelHeader="Topic"
+        horizontal
         note={mayHide ? hiddenNote : undefined}
       />
 
@@ -313,6 +314,7 @@ function Results({ data }: { data: LineAnalytics }) {
         title="Outcomes"
         rows={data.outcomes}
         labelHeader="Outcome"
+        horizontal
         note={mayHide ? hiddenNote : undefined}
       />
 
@@ -346,16 +348,20 @@ function Tile({ label, value }: { label: string; value: string }) {
 }
 
 // Each chart is decorative for screen readers; the visually hidden table carries the data.
+// Topic and outcome labels are editable and can be long, so those charts put them on the
+// left as horizontal bars, where a narrow screen doesn't drop them.
 function ChartSection({
   title,
   rows,
   labelHeader,
   note,
+  horizontal = false,
 }: {
   title: string;
   rows: AnalyticsBucket[];
   labelHeader: string;
   note?: string;
+  horizontal?: boolean;
 }) {
   return (
     <section className="space-y-2">
@@ -364,12 +370,38 @@ function ChartSection({
         <p className="text-sm">No data to show.</p>
       ) : (
         <>
-          <div aria-hidden="true" className="h-64">
+          <div
+            aria-hidden="true"
+            className={horizontal ? undefined : "h-64"}
+            style={horizontal ? { height: rows.length * 40 + 40 } : undefined}
+          >
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={rows}>
-                <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                <XAxis dataKey="label" tick={{ fontSize: 12 }} />
-                <YAxis allowDecimals={false} width={32} />
+              <BarChart
+                data={rows}
+                layout={horizontal ? "vertical" : "horizontal"}
+              >
+                <CartesianGrid
+                  strokeDasharray="3 3"
+                  vertical={horizontal}
+                  horizontal={!horizontal}
+                />
+                {horizontal ? (
+                  <>
+                    <XAxis type="number" allowDecimals={false} />
+                    <YAxis
+                      type="category"
+                      dataKey="label"
+                      width={130}
+                      interval={0}
+                      tick={{ fontSize: 12 }}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <XAxis dataKey="label" tick={{ fontSize: 12 }} />
+                    <YAxis allowDecimals={false} width={32} />
+                  </>
+                )}
                 <Tooltip />
                 <Bar
                   dataKey="count"
