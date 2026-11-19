@@ -4,6 +4,8 @@ export type PortalNavItem = {
   label: string;
   href: string;
   coordinatorOnly: boolean;
+  /** A count shown next to the label. */
+  badge?: "feedbackUnread";
 };
 
 export const portalNav: PortalNavItem[] = [
@@ -28,7 +30,12 @@ export const portalNav: PortalNavItem[] = [
     href: "/portal/admin/report-options",
     coordinatorOnly: true,
   },
-  { label: "Feedback", href: "/portal/admin/feedback", coordinatorOnly: true },
+  {
+    label: "Feedback",
+    href: "/portal/admin/feedback",
+    coordinatorOnly: true,
+    badge: "feedbackUnread",
+  },
   {
     label: "Analytics",
     href: "/portal/admin/analytics",

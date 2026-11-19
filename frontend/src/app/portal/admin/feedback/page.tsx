@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 
-import { Placeholder } from "@/components/portal/Placeholder";
+import { FeedbackInbox } from "@/components/admin/FeedbackInbox";
 
 export const metadata: Metadata = { title: "Feedback" };
 
 export default function Page() {
-  return <Placeholder title="Feedback" />;
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl font-semibold">Feedback</h1>
+      <FeedbackInbox />
+    </div>
+  );
 }

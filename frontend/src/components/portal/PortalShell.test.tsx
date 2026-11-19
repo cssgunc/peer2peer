@@ -14,7 +14,11 @@ vi.mock("next/navigation", () => ({
   usePathname: vi.fn(),
   useRouter: () => ({ push: vi.fn(), replace }),
 }));
-vi.mock("@/lib/portal/queries", () => ({ useMe: vi.fn() }));
+vi.mock("@/lib/portal/queries", () => ({
+  useMe: vi.fn(),
+  // The badge has its own tests in PortalNavLinks.test.tsx.
+  useFeedbackUnreadCount: () => ({ data: undefined }),
+}));
 // The socket has its own tests; keep the shell tests offline.
 vi.mock("@/lib/portal/PortalSocketProvider", () => ({
   PortalSocketProvider: ({ children }: { children: React.ReactNode }) =>
