@@ -21,6 +21,142 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/sign-in": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign In */
+        post: operations["sign_in_api_auth_sign_in_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/sign-out": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Sign Out */
+        post: operations["sign_out_api_auth_sign_out_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Me */
+        get: operations["me_api_auth_me_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Change Password */
+        post: operations["change_password_api_auth_password_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Session */
+        post: operations["create_session_api_chat_sessions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/conversation": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Conversation */
+        get: operations["get_conversation_api_chat_conversation_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send Message */
+        post: operations["send_message_api_chat_messages_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/chat/conversation/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** End Conversation */
+        post: operations["end_conversation_api_chat_conversation_end_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/settings": {
         parameters: {
             query?: never;
@@ -174,6 +310,144 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/admin/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Accounts */
+        get: operations["list_accounts_api_admin_accounts_get"];
+        put?: never;
+        /** Create Account */
+        post: operations["create_account_api_admin_accounts_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/accounts/{account_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Account */
+        patch: operations["update_account_api_admin_accounts__account_id__patch"];
+        trace?: never;
+    };
+    "/api/admin/accounts/{account_id}/reset-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Reset Password */
+        post: operations["reset_password_api_admin_accounts__account_id__reset_password_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/analytics/line": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Line Analytics */
+        get: operations["get_line_analytics_api_admin_analytics_line_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/analytics/line.csv": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export Line Analytics */
+        get: operations["export_line_analytics_api_admin_analytics_line_csv_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/feedback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Feedback */
+        get: operations["list_feedback_api_admin_feedback_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/feedback/{feedback_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Feedback */
+        delete: operations["delete_feedback_api_admin_feedback__feedback_id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Feedback */
+        patch: operations["update_feedback_api_admin_feedback__feedback_id__patch"];
+        trace?: never;
+    };
+    "/api/admin/audit-log": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Audit Log */
+        get: operations["list_audit_log_api_admin_audit_log_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/admin/faqs": {
         parameters: {
             query?: never;
@@ -246,10 +520,557 @@ export interface paths {
         patch: operations["update_statistic_api_admin_statistics__id__patch"];
         trace?: never;
     };
+    "/api/fit-guide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Fit Guide */
+        get: operations["get_fit_guide_api_fit_guide_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/fit-guide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Items */
+        get: operations["list_items_api_admin_fit_guide_get"];
+        put?: never;
+        /** Create Item */
+        post: operations["create_item_api_admin_fit_guide_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/fit-guide/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Item */
+        delete: operations["delete_item_api_admin_fit_guide__id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Item */
+        patch: operations["update_item_api_admin_fit_guide__id__patch"];
+        trace?: never;
+    };
+    "/api/portal/report-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Report Options */
+        get: operations["list_report_options_api_portal_report_options_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/portal/conversations/{id}/report": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Submit Report */
+        post: operations["submit_report_api_portal_conversations__id__report_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/portal/shift/start": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Start */
+        post: operations["start_api_portal_shift_start_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/portal/shift/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** End */
+        post: operations["end_api_portal_shift_end_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/portal/inbox": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Inbox */
+        get: operations["inbox_api_portal_inbox_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/portal/conversations/{conversation_id}/read": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Read */
+        post: operations["read_api_portal_conversations__conversation_id__read_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/portal/guide": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Guide */
+        get: operations["read_guide_api_portal_guide_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/report-options": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Admin Report Options */
+        get: operations["list_admin_report_options_api_admin_report_options_get"];
+        put?: never;
+        /** Create Report Option */
+        post: operations["create_report_option_api_admin_report_options_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/report-options/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Update Report Option */
+        patch: operations["update_report_option_api_admin_report_options__id__patch"];
+        trace?: never;
+    };
+    "/api/admin/resources": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Resources */
+        get: operations["list_resources_api_admin_resources_get"];
+        put?: never;
+        /** Create Resource */
+        post: operations["create_resource_api_admin_resources_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/resources/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Resource */
+        delete: operations["delete_resource_api_admin_resources__id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Resource */
+        patch: operations["update_resource_api_admin_resources__id__patch"];
+        trace?: never;
+    };
+    "/api/admin/resource-tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Tags */
+        get: operations["list_tags_api_admin_resource_tags_get"];
+        put?: never;
+        /** Create Tag */
+        post: operations["create_tag_api_admin_resource_tags_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/resource-tags/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Tag */
+        delete: operations["delete_tag_api_admin_resource_tags__id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Tag */
+        patch: operations["update_tag_api_admin_resource_tags__id__patch"];
+        trace?: never;
+    };
+    "/api/admin/hours": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Read Hours */
+        get: operations["read_hours_api_admin_hours_get"];
+        /** Update Hours */
+        put: operations["update_hours_api_admin_hours_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/hours/exceptions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create Exception */
+        post: operations["create_exception_api_admin_hours_exceptions_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/hours/exceptions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Exception */
+        delete: operations["delete_exception_api_admin_hours_exceptions__id__delete"];
+        options?: never;
+        head?: never;
+        /** Update Exception */
+        patch: operations["update_exception_api_admin_hours_exceptions__id__patch"];
+        trace?: never;
+    };
+    "/api/portal/conversations/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Conversation */
+        get: operations["get_conversation_api_portal_conversations__id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/portal/conversations/{id}/messages": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Send Message */
+        post: operations["send_message_api_portal_conversations__id__messages_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/portal/conversations/{id}/end": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** End Conversation */
+        post: operations["end_conversation_api_portal_conversations__id__end_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/portal/conversations/{conversation_id}/escalate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Escalate */
+        post: operations["escalate_api_portal_conversations__conversation_id__escalate_post"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/escalations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Escalations */
+        get: operations["list_escalations_api_admin_escalations_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/escalations/{escalation_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Escalation */
+        get: operations["get_escalation_api_admin_escalations__escalation_id__get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/{collection}/reorder": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Reorder */
+        put: operations["reorder_api_admin__collection__reorder_put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Settings */
+        get: operations["get_settings_api_admin_settings_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/settings/{key}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Setting */
+        put: operations["update_setting_api_admin_settings__key__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/content": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Content */
+        get: operations["get_content_api_admin_content_get"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/admin/content/{slug}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Content Block */
+        get: operations["get_content_block_api_admin_content__slug__get"];
+        /** Update Content Block */
+        put: operations["update_content_block_api_admin_content__slug__put"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /**
+         * AccountDTO
+         * @description Staff account as coordinators see it (TDD 4.7.1). Never includes the password hash.
+         */
+        AccountDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Email */
+            email: string;
+            /** Display Name */
+            display_name: string;
+            role: components["schemas"]["AccountRole"];
+            /** Is Active */
+            is_active: boolean;
+            /** Last Login At */
+            last_login_at: string | null;
+            /** On Shift */
+            on_shift: boolean;
+        };
+        /**
+         * AccountRole
+         * @enum {string}
+         */
+        AccountRole: "responder" | "coordinator";
         /** AdminFaqDTO */
         AdminFaqDTO: {
             /**
@@ -268,6 +1089,119 @@ export interface components {
             /** Is Published */
             is_published: boolean;
         };
+        /** AdminFitGuideItemDTO */
+        AdminFitGuideItemDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            fit: components["schemas"]["Fit"];
+            /** Text */
+            text: string;
+            /** Resource Id */
+            resource_id: string | null;
+            /** Display Order */
+            display_order: number;
+        };
+        /** AdminHoursDTO */
+        AdminHoursDTO: {
+            /** Timezone */
+            timezone: string;
+            /** Weekly */
+            weekly: components["schemas"]["WeeklyWindowDTO"][];
+            /** Exceptions */
+            exceptions: components["schemas"]["AdminHoursExceptionDTO"][];
+        };
+        /** AdminHoursExceptionDTO */
+        AdminHoursExceptionDTO: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Is Closed */
+            is_closed: boolean;
+            /** Opens At */
+            opens_at: string | null;
+            /** Closes At */
+            closes_at: string | null;
+            /** Note */
+            note: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+        };
+        /** AdminReportOptionDTO */
+        AdminReportOptionDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            kind: components["schemas"]["ReportOptionKind"];
+            /** Label */
+            label: string;
+            /** Display Order */
+            display_order: number;
+            /** Is Active */
+            is_active: boolean;
+        };
+        /** AdminResourceDTO */
+        AdminResourceDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
+            /** Url */
+            url: string | null;
+            /** Phone */
+            phone: string | null;
+            /** Is Unc */
+            is_unc: boolean;
+            /** Is Crisis */
+            is_crisis: boolean;
+            /** Is Published */
+            is_published: boolean;
+            /** Display Order */
+            display_order: number;
+            /** Tags */
+            tags: components["schemas"]["AdminResourceTagDTO"][];
+        };
+        /** AdminResourceTagDTO */
+        AdminResourceTagDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Display Order */
+            display_order: number;
+        };
+        /** AdminSiteSettingsDTO */
+        AdminSiteSettingsDTO: {
+            /** Key */
+            key: string;
+            /** Value */
+            value: unknown;
+            /** Description */
+            description: string;
+            /** Public */
+            public: boolean;
+            /** Updated By */
+            updated_by: string | null;
+            /** Updated At */
+            updated_at: string | null;
+        };
         /** AdminStatisticDTO */
         AdminStatisticDTO: {
             /**
@@ -284,6 +1218,121 @@ export interface components {
             /** Is Published */
             is_published: boolean;
         };
+        /** AnalyticsBucketDTO */
+        AnalyticsBucketDTO: {
+            /** Label */
+            label: string;
+            /** Count */
+            count: number;
+        };
+        /** AnalyticsDayDTO */
+        AnalyticsDayDTO: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Conversations */
+            conversations: number;
+        };
+        /** AnalyticsRangeDTO */
+        AnalyticsRangeDTO: {
+            /**
+             * Start
+             * Format: date
+             */
+            start: string;
+            /**
+             * End
+             * Format: date
+             */
+            end: string;
+        };
+        /**
+         * AuditAction
+         * @enum {string}
+         */
+        AuditAction: "account.create" | "account.update" | "account.deactivate" | "account.reset_password" | "settings.update" | "content.update" | "hours.update" | "hours_exception.create" | "hours_exception.update" | "hours_exception.delete" | "report_option.create" | "report_option.update" | "feedback.delete" | "escalation.create" | "escalation.view" | "faq.create" | "faq.update" | "faq.delete" | "statistic.create" | "statistic.update" | "statistic.delete" | "fit_guide.create" | "fit_guide.update" | "fit_guide.delete" | "resource.create" | "resource.update" | "resource.delete" | "resource_tag.create" | "resource_tag.update" | "resource_tag.delete" | "faq.reorder" | "statistic.reorder" | "fit_guide.reorder" | "resource.reorder" | "resource_tag.reorder" | "report_option.reorder";
+        /**
+         * AuditLogDTO
+         * @description Summary of an audit event. Deliberately excludes the metadata column (TDD 4.7.1).
+         */
+        AuditLogDTO: {
+            /** Id */
+            id: number;
+            /** Actor Display Name */
+            actor_display_name: string | null;
+            action: components["schemas"]["AuditAction"];
+            /** Target Type */
+            target_type: string;
+            /** Target Id */
+            target_id: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** AuditLogPageDTO */
+        AuditLogPageDTO: {
+            /** Items */
+            items: components["schemas"]["AuditLogDTO"][];
+            /** Page */
+            page: number;
+            /** Page Size */
+            page_size: number;
+            /** Total */
+            total: number;
+        };
+        /** ChangePasswordDTO */
+        ChangePasswordDTO: {
+            /** Current Password */
+            current_password: string;
+            /** New Password */
+            new_password: string;
+        };
+        /**
+         * Channel
+         * @enum {string}
+         */
+        Channel: "web" | "sms";
+        /** ChatConversationDTO */
+        ChatConversationDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            status: components["schemas"]["ConversationStatus"];
+            /** Messages */
+            messages: components["schemas"]["ChatMessageDTO"][];
+        };
+        /**
+         * ChatMessageDTO
+         * @description A message as the texter sees it. Never includes the responder's name or account.
+         */
+        ChatMessageDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            sender: components["schemas"]["MessageSender"];
+            /** Body */
+            body: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** ChatSessionDTO */
+        ChatSessionDTO: {
+            /** Token */
+            token: string;
+            /** Conversation Id */
+            conversation_id?: string | null;
+        };
         /** ContentBlockDTO */
         ContentBlockDTO: {
             /** Slug */
@@ -295,6 +1344,106 @@ export interface components {
             /** Updated At */
             updated_at: string | null;
         };
+        /**
+         * ConversationStatus
+         * @enum {string}
+         */
+        ConversationStatus: "queued" | "active" | "closed";
+        /** CreateAccountDTO */
+        CreateAccountDTO: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Display Name */
+            display_name: string;
+            role: components["schemas"]["AccountRole"];
+        };
+        /** CreatedAccountDTO */
+        CreatedAccountDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Email */
+            email: string;
+            /** Display Name */
+            display_name: string;
+            role: components["schemas"]["AccountRole"];
+            /** Is Active */
+            is_active: boolean;
+            /** Last Login At */
+            last_login_at: string | null;
+            /** On Shift */
+            on_shift: boolean;
+            /** Temporary Password */
+            temporary_password: string;
+        };
+        /** CreatedEscalationDTO */
+        CreatedEscalationDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+        };
+        /**
+         * DeliveryStatus
+         * @enum {string}
+         */
+        DeliveryStatus: "received" | "sent" | "delivered" | "failed";
+        /**
+         * EscalationDTO
+         * @description An escalation as coordinators see it (TDD 4.7.1). Never includes texter_id or identity data.
+         *
+         *     TODO(escalation-protocol): the final shape waits on the CAPS protocol.
+         */
+        EscalationDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Conversation Label */
+            conversation_label: string;
+            status: components["schemas"]["EscalationStatus"];
+            /** Created By Display Name */
+            created_by_display_name: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+        };
+        /** EscalationDetailDTO */
+        EscalationDetailDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Conversation Label */
+            conversation_label: string;
+            status: components["schemas"]["EscalationStatus"];
+            /** Created By Display Name */
+            created_by_display_name: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /**
+         * EscalationStatus
+         * @enum {string}
+         */
+        EscalationStatus: "open" | "handed_off" | "closed";
         /** FaqDTO */
         FaqDTO: {
             /**
@@ -339,12 +1488,98 @@ export interface components {
             is_published?: boolean | null;
         };
         /**
+         * FeedbackDTO
+         * @description Anonymous feedback as coordinators see it (TDD 4.7.1).
+         */
+        FeedbackDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Body */
+            body: string;
+            /**
+             * Created On
+             * Format: date
+             */
+            created_on: string;
+            /** Read */
+            read: boolean;
+        };
+        /**
          * FeedbackInputDTO
          * @description Anonymous Contact-page feedback (TDD 4.7.1). Trimmed before the length check.
          */
         FeedbackInputDTO: {
             /** Body */
             body: string;
+        };
+        /** FirstResponseDTO */
+        FirstResponseDTO: {
+            /** Median */
+            median: number | null;
+            /** P90 */
+            p90: number | null;
+        };
+        /**
+         * Fit
+         * @enum {string}
+         */
+        Fit: "good_fit" | "other_resource";
+        /** FitGuideDTO */
+        FitGuideDTO: {
+            /** Good Fit */
+            good_fit: components["schemas"]["FitGuideItemDTO"][];
+            /** Other Resource */
+            other_resource: components["schemas"]["FitGuideItemDTO"][];
+        };
+        /** FitGuideItemDTO */
+        FitGuideItemDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Text */
+            text: string;
+            /** Resource Id */
+            resource_id: string | null;
+            resource: components["schemas"]["FitGuideResourceDTO"] | null;
+        };
+        /** FitGuideItemInputDTO */
+        FitGuideItemInputDTO: {
+            fit: components["schemas"]["Fit"];
+            /** Text */
+            text: string;
+            /** Resource Id */
+            resource_id?: string | null;
+            /** Display Order */
+            display_order: number;
+        };
+        /** FitGuideItemPatchDTO */
+        FitGuideItemPatchDTO: {
+            fit?: components["schemas"]["Fit"] | null;
+            /** Text */
+            text?: string | null;
+            /** Resource Id */
+            resource_id?: string | null;
+            /** Display Order */
+            display_order?: number | null;
+        };
+        /** FitGuideResourceDTO */
+        FitGuideResourceDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Url */
+            url: string | null;
+            /** Phone */
+            phone: string | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -376,6 +1611,180 @@ export interface components {
             /** Note */
             note: string | null;
         };
+        /** HoursExceptionInputDTO */
+        HoursExceptionInputDTO: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Is Closed */
+            is_closed: boolean;
+            /** Opens At */
+            opens_at?: string | null;
+            /** Closes At */
+            closes_at?: string | null;
+            /** Note */
+            note?: string | null;
+        };
+        /**
+         * InboxItemDTO
+         * @description One inbox row. Never includes texter_id or the identity hash.
+         */
+        InboxItemDTO: {
+            /**
+             * Conversation Id
+             * Format: uuid
+             */
+            conversation_id: string;
+            /** Label */
+            label: string;
+            channel: components["schemas"]["Channel"];
+            status: components["schemas"]["ConversationStatus"];
+            /**
+             * Opened At
+             * Format: date-time
+             */
+            opened_at: string;
+            /** Last Message At */
+            last_message_at: string | null;
+            /** Unread Count */
+            unread_count: number;
+            /** Needs Report */
+            needs_report: boolean;
+        };
+        /** LineAnalyticsDTO */
+        LineAnalyticsDTO: {
+            range: components["schemas"]["AnalyticsRangeDTO"];
+            /** Conversations Total */
+            conversations_total: number;
+            /** By Channel */
+            by_channel: {
+                [key: string]: number;
+            };
+            first_response_seconds: components["schemas"]["FirstResponseDTO"];
+            duration_seconds: components["schemas"]["MedianDTO"];
+            message_count: components["schemas"]["MedianDTO"];
+            /** After Hours Attempts */
+            after_hours_attempts: number;
+            /** Topics */
+            topics: components["schemas"]["AnalyticsBucketDTO"][];
+            /** Outcomes */
+            outcomes: components["schemas"]["AnalyticsBucketDTO"][];
+            /** Confidence Avg */
+            confidence_avg: number | null;
+            /** Series */
+            series: components["schemas"]["AnalyticsDayDTO"][];
+            /** Suppression Threshold */
+            suppression_threshold: number;
+        };
+        /** MeDTO */
+        MeDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Email */
+            email: string;
+            /** Display Name */
+            display_name: string;
+            role: components["schemas"]["AccountRole"];
+            /** Must Change Password */
+            must_change_password: boolean;
+            shift: components["schemas"]["ShiftDTO"] | null;
+        };
+        /** MedianDTO */
+        MedianDTO: {
+            /** Median */
+            median: number | null;
+        };
+        /**
+         * MessageSender
+         * @enum {string}
+         */
+        MessageSender: "texter" | "responder" | "system";
+        /**
+         * PortalConversationDTO
+         * @description A conversation with its messages as shown to a responder.
+         */
+        PortalConversationDTO: {
+            /**
+             * Conversation Id
+             * Format: uuid
+             */
+            conversation_id: string;
+            /** Label */
+            label: string;
+            channel: components["schemas"]["Channel"];
+            status: components["schemas"]["ConversationStatus"];
+            /**
+             * Opened At
+             * Format: date-time
+             */
+            opened_at: string;
+            /** Closed At */
+            closed_at: string | null;
+            /** Messages */
+            messages: components["schemas"]["PortalMessageDTO"][];
+        };
+        /**
+         * PortalMessageDTO
+         * @description A message as a responder sees it. Never includes texter_id or the identity hash.
+         */
+        PortalMessageDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            sender: components["schemas"]["MessageSender"];
+            /** Body */
+            body: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            delivery_status: components["schemas"]["DeliveryStatus"] | null;
+        };
+        /** ReorderDTO */
+        ReorderDTO: {
+            /** Ids */
+            ids: string[];
+        };
+        /** ReportOptionDTO */
+        ReportOptionDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Label */
+            label: string;
+        };
+        /** ReportOptionInputDTO */
+        ReportOptionInputDTO: {
+            kind: components["schemas"]["ReportOptionKind"];
+            /** Label */
+            label: string;
+            /** Display Order */
+            display_order: number;
+            /** Is Active */
+            is_active: boolean;
+        };
+        /**
+         * ReportOptionKind
+         * @enum {string}
+         */
+        ReportOptionKind: "topic" | "outcome";
+        /** ReportOptionsDTO */
+        ReportOptionsDTO: {
+            /** Topics */
+            topics: components["schemas"]["ReportOptionDTO"][];
+            /** Outcomes */
+            outcomes: components["schemas"]["ReportOptionDTO"][];
+        };
         /** ResourceDTO */
         ResourceDTO: {
             /**
@@ -398,6 +1807,60 @@ export interface components {
             /** Tags */
             tags: string[];
         };
+        /** ResourceInputDTO */
+        ResourceInputDTO: {
+            /** Name */
+            name: string;
+            /** Description */
+            description: string;
+            /** Url */
+            url?: string | null;
+            /** Phone */
+            phone?: string | null;
+            /**
+             * Is Unc
+             * @default false
+             */
+            is_unc: boolean;
+            /**
+             * Is Crisis
+             * @default false
+             */
+            is_crisis: boolean;
+            /**
+             * Is Published
+             * @default false
+             */
+            is_published: boolean;
+            /**
+             * Display Order
+             * @default 0
+             */
+            display_order: number;
+            /** Tag Ids */
+            tag_ids?: string[];
+        };
+        /** ResourcePatchDTO */
+        ResourcePatchDTO: {
+            /** Name */
+            name?: string | null;
+            /** Description */
+            description?: string | null;
+            /** Url */
+            url?: string | null;
+            /** Phone */
+            phone?: string | null;
+            /** Is Unc */
+            is_unc?: boolean | null;
+            /** Is Crisis */
+            is_crisis?: boolean | null;
+            /** Is Published */
+            is_published?: boolean | null;
+            /** Display Order */
+            display_order?: number | null;
+            /** Tag Ids */
+            tag_ids?: string[] | null;
+        };
         /** ResourceTagDTO */
         ResourceTagDTO: {
             /**
@@ -407,6 +1870,51 @@ export interface components {
             id: string;
             /** Name */
             name: string;
+        };
+        /** ResourceTagInputDTO */
+        ResourceTagInputDTO: {
+            /** Name */
+            name: string;
+            /**
+             * Display Order
+             * @default 0
+             */
+            display_order: number;
+        };
+        /** ResourceTagPatchDTO */
+        ResourceTagPatchDTO: {
+            /** Name */
+            name?: string | null;
+            /** Display Order */
+            display_order?: number | null;
+        };
+        /** SendMessageDTO */
+        SendMessageDTO: {
+            /** Body */
+            body: string;
+        };
+        /** ShiftDTO */
+        ShiftDTO: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Started At
+             * Format: date-time
+             */
+            started_at: string;
+        };
+        /** SignInDTO */
+        SignInDTO: {
+            /**
+             * Email
+             * Format: email
+             */
+            email: string;
+            /** Password */
+            password: string;
         };
         /** SiteSettingsDTO */
         SiteSettingsDTO: {
@@ -471,6 +1979,56 @@ export interface components {
             /** Line Launch At */
             line_launch_at: string | null;
         };
+        /** SubmitReportDTO */
+        SubmitReportDTO: {
+            /** Topic Ids */
+            topic_ids: string[];
+            /**
+             * Outcome Id
+             * Format: uuid
+             */
+            outcome_id: string;
+            /** Confidence */
+            confidence: number;
+        };
+        /** TemporaryPasswordDTO */
+        TemporaryPasswordDTO: {
+            /** Temporary Password */
+            temporary_password: string;
+        };
+        /**
+         * UpdateAccountDTO
+         * @description Any omitted (or null) field is left as it is.
+         */
+        UpdateAccountDTO: {
+            /** Display Name */
+            display_name?: string | null;
+            role?: components["schemas"]["AccountRole"] | null;
+            /** Is Active */
+            is_active?: boolean | null;
+        };
+        /** UpdateContentBlockDTO */
+        UpdateContentBlockDTO: {
+            /** Title */
+            title: string;
+            /** Body Md */
+            body_md: string;
+        };
+        /** UpdateFeedbackDTO */
+        UpdateFeedbackDTO: {
+            /** Read */
+            read: boolean;
+        };
+        /** UpdateHoursDTO */
+        UpdateHoursDTO: {
+            /** Weekly */
+            weekly: components["schemas"]["WeeklyWindowInputDTO"][];
+        };
+        /** UpdateSiteSettingsDTO */
+        UpdateSiteSettingsDTO: {
+            /** Value */
+            value: unknown;
+        };
         /** ValidationError */
         ValidationError: {
             /** Location */
@@ -486,6 +2044,21 @@ export interface components {
         };
         /** WeeklyWindowDTO */
         WeeklyWindowDTO: {
+            /** Day Of Week */
+            day_of_week: number;
+            /**
+             * Opens At
+             * Format: time
+             */
+            opens_at: string;
+            /**
+             * Closes At
+             * Format: time
+             */
+            closes_at: string;
+        };
+        /** WeeklyWindowInputDTO */
+        WeeklyWindowInputDTO: {
             /** Day Of Week */
             day_of_week: number;
             /**
@@ -527,6 +2100,210 @@ export interface operations {
                         [key: string]: string;
                     };
                 };
+            };
+        };
+    };
+    sign_in_api_auth_sign_in_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SignInDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    sign_out_api_auth_sign_out_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    me_api_auth_me_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MeDTO"];
+                };
+            };
+        };
+    };
+    change_password_api_auth_password_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_session_api_chat_sessions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatSessionDTO"];
+                };
+            };
+        };
+    };
+    get_conversation_api_chat_conversation_get: {
+        parameters: {
+            query?: {
+                after?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatConversationDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    send_message_api_chat_messages_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendMessageDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ChatMessageDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    end_conversation_api_chat_conversation_end_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -740,6 +2517,330 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["StatisticDTO"][];
+                };
+            };
+        };
+    };
+    list_accounts_api_admin_accounts_get: {
+        parameters: {
+            query?: {
+                role?: components["schemas"]["AccountRole"] | null;
+                is_active?: boolean | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountDTO"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_account_api_admin_accounts_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateAccountDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedAccountDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_account_api_admin_accounts__account_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                account_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateAccountDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AccountDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reset_password_api_admin_accounts__account_id__reset_password_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                account_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemporaryPasswordDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_line_analytics_api_admin_analytics_line_get: {
+        parameters: {
+            query?: {
+                channel?: components["schemas"]["Channel"] | null;
+                start?: string | null;
+                end?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LineAnalyticsDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    export_line_analytics_api_admin_analytics_line_csv_get: {
+        parameters: {
+            query?: {
+                start?: string | null;
+                end?: string | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "text/csv": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_feedback_api_admin_feedback_get: {
+        parameters: {
+            query?: {
+                unread?: boolean | null;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackDTO"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_feedback_api_admin_feedback__feedback_id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feedback_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_feedback_api_admin_feedback__feedback_id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                feedback_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateFeedbackDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FeedbackDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_audit_log_api_admin_audit_log_get: {
+        parameters: {
+            query?: {
+                action?: components["schemas"]["AuditAction"] | null;
+                actor?: string | null;
+                page?: number;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuditLogPageDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };
@@ -965,6 +3066,1134 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AdminStatisticDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_fit_guide_api_fit_guide_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FitGuideDTO"];
+                };
+            };
+        };
+    };
+    list_items_api_admin_fit_guide_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFitGuideItemDTO"][];
+                };
+            };
+        };
+    };
+    create_item_api_admin_fit_guide_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FitGuideItemInputDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFitGuideItemDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_item_api_admin_fit_guide__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_item_api_admin_fit_guide__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["FitGuideItemPatchDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminFitGuideItemDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_report_options_api_portal_report_options_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportOptionsDTO"];
+                };
+            };
+        };
+    };
+    submit_report_api_portal_conversations__id__report_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SubmitReportDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    start_api_portal_shift_start_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ShiftDTO"];
+                };
+            };
+        };
+    };
+    end_api_portal_shift_end_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    inbox_api_portal_inbox_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InboxItemDTO"][];
+                };
+            };
+        };
+    };
+    read_api_portal_conversations__conversation_id__read_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_guide_api_portal_guide_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentBlockDTO"];
+                };
+            };
+        };
+    };
+    list_admin_report_options_api_admin_report_options_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminReportOptionDTO"][];
+                };
+            };
+        };
+    };
+    create_report_option_api_admin_report_options_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportOptionInputDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminReportOptionDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_report_option_api_admin_report_options__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportOptionInputDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminReportOptionDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_resources_api_admin_resources_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminResourceDTO"][];
+                };
+            };
+        };
+    };
+    create_resource_api_admin_resources_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResourceInputDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminResourceDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_resource_api_admin_resources__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_resource_api_admin_resources__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResourcePatchDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminResourceDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_tags_api_admin_resource_tags_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminResourceTagDTO"][];
+                };
+            };
+        };
+    };
+    create_tag_api_admin_resource_tags_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResourceTagInputDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminResourceTagDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_tag_api_admin_resource_tags__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_tag_api_admin_resource_tags__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResourceTagPatchDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminResourceTagDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    read_hours_api_admin_hours_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminHoursDTO"];
+                };
+            };
+        };
+    };
+    update_hours_api_admin_hours_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateHoursDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminHoursDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    create_exception_api_admin_hours_exceptions_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HoursExceptionInputDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminHoursExceptionDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    delete_exception_api_admin_hours_exceptions__id__delete: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminHoursExceptionDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_exception_api_admin_hours_exceptions__id__patch: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HoursExceptionInputDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminHoursExceptionDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_conversation_api_portal_conversations__id__get: {
+        parameters: {
+            query?: {
+                after?: string | null;
+            };
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortalConversationDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    send_message_api_portal_conversations__id__messages_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendMessageDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PortalMessageDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    end_conversation_api_portal_conversations__id__end_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    escalate_api_portal_conversations__conversation_id__escalate_post: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                conversation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreatedEscalationDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    list_escalations_api_admin_escalations_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EscalationDTO"][];
+                };
+            };
+        };
+    };
+    get_escalation_api_admin_escalations__escalation_id__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                escalation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["EscalationDetailDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    reorder_api_admin__collection__reorder_put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                collection: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReorderDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown[];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_settings_api_admin_settings_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminSiteSettingsDTO"][];
+                };
+            };
+        };
+    };
+    update_setting_api_admin_settings__key__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                key: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSiteSettingsDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AdminSiteSettingsDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    get_content_api_admin_content_get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentBlockDTO"][];
+                };
+            };
+        };
+    };
+    get_content_block_api_admin_content__slug__get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentBlockDTO"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    update_content_block_api_admin_content__slug__put: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                slug: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateContentBlockDTO"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ContentBlockDTO"];
                 };
             };
             /** @description Validation Error */
