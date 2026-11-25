@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 
-import { Placeholder } from "@/components/portal/Placeholder";
+import { ReportOptionsManager } from "@/components/admin/ReportOptionsManager";
 
 export const metadata: Metadata = { title: "Report options" };
 
 export default function Page() {
-  return <Placeholder title="Report options" />;
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl font-semibold">Report options</h1>
+      <ReportOptionsManager />
+    </div>
+  );
 }
