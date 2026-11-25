@@ -40,7 +40,7 @@ function isOvernight(opensAt: string, closesAt: string): boolean {
   return minutesAfterMidnight(opensAt) > minutesAfterMidnight(closesAt);
 }
 
-function getTodayInTimezone(timeZone: string): string {
+export function getTodayInTimezone(timeZone: string): string {
   const parts = new Intl.DateTimeFormat("en-US", {
     timeZone,
     year: "numeric",
