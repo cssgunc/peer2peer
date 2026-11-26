@@ -19,6 +19,10 @@ export default async function FaqPage() {
       <h1 className="text-3xl font-semibold tracking-tight">FAQ</h1>
       <FitGuide guide={guide} />
       <FaqAccordion faqs={faqs} />
+      <p className="text-muted-foreground">
+        We use cookieless analytics to understand how visitors find and use our
+        public pages. Chat activity is excluded from website analytics.
+      </p>
     </div>
   );
 }
