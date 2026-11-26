@@ -1,10 +1,15 @@
-import type { ReactNode } from "react";
+import { Suspense, type ReactNode } from "react";
+
+import { WebsiteAnalytics } from "@/components/analytics/WebsiteAnalytics";
 
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { StatusBanner } from "@/components/layout/StatusBanner";
 
 export default function PublicLayout({ children }: { children: ReactNode }) {
+  const scriptUrl = process.env.WEBSITE_ANALYTICS_SCRIPT_URL?.trim();
+  const siteId = process.env.WEBSITE_ANALYTICS_SITE_ID?.trim();
+
   return (
     <>
       <a
@@ -23,6 +28,11 @@ export default function PublicLayout({ children }: { children: ReactNode }) {
         {children}
       </main>
       <Footer />
+      {scriptUrl && siteId && (
+        <Suspense fallback={null}>
+          <WebsiteAnalytics scriptUrl={scriptUrl} siteId={siteId} />
+        </Suspense>
+      )}
     </>
   );
 }
