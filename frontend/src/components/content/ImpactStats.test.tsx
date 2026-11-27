@@ -1,34 +1,26 @@
 import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, vi } from "vitest";
-
-import { getPublicData } from "@/lib/public-data";
+import { afterEach, describe, expect, it } from "vitest";
 
 import ImpactStats from "./ImpactStats";
 
-vi.mock("@/lib/public-data", () => ({ getPublicData: vi.fn() }));
-
-afterEach(() => {
-  cleanup();
-  vi.resetAllMocks();
-});
+afterEach(cleanup);
 
 describe("ImpactStats", () => {
-  it("renders nothing when no statistics are published", async () => {
-    vi.mocked(getPublicData).mockResolvedValue([]);
-
-    const { container } = render(await ImpactStats());
+  it("renders nothing when no statistics are published", () => {
+    const { container } = render(<ImpactStats stats={[]} />);
 
     expect(container).toBeEmptyDOMElement();
-    expect(getPublicData).toHaveBeenCalledWith("/api/statistics", "statistics");
   });
 
-  it("shows each value with its label, in the order given", async () => {
-    vi.mocked(getPublicData).mockResolvedValue([
-      { id: "a", label: "Conversations this semester", value: "120+" },
-      { id: "b", label: "Trained responders", value: "24" },
-    ]);
-
-    render(await ImpactStats());
+  it("shows each value with its label, in the order given", () => {
+    render(
+      <ImpactStats
+        stats={[
+          { id: "a", label: "Conversations this semester", value: "120+" },
+          { id: "b", label: "Trained responders", value: "24" },
+        ]}
+      />,
+    );
 
     expect(
       screen.getByRole("heading", { level: 2, name: "Our impact" }),
