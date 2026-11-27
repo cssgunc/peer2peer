@@ -1,5 +1,5 @@
 import HoursList, { type Hours } from "@/components/content/HoursList";
-import ImpactStats from "@/components/content/ImpactStats";
+import PublishedImpactStats from "@/components/content/PublishedImpactStats";
 import LaunchCountdown from "@/components/content/LaunchCountdown";
 import Markdown from "@/components/content/Markdown";
 import { Button } from "@/components/ui/button";
@@ -62,7 +62,7 @@ async function HomeContent() {
 
       <LaunchCountdown />
 
-      <ImpactStats />
+      <PublishedImpactStats />
 
       <section>
         <h2 className="mb-4 text-2xl font-semibold">{howItWorks.title}</h2>

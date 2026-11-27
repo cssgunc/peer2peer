@@ -1,9 +1,14 @@
 import type { Metadata } from "next";
 
-import { Placeholder } from "@/components/portal/Placeholder";
+import { StatisticsManager } from "@/components/admin/StatisticsManager";
 
 export const metadata: Metadata = { title: "Statistics" };
 
 export default function Page() {
-  return <Placeholder title="Statistics" />;
+  return (
+    <div className="space-y-4">
+      <h1 className="text-2xl font-semibold">Statistics</h1>
+      <StatisticsManager />
+    </div>
+  );
 }

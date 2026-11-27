@@ -1,14 +1,9 @@
 import type { components } from "@/lib/api-types";
-import { getPublicData } from "@/lib/public-data";
 
 export type Statistic = components["schemas"]["StatisticDTO"];
 
 /** Published impact numbers (TDD 4.3.1). Renders nothing until a coordinator publishes one. */
-export default async function ImpactStats() {
-  const stats = await getPublicData<Statistic[]>(
-    "/api/statistics",
-    "statistics",
-  );
+export default function ImpactStats({ stats }: { stats: Statistic[] }) {
   if (stats.length === 0) return null;
 
   return (
